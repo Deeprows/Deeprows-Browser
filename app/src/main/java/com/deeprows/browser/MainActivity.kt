@@ -1,56 +1,34 @@
 package com.deeprows.browser
 
+import android.app.AlertDialog
+import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
-import android.view.Gravity
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.Switch
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import java.net.HttpURLConnection
-import java.net.URL
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
-    private lateinit var addressBar: EditText
-    private lateinit var loadingBar: ProgressBar
     private lateinit var homePage: ScrollView
     private lateinit var settingsPage: ScrollView
-    private lateinit var newsList: LinearLayout
-    private lateinit var sportNewsList: LinearLayout
+
+    private lateinit var addressBar: android.widget.EditText
+    private lateinit var loadingBar: android.widget.ProgressBar
 
     private lateinit var dataSavingSwitch: Switch
     private lateinit var adBlockingSwitch: Switch
-
-    private val newsRepository = NewsRepository()
-
-    private val activityJob = Job()
-
-    private val activityScope =
-        CoroutineScope(
-            Dispatchers.Main + activityJob
-        )
 
     private val preferences by lazy {
         getSharedPreferences(
@@ -59,29 +37,16 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    override fun onCreate(
-        savedInstanceState: Bundle?
-    ) {
+    private val newsRepository =
+        NewsRepository()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.statusBarColor =
-            Color.rgb(11, 18, 32)
-
-        window.navigationBarColor =
-            Color.rgb(11, 18, 32)
-
-        setContentView(
-            R.layout.activity_main
-        )
+        setContentView(R.layout.activity_main)
 
         webView =
             findViewById(R.id.webView)
-
-        addressBar =
-            findViewById(R.id.addressBar)
-
-        loadingBar =
-            findViewById(R.id.loadingBar)
 
         homePage =
             findViewById(R.id.homePage)
@@ -89,11 +54,11 @@ class MainActivity : AppCompatActivity() {
         settingsPage =
             findViewById(R.id.settingsPage)
 
-        newsList =
-            findViewById(R.id.newsList)
+        addressBar =
+            findViewById(R.id.addressBar)
 
-        sportNewsList =
-            findViewById(R.id.sportNewsList)
+        loadingBar =
+            findViewById(R.id.loadingBar)
 
         dataSavingSwitch =
             findViewById(R.id.dataSavingSwitch)
@@ -111,6 +76,10 @@ class MainActivity : AppCompatActivity() {
         loadSportNews()
     }
 
+    // =========================================================
+    // WEBVIEW
+    // =========================================================
+
     private fun setupWebView() {
 
         webView.settings.apply {
@@ -125,186 +94,129 @@ class MainActivity : AppCompatActivity() {
 
             mediaPlaybackRequiresUserGesture = false
 
-            if (
+            // Required for saved offline web archives
+            allowFileAccess = true
+
+            allowContentAccess = true
+
+            blockNetworkImage =
                 preferences.getBoolean(
                     "data_saving",
                     false
                 )
-            ) {
-                blockNetworkImage = true
-            }
         }
 
         webView.webViewClient =
             object : WebViewClient() {
 
-                override fun shouldOverrideUrlLoading(
-                    view: WebView,
-                    request: WebResourceRequest
-                ): Boolean {
-
-                    return false
-                }
-
                 override fun onPageStarted(
-                    view: WebView,
+                    view: WebView?,
                     url: String?,
                     favicon: Bitmap?
                 ) {
 
-                    super.onPageStarted(
-                        view,
-                        url,
-                        favicon
-                    )
-
                     loadingBar.visibility =
                         View.VISIBLE
 
-                    if (!url.isNullOrEmpty()) {
-
+                    if (
+                        !url.isNullOrBlank() &&
+                        (
+                            url.startsWith("http://") ||
+                            url.startsWith("https://")
+                        )
+                    ) {
                         addressBar.setText(url)
-
                         saveHistory(url)
                     }
                 }
 
                 override fun onPageFinished(
-                    view: WebView,
+                    view: WebView?,
                     url: String?
                 ) {
-
-                    super.onPageFinished(
-                        view,
-                        url
-                    )
 
                     loadingBar.visibility =
                         View.GONE
 
-                    if (!url.isNullOrEmpty()) {
+                    if (
+                        url != null &&
+                        (
+                            url.startsWith("http://") ||
+                            url.startsWith("https://")
+                        )
+                    ) {
                         addressBar.setText(url)
                     }
                 }
-            }
 
-        webView.webChromeClient =
-            object : WebChromeClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
 
-                override fun onProgressChanged(
-                    view: WebView,
-                    newProgress: Int
-                ) {
-
-                    loadingBar.progress =
-                        newProgress
-
-                    loadingBar.visibility =
-                        if (
-                            newProgress >= 100
-                        ) {
-                            View.GONE
-                        } else {
-                            View.VISIBLE
-                        }
+                    return false
                 }
             }
+
+        webView.setOnScrollChangeListener {
+            _, _, _, _, _ ->
+        }
     }
+
+    // =========================================================
+    // CONTROLS
+    // =========================================================
 
     private fun setupControls() {
 
-        val goButton =
-            findViewById<ImageButton>(
-                R.id.goButton
-            )
+        findViewById<View>(
+            R.id.goButton
+        ).setOnClickListener {
 
-        val backButton =
-            findViewById<ImageButton>(
-                R.id.backButton
-            )
-
-        val forwardButton =
-            findViewById<ImageButton>(
-                R.id.forwardButton
-            )
-
-        val refreshButton =
-            findViewById<ImageButton>(
-                R.id.refreshButton
-            )
-
-        val homeButton =
-            findViewById<ImageButton>(
-                R.id.homeButton
-            )
-
-        val menuButton =
-            findViewById<ImageButton>(
-                R.id.menuButton
-            )
-
-        goButton.setOnClickListener {
-            loadAddress()
+            openAddress()
         }
 
         addressBar.setOnEditorActionListener {
-                _, actionId, _ ->
+                _, _, _ ->
 
-            if (
-                actionId ==
-                EditorInfo.IME_ACTION_GO
-            ) {
+            openAddress()
 
-                loadAddress()
-
-                true
-
-            } else {
-
-                false
-            }
+            true
         }
 
-        backButton.setOnClickListener {
+        findViewById<View>(
+            R.id.backButton
+        ).setOnClickListener {
 
-            if (
-                settingsPage.visibility ==
-                View.VISIBLE
-            ) {
+            if (settingsPage.visibility == View.VISIBLE) {
 
                 showHomePage()
 
-                return@setOnClickListener
-            }
-
-            if (
-                webView.visibility ==
-                View.VISIBLE &&
-                webView.canGoBack()
-            ) {
+            } else if (webView.canGoBack()) {
 
                 webView.goBack()
+
+            } else {
+
+                showHomePage()
             }
         }
 
-        forwardButton.setOnClickListener {
+        findViewById<View>(
+            R.id.forwardButton
+        ).setOnClickListener {
 
-            if (
-                webView.visibility ==
-                View.VISIBLE &&
-                webView.canGoForward()
-            ) {
+            if (webView.canGoForward()) {
 
                 webView.goForward()
             }
         }
 
-        refreshButton.setOnClickListener {
+        findViewById<View>(
+            R.id.refreshButton
+        ).setOnClickListener {
 
-            if (
-                webView.visibility ==
-                View.VISIBLE
-            ) {
+            if (webView.visibility == View.VISIBLE) {
 
                 webView.reload()
 
@@ -315,11 +227,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        homeButton.setOnClickListener {
+        findViewById<View>(
+            R.id.homeButton
+        ).setOnClickListener {
+
             showHomePage()
         }
 
-        menuButton.setOnClickListener {
+        findViewById<View>(
+            R.id.menuButton
+        ).setOnClickListener {
+
             showSettings()
         }
 
@@ -328,7 +246,7 @@ class MainActivity : AppCompatActivity() {
         ).setOnClickListener {
 
             openWebsite(
-                "https://www.facebook.com"
+                "https://www.facebook.com/"
             )
         }
 
@@ -337,7 +255,7 @@ class MainActivity : AppCompatActivity() {
         ).setOnClickListener {
 
             openWebsite(
-                "https://www.instagram.com"
+                "https://www.instagram.com/"
             )
         }
 
@@ -346,7 +264,7 @@ class MainActivity : AppCompatActivity() {
         ).setOnClickListener {
 
             openWebsite(
-                "https://www.indeed.com"
+                "https://www.indeed.com/"
             )
         }
 
@@ -355,7 +273,7 @@ class MainActivity : AppCompatActivity() {
         ).setOnClickListener {
 
             openWebsite(
-                "https://www.scholarships.com"
+                "https://www.scholarships.com/"
             )
         }
 
@@ -364,7 +282,7 @@ class MainActivity : AppCompatActivity() {
         ).setOnClickListener {
 
             openWebsite(
-                "https://x.com"
+                "https://x.com/"
             )
         }
 
@@ -373,37 +291,14 @@ class MainActivity : AppCompatActivity() {
         ).setOnClickListener {
 
             openWebsite(
-                "https://deeprowss.com"
-            )
-        }
-
-        findViewById<View>(
-            R.id.deeprowssPromo
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://deeprowss.com"
-            )
-        }
-
-        findViewById<View>(
-            R.id.moreNewsButton
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://news.google.com"
-            )
-        }
-
-        findViewById<View>(
-            R.id.moreSportNewsButton
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://news.google.com/search?q=sports"
+                "https://deeprowss.com/"
             )
         }
     }
+
+    // =========================================================
+    // SETTINGS
+    // =========================================================
 
     private fun setupSettings() {
 
@@ -473,14 +368,14 @@ class MainActivity : AppCompatActivity() {
             R.id.bookmarksButton
         ).setOnClickListener {
 
-            saveCurrentBookmark()
+            showBookmarks()
         }
 
         findViewById<View>(
             R.id.offlinePagesButton
         ).setOnClickListener {
 
-            saveOfflinePage()
+            showOfflinePages()
         }
 
         findViewById<View>(
@@ -504,13 +399,110 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // =========================================================
+    // HOME / SETTINGS / WEB
+    // =========================================================
+
+    private fun showHomePage() {
+
+        homePage.visibility =
+            View.VISIBLE
+
+        webView.visibility =
+            View.GONE
+
+        settingsPage.visibility =
+            View.GONE
+
+        loadingBar.visibility =
+            View.GONE
+    }
+
+    private fun showSettings() {
+
+        homePage.visibility =
+            View.GONE
+
+        webView.visibility =
+            View.GONE
+
+        settingsPage.visibility =
+            View.VISIBLE
+
+        loadingBar.visibility =
+            View.GONE
+    }
+
+    private fun openWebsite(
+        url: String
+    ) {
+
+        settingsPage.visibility =
+            View.GONE
+
+        homePage.visibility =
+            View.GONE
+
+        webView.visibility =
+            View.VISIBLE
+
+        webView.loadUrl(url)
+    }
+
+    // =========================================================
+    // ADDRESS BAR
+    // =========================================================
+
+    private fun openAddress() {
+
+        var text =
+            addressBar.text
+                .toString()
+                .trim()
+
+        if (text.isBlank()) {
+            return
+        }
+
+        if (
+            !text.startsWith("http://") &&
+            !text.startsWith("https://")
+        ) {
+
+            if (
+                text.contains(".") &&
+                !text.contains(" ")
+            ) {
+
+                text =
+                    "https://$text"
+
+            } else {
+
+                text =
+                    "https://www.google.com/search?q=" +
+                            Uri.encode(text)
+            }
+        }
+
+        openWebsite(text)
+    }
+
+    // =========================================================
+    // HISTORY
+    // =========================================================
+
     private fun saveHistory(
         url: String
     ) {
 
         if (
             url.isBlank() ||
-            url == "about:blank"
+            url == "about:blank" ||
+            (
+                !url.startsWith("http://") &&
+                !url.startsWith("https://")
+            )
         ) {
             return
         }
@@ -530,7 +522,9 @@ class MainActivity : AppCompatActivity() {
         )
 
         val limited =
-            history.take(50).toSet()
+            history
+                .take(50)
+                .toSet()
 
         preferences.edit()
             .putStringSet(
@@ -551,53 +545,54 @@ class MainActivity : AppCompatActivity() {
 
         if (history.isEmpty()) {
 
-            Toast.makeText(
-                this,
-                "No browsing history yet",
-                Toast.LENGTH_SHORT
-            ).show()
+            AlertDialog.Builder(this)
+                .setTitle("History")
+                .setMessage(
+                    "No browsing history yet."
+                )
+                .setPositiveButton(
+                    "OK",
+                    null
+                )
+                .show()
 
             return
         }
 
-        val builder =
-            android.app.AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
+            .setTitle("History")
+            .setItems(
+                history.toTypedArray()
+            ) { _, which ->
 
-        builder.setTitle("History")
+                openWebsite(
+                    history[which]
+                )
+            }
+            .setNegativeButton(
+                "Clear History"
+            ) { _, _ ->
 
-        val items =
-            history.toTypedArray()
+                preferences.edit()
+                    .remove("history")
+                    .apply()
 
-        builder.setItems(items) {
-                _, which ->
-
-            openWebsite(
-                items[which]
+                Toast.makeText(
+                    this,
+                    "History cleared",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .setPositiveButton(
+                "Close",
+                null
             )
-        }
-
-        builder.setNegativeButton(
-            "Close",
-            null
-        )
-
-        builder.setNeutralButton(
-            "Clear"
-        ) { _, _ ->
-
-            preferences.edit()
-                .remove("history")
-                .apply()
-
-            Toast.makeText(
-                this,
-                "History cleared",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        builder.show()
+            .show()
     }
+
+    // =========================================================
+    // BOOKMARKS
+    // =========================================================
 
     private fun saveCurrentBookmark() {
 
@@ -605,7 +600,11 @@ class MainActivity : AppCompatActivity() {
             webView.url
 
         if (
-            url.isNullOrBlank()
+            url.isNullOrBlank() ||
+            (
+                !url.startsWith("http://") &&
+                !url.startsWith("https://")
+            )
         ) {
 
             Toast.makeText(
@@ -635,7 +634,7 @@ class MainActivity : AppCompatActivity() {
 
         Toast.makeText(
             this,
-            "Bookmark saved",
+            "Page bookmarked",
             Toast.LENGTH_SHORT
         ).show()
     }
@@ -651,52 +650,68 @@ class MainActivity : AppCompatActivity() {
 
         if (bookmarks.isEmpty()) {
 
-            Toast.makeText(
-                this,
-                "No bookmarks yet",
-                Toast.LENGTH_SHORT
-            ).show()
+            AlertDialog.Builder(this)
+                .setTitle("Bookmarks")
+                .setMessage(
+                    "No bookmarks saved yet."
+                )
+                .setPositiveButton(
+                    "OK",
+                    null
+                )
+                .show()
 
             return
         }
 
-        val builder =
-            android.app.AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
+            .setTitle("Bookmarks")
+            .setItems(
+                bookmarks.toTypedArray()
+            ) { _, which ->
 
-        builder.setTitle("Bookmarks")
+                openWebsite(
+                    bookmarks[which]
+                )
+            }
+            .setNegativeButton(
+                "Clear All"
+            ) { _, _ ->
 
-        val items =
-            bookmarks.toTypedArray()
+                preferences.edit()
+                    .remove("bookmarks")
+                    .apply()
 
-        builder.setItems(items) {
-                _, which ->
-
-            openWebsite(
-                items[which]
+                Toast.makeText(
+                    this,
+                    "Bookmarks cleared",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .setPositiveButton(
+                "Close",
+                null
             )
+            .show()
+    }
+
+    // =========================================================
+    // OFFLINE PAGES
+    // =========================================================
+
+    private fun getOfflineDirectory(): File {
+
+        val directory =
+            File(
+                filesDir,
+                "offline_pages"
+            )
+
+        if (!directory.exists()) {
+            directory.mkdirs()
         }
 
-        builder.setNegativeButton(
-            "Close",
-            null
-        )
-
-        builder.setNeutralButton(
-            "Clear"
-        ) { _, _ ->
-
-            preferences.edit()
-                .remove("bookmarks")
-                .apply()
-
-            Toast.makeText(
-                this,
-                "Bookmarks cleared",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        builder.show()
+        return directory
     }
 
     private fun saveOfflinePage() {
@@ -705,7 +720,12 @@ class MainActivity : AppCompatActivity() {
             webView.url
 
         if (
-            url.isNullOrBlank()
+            url.isNullOrBlank() ||
+            url == "about:blank" ||
+            (
+                !url.startsWith("http://") &&
+                !url.startsWith("https://")
+            )
         ) {
 
             Toast.makeText(
@@ -717,275 +737,309 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        if (webView.progress < 100) {
+
+            Toast.makeText(
+                this,
+                "Wait until the page finishes loading",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val title =
+            webView.title
+                ?.trim()
+                ?.ifBlank {
+                    "Offline Page"
+                }
+                ?: "Offline Page"
+
+        val safeTitle =
+            title
+                .replace(
+                    Regex("[^A-Za-z0-9 _-]"),
+                    ""
+                )
+                .replace(
+                    Regex("\\s+"),
+                    "_"
+                )
+                .take(50)
+                .ifBlank {
+                    "Offline_Page"
+                }
+
+        val timestamp =
+            SimpleDateFormat(
+                "yyyyMMdd_HHmmss",
+                Locale.US
+            ).format(
+                Date()
+            )
+
+        val file =
+            File(
+                getOfflineDirectory(),
+                "${safeTitle}_$timestamp.mht"
+            )
+
         Toast.makeText(
             this,
-            "Offline page saving will use WebView offline storage",
-            Toast.LENGTH_LONG
+            "Saving offline page...",
+            Toast.LENGTH_SHORT
         ).show()
+
+        webView.saveWebArchive(
+            file.absolutePath,
+            false
+        ) { savedPath ->
+
+            runOnUiThread {
+
+                if (
+                    !savedPath.isNullOrBlank() &&
+                    File(savedPath).exists()
+                ) {
+
+                    Toast.makeText(
+                        this,
+                        "Offline page saved",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                } else {
+
+                    Toast.makeText(
+                        this,
+                        "Unable to save offline page",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 
-    private fun showSettings() {
+    private fun showOfflinePages() {
+
+        val directory =
+            getOfflineDirectory()
+
+        val files =
+            directory
+                .listFiles { file ->
+
+                    file.isFile &&
+                            file.extension.equals(
+                                "mht",
+                                ignoreCase = true
+                            )
+                }
+                ?.sortedByDescending {
+                    it.lastModified()
+                }
+                ?: emptyList()
+
+        val builder =
+            AlertDialog.Builder(this)
+                .setTitle("Offline Pages")
+
+        if (files.isEmpty()) {
+
+            builder.setMessage(
+                "No offline pages saved yet."
+            )
+
+        } else {
+
+            val names =
+                files.map { file ->
+
+                    file.nameWithoutExtension
+                        .replace("_", " ")
+
+                }.toTypedArray()
+
+            builder.setItems(
+                names
+            ) { _, which ->
+
+                openOfflinePage(
+                    files[which]
+                )
+            }
+        }
+
+        builder.setPositiveButton(
+            "Save Current"
+        ) { _, _ ->
+
+            saveOfflinePage()
+        }
+
+        if (files.isNotEmpty()) {
+
+            builder.setNeutralButton(
+                "Clear All"
+            ) { _, _ ->
+
+                clearOfflinePages()
+            }
+        }
+
+        builder.setNegativeButton(
+            "Close",
+            null
+        )
+
+        builder.show()
+    }
+
+    private fun openOfflinePage(
+        file: File
+    ) {
+
+        if (!file.exists()) {
+
+            Toast.makeText(
+                this,
+                "Offline page no longer exists",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        settingsPage.visibility =
+            View.GONE
 
         homePage.visibility =
             View.GONE
 
         webView.visibility =
-            View.GONE
-
-        settingsPage.visibility =
             View.VISIBLE
 
         loadingBar.visibility =
             View.GONE
+
+        addressBar.setText(
+            "Offline: " +
+                    file.nameWithoutExtension
+                        .replace("_", " ")
+        )
+
+        webView.loadUrl(
+            Uri.fromFile(file).toString()
+        )
     }
+
+    private fun clearOfflinePages() {
+
+        val directory =
+            getOfflineDirectory()
+
+        val files =
+            directory.listFiles()
+
+        var deleted = 0
+
+        files?.forEach { file ->
+
+            if (
+                file.isFile &&
+                file.extension.equals(
+                    "mht",
+                    ignoreCase = true
+                )
+            ) {
+
+                if (file.delete()) {
+                    deleted++
+                }
+            }
+        }
+
+        Toast.makeText(
+            this,
+            "$deleted offline page(s) deleted",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    // =========================================================
+    // NEWS
+    // =========================================================
 
     private fun loadLatestNews() {
 
-        showLoading(
-            newsList,
-            "Loading latest news..."
-        )
+        val newsList =
+            findViewById<android.widget.LinearLayout>(
+                R.id.newsList
+            )
 
-        activityScope.launch {
+        newsList.removeAllViews()
+
+        kotlinx.coroutines.CoroutineScope(
+            kotlinx.coroutines.Dispatchers.Main
+        ).launch {
 
             val articles =
-                newsRepository.getLatestNews(
-                    limit = 4
-                )
-
-            newsList.removeAllViews()
-
-            if (articles.isEmpty()) {
-
-                showEmptyMessage(
-                    newsList,
-                    "Unable to load latest news."
-                )
-
-                return@launch
-            }
+                newsRepository.getLatestNews(4)
 
             articles.forEach { article ->
 
-                val card =
-                    createNewsCard(
-                        article
-                    )
-
-                newsList.addView(card)
-
-                article.imageUrl?.let {
-
-                    loadNewsImage(
-                        it,
-                        card
-                    )
-                }
+                addNewsCard(
+                    newsList,
+                    article
+                )
             }
         }
     }
 
     private fun loadSportNews() {
 
-        showLoading(
-            sportNewsList,
-            "Loading sport news..."
-        )
+        val sportNewsList =
+            findViewById<android.widget.LinearLayout>(
+                R.id.sportNewsList
+            )
 
-        activityScope.launch {
+        sportNewsList.removeAllViews()
+
+        kotlinx.coroutines.CoroutineScope(
+            kotlinx.coroutines.Dispatchers.Main
+        ).launch {
 
             val articles =
-                newsRepository.getSportNews(
-                    limit = 4
-                )
-
-            sportNewsList.removeAllViews()
-
-            if (articles.isEmpty()) {
-
-                showEmptyMessage(
-                    sportNewsList,
-                    "Unable to load sport news."
-                )
-
-                return@launch
-            }
+                newsRepository.getSportNews(4)
 
             articles.forEach { article ->
 
-                val card =
-                    createNewsCard(
-                        article
-                    )
-
-                sportNewsList.addView(card)
-
-                article.imageUrl?.let {
-
-                    loadNewsImage(
-                        it,
-                        card
-                    )
-                }
+                addNewsCard(
+                    sportNewsList,
+                    article
+                )
             }
         }
     }
 
-    private fun createNewsCard(
+    private fun addNewsCard(
+        container: android.widget.LinearLayout,
         article: NewsArticle
-    ): LinearLayout {
+    ) {
 
         val card =
-            LinearLayout(this)
+            android.widget.TextView(this)
 
-        card.orientation =
-            LinearLayout.HORIZONTAL
-
-        card.gravity =
-            Gravity.CENTER_VERTICAL
-
-        card.setPadding(
-            dp(7),
-            dp(7),
-            dp(9),
-            dp(7)
-        )
-
-        card.setBackgroundColor(
-            Color.rgb(
-                22,
-                34,
-                53
-            )
-        )
-
-        val params =
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(94)
-            )
-
-        params.setMargins(
-            0,
-            0,
-            0,
-            dp(8)
-        )
-
-        card.layoutParams = params
-
-        val image =
-            ImageView(this)
-
-        image.layoutParams =
-            LinearLayout.LayoutParams(
-                dp(110),
-                dp(80)
-            )
-
-        image.scaleType =
-            ImageView.ScaleType.CENTER_CROP
-
-        image.setBackgroundColor(
-            Color.rgb(
-                30,
-                43,
-                62
-            )
-        )
-
-        card.addView(image)
-
-        val content =
-            LinearLayout(this)
-
-        content.orientation =
-            LinearLayout.VERTICAL
-
-        content.gravity =
-            Gravity.CENTER_VERTICAL
-
-        content.setPadding(
-            dp(11),
-            0,
-            dp(3),
-            0
-        )
-
-        content.layoutParams =
-            LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                1f
-            )
-
-        val title =
-            TextView(this)
-
-        title.text =
+        card.text =
             article.title
 
-        title.setTextColor(
-            Color.WHITE
+        card.setPadding(
+            16,
+            16,
+            16,
+            16
         )
-
-        title.textSize =
-            13.5f
-
-        title.typeface =
-            Typeface.DEFAULT_BOLD
-
-        title.maxLines =
-            3
-
-        title.ellipsize =
-            TextUtils.TruncateAt.END
-
-        content.addView(title)
-
-        if (
-            article.source.isNotBlank()
-        ) {
-
-            val source =
-                TextView(this)
-
-            source.text =
-                article.source
-
-            source.setTextColor(
-                Color.rgb(
-                    132,
-                    148,
-                    169
-                )
-            )
-
-            source.textSize =
-                10.5f
-
-            source.maxLines =
-                1
-
-            source.ellipsize =
-                TextUtils.TruncateAt.END
-
-            val sourceParams =
-                LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-
-            sourceParams.topMargin =
-                dp(5)
-
-            source.layoutParams =
-                sourceParams
-
-            content.addView(source)
-        }
-
-        card.addView(content)
 
         card.setOnClickListener {
 
@@ -994,290 +1048,6 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        return card
-    }
-
-    private fun loadNewsImage(
-        imageUrl: String,
-        card: LinearLayout
-    ) {
-
-        activityScope.launch(
-            Dispatchers.IO
-        ) {
-
-            val bitmap =
-                downloadImage(
-                    imageUrl
-                )
-
-            if (bitmap != null) {
-
-                launch(
-                    Dispatchers.Main
-                ) {
-
-                    val image =
-                        card.getChildAt(
-                            0
-                        ) as? ImageView
-
-                    image?.setImageBitmap(
-                        bitmap
-                    )
-                }
-            }
-        }
-    }
-
-    private fun downloadImage(
-        imageUrl: String
-    ): Bitmap? {
-
-        var connection:
-                HttpURLConnection? = null
-
-        return try {
-
-            val url =
-                URL(imageUrl)
-
-            connection =
-                url.openConnection()
-                    as HttpURLConnection
-
-            connection.connectTimeout =
-                10000
-
-            connection.readTimeout =
-                10000
-
-            connection.instanceFollowRedirects =
-                true
-
-            connection.setRequestProperty(
-                "User-Agent",
-                "Mozilla/5.0"
-            )
-
-            connection.setRequestProperty(
-                "Accept",
-                "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
-            )
-
-            connection.connect()
-
-            if (
-                connection.responseCode
-                !in 200..299
-            ) {
-                return null
-            }
-
-            connection.inputStream.use {
-                BitmapFactory.decodeStream(it)
-            }
-
-        } catch (
-            e: Exception
-        ) {
-
-            null
-
-        } finally {
-
-            connection?.disconnect()
-        }
-    }
-
-    private fun showLoading(
-        container: LinearLayout,
-        message: String
-    ) {
-
-        container.removeAllViews()
-
-        val text =
-            TextView(this)
-
-        text.text =
-            message
-
-        text.setTextColor(
-            Color.rgb(
-                132,
-                148,
-                169
-            )
-        )
-
-        text.textSize =
-            13f
-
-        text.setPadding(
-            dp(10),
-            dp(10),
-            dp(10),
-            dp(10)
-        )
-
-        container.addView(text)
-    }
-
-    private fun showEmptyMessage(
-        container: LinearLayout,
-        message: String
-    ) {
-
-        val text =
-            TextView(this)
-
-        text.text =
-            message
-
-        text.setTextColor(
-            Color.rgb(
-                132,
-                148,
-                169
-            )
-        )
-
-        text.textSize =
-            13f
-
-        text.setPadding(
-            dp(10),
-            dp(10),
-            dp(10),
-            dp(10)
-        )
-
-        container.addView(text)
-    }
-
-    private fun openWebsite(
-        url: String
-    ) {
-
-        settingsPage.visibility =
-            View.GONE
-
-        homePage.visibility =
-            View.GONE
-
-        webView.visibility =
-            View.VISIBLE
-
-        webView.loadUrl(url)
-    }
-
-    private fun showHomePage() {
-
-        settingsPage.visibility =
-            View.GONE
-
-        homePage.visibility =
-            View.VISIBLE
-
-        webView.visibility =
-            View.GONE
-
-        loadingBar.visibility =
-            View.GONE
-
-        addressBar.setText("")
-
-        addressBar.hint =
-            "Search or enter website"
-    }
-
-    private fun loadAddress() {
-
-        val input =
-            addressBar.text
-                .toString()
-                .trim()
-
-        if (input.isEmpty()) {
-            return
-        }
-
-        val url =
-            if (
-                input.startsWith("http://") ||
-                input.startsWith("https://")
-            ) {
-
-                input
-
-            } else if (
-                input.contains(".") &&
-                !input.contains(" ")
-            ) {
-
-                "https://$input"
-
-            } else {
-
-                "https://www.google.com/search?q=" +
-                        input.replace(
-                            " ",
-                            "+"
-                        )
-            }
-
-        openWebsite(url)
-    }
-
-    private fun dp(
-        value: Int
-    ): Int {
-
-        return (
-            value *
-                    resources.displayMetrics.density
-            ).toInt()
-    }
-
-    override fun onBackPressed() {
-
-        if (
-            settingsPage.visibility ==
-            View.VISIBLE
-        ) {
-
-            showHomePage()
-
-            return
-        }
-
-        if (
-            webView.visibility ==
-            View.VISIBLE
-        ) {
-
-            if (
-                webView.canGoBack()
-            ) {
-
-                webView.goBack()
-
-            } else {
-
-                showHomePage()
-            }
-
-        } else {
-
-            super.onBackPressed()
-        }
-    }
-
-    override fun onDestroy() {
-
-        activityJob.cancel()
-
-        super.onDestroy()
+        container.addView(card)
     }
 }
