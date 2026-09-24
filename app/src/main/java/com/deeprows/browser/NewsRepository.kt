@@ -17,84 +17,86 @@ data class NewsArticle(
 
 class NewsRepository {
 
-    private val baseUrl = "https://news.google.com/rss/search"
+    private val baseUrl =
+        "https://news.google.com/rss/search"
 
     suspend fun getLatestNews(): List<NewsArticle> =
-        fetchNews(
-            query = "latest news",
-            country = "EG"
-        )
+        withContext(Dispatchers.IO) {
 
-    suspend fun getGist(): List<NewsArticle> =
-        fetchNews(
-            query = "Nigeria Africa trending entertainment",
-            country = "NG"
-        )
-
-    private suspend fun fetchNews(
-        query: String,
-        country: String
-    ): List<NewsArticle> = withContext(Dispatchers.IO) {
-
-        val encodedQuery = URLEncoder.encode(
-            query,
-            "UTF-8"
-        )
-
-        val urlString =
-            "$baseUrl" +
-            "?q=$encodedQuery" +
-            "&hl=en" +
-            "&gl=$country" +
-            "&ceid=$country:en"
-
-        var connection: HttpURLConnection? = null
-
-        try {
-
-            val url = URL(urlString)
-
-            connection =
-                url.openConnection() as HttpURLConnection
-
-            connection.requestMethod = "GET"
-            connection.connectTimeout = 10000
-            connection.readTimeout = 10000
-
-            connection.setRequestProperty(
-                "User-Agent",
-                "DeeprowsBrowser/1.0"
-            )
-
-            connection.connect()
-
-            if (connection.responseCode !in 200..299) {
-                return@withContext emptyList()
-            }
-
-            connection.inputStream.use { inputStream ->
-
-                val parser = Xml.newPullParser()
-
-                parser.setInput(
-                    inputStream,
+            val query =
+                URLEncoder.encode(
+                    "latest news",
                     "UTF-8"
                 )
 
-                parseFeed(parser)
+            val urlString =
+                "$baseUrl?q=$query" +
+                "&hl=en-US" +
+                "&gl=US" +
+                "&ceid=US:en"
+
+            var connection: HttpURLConnection? = null
+
+            try {
+
+                val connectionUrl =
+                    URL(urlString)
+
+                connection =
+                    connectionUrl.openConnection()
+                        as HttpURLConnection
+
+                connection.requestMethod = "GET"
+                connection.connectTimeout = 15000
+                connection.readTimeout = 15000
+                connection.instanceFollowRedirects = true
+
+                connection.setRequestProperty(
+                    "User-Agent",
+                    "Mozilla/5.0"
+                )
+
+                connection.setRequestProperty(
+                    "Accept",
+                    "application/rss+xml, application/xml, text/xml, */*"
+                )
+
+                val responseCode =
+                    connection.responseCode
+
+                if (responseCode !in 200..299) {
+                    return@withContext emptyList()
+                }
+
+                connection.inputStream.use { input ->
+
+                    val parser =
+                        Xml.newPullParser()
+
+                    parser.setFeature(
+                        XmlPullParser.FEATURE_PROCESS_NAMESPACES,
+                        false
+                    )
+
+                    parser.setInput(
+                        input,
+                        "UTF-8"
+                    )
+
+                    parseFeed(parser)
+                }
+
+            } catch (e: Exception) {
+
+                e.printStackTrace()
+
+                emptyList()
+
+            } finally {
+
+                connection?.disconnect()
             }
-
-        } catch (e: Exception) {
-
-            e.printStackTrace()
-
-            emptyList()
-
-        } finally {
-
-            connection?.disconnect()
         }
-    }
 
     private fun parseFeed(
         parser: XmlPullParser
@@ -114,7 +116,8 @@ class NewsRepository {
         var published = ""
 
         while (
-            eventType != XmlPullParser.END_DOCUMENT &&
+            eventType !=
+            XmlPullParser.END_DOCUMENT &&
             articles.size < 10
         ) {
 
@@ -122,7 +125,10 @@ class NewsRepository {
 
                 XmlPullParser.START_TAG -> {
 
-                    when (parser.name.lowercase()) {
+                    val tag =
+                        parser.name.lowercase()
+
+                    when (tag) {
 
                         "item" -> {
 
@@ -137,32 +143,40 @@ class NewsRepository {
                         "title" -> {
 
                             if (insideItem) {
+
                                 title =
-                                    parser.nextText().trim()
+                                    parser.nextText()
+                                        .trim()
                             }
                         }
 
                         "link" -> {
 
                             if (insideItem) {
+
                                 link =
-                                    parser.nextText().trim()
+                                    parser.nextText()
+                                        .trim()
                             }
                         }
 
                         "source" -> {
 
                             if (insideItem) {
+
                                 source =
-                                    parser.nextText().trim()
+                                    parser.nextText()
+                                        .trim()
                             }
                         }
 
                         "pubdate" -> {
 
                             if (insideItem) {
+
                                 published =
-                                    parser.nextText().trim()
+                                    parser.nextText()
+                                        .trim()
                             }
                         }
                     }
@@ -187,12 +201,14 @@ class NewsRepository {
                                     title =
                                         cleanText(title),
 
-                                    link = link,
+                                    link =
+                                        link,
 
                                     source =
                                         cleanText(source),
 
-                                    published = published
+                                    published =
+                                        published
                                 )
                             )
                         }
@@ -202,7 +218,8 @@ class NewsRepository {
                 }
             }
 
-            eventType = parser.next()
+            eventType =
+                parser.next()
         }
 
         return articles
@@ -213,8 +230,14 @@ class NewsRepository {
     ): String {
 
         return value
-            .replace("\n", " ")
-            .replace("\r", " ")
+            .replace(
+                "\n",
+                " "
+            )
+            .replace(
+                "\r",
+                " "
+            )
             .replace(
                 Regex("\\s+"),
                 " "
