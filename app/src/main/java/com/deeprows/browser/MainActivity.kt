@@ -90,8 +90,7 @@ class MainActivity : AppCompatActivity() {
             domStorageEnabled = true
             loadWithOverviewMode = true
             useWideViewPort = true
-            mediaPlaybackRequiresUserGesture =
-                false
+            mediaPlaybackRequiresUserGesture = false
         }
 
         webView.webViewClient =
@@ -310,6 +309,13 @@ class MainActivity : AppCompatActivity() {
                 "https://deeprowss.com"
             )
         }
+
+        findViewById<View>(
+            R.id.newsRefreshLabel
+        ).setOnClickListener {
+
+            loadLatestNews()
+        }
     }
 
     private fun loadLatestNews() {
@@ -332,6 +338,13 @@ class MainActivity : AppCompatActivity() {
 
         loading.textSize = 14f
 
+        loading.setPadding(
+            dp(12),
+            dp(12),
+            dp(12),
+            dp(12)
+        )
+
         newsList.addView(
             loading
         )
@@ -348,7 +361,7 @@ class MainActivity : AppCompatActivity() {
                 showEmptyMessage(
                     "Unable to load latest news.\n\n" +
                             "Check your internet connection " +
-                            "and tap refresh."
+                            "and tap Refresh."
                 )
 
                 return@launch
@@ -386,32 +399,35 @@ class MainActivity : AppCompatActivity() {
         card.orientation =
             LinearLayout.HORIZONTAL
 
+        card.gravity =
+            android.view.Gravity.CENTER_VERTICAL
+
         card.setPadding(
-            10,
-            10,
-            10,
-            10
+            dp(8),
+            dp(8),
+            dp(10),
+            dp(8)
         )
 
         card.setBackgroundColor(
             Color.rgb(
-                16,
-                20,
-                27
+                17,
+                22,
+                31
             )
         )
 
         val params =
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                dp(100)
             )
 
         params.setMargins(
             0,
             0,
             0,
-            10
+            dp(10)
         )
 
         card.layoutParams = params
@@ -419,13 +435,10 @@ class MainActivity : AppCompatActivity() {
         val image =
             ImageView(this)
 
-        image.tag =
-            article.link
-
         image.layoutParams =
             LinearLayout.LayoutParams(
-                dp(110),
-                dp(78)
+                dp(112),
+                dp(84)
             )
 
         image.scaleType =
@@ -447,17 +460,20 @@ class MainActivity : AppCompatActivity() {
         content.orientation =
             LinearLayout.VERTICAL
 
+        content.gravity =
+            android.view.Gravity.CENTER_VERTICAL
+
         content.setPadding(
-            12,
-            2,
-            4,
-            2
+            dp(12),
+            0,
+            dp(4),
+            0
         )
 
         content.layoutParams =
             LinearLayout.LayoutParams(
                 0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.MATCH_PARENT,
                 1f
             )
 
@@ -472,6 +488,11 @@ class MainActivity : AppCompatActivity() {
         )
 
         title.textSize = 14f
+
+        title.setTypeface(
+            null,
+            android.graphics.Typeface.BOLD
+        )
 
         title.maxLines = 3
 
@@ -512,7 +533,7 @@ class MainActivity : AppCompatActivity() {
                 )
 
             sourceParams.topMargin =
-                dp(7)
+                dp(6)
 
             source.layoutParams =
                 sourceParams
@@ -537,7 +558,9 @@ class MainActivity : AppCompatActivity() {
         card: LinearLayout
     ) {
 
-        if (imageUrl.isNullOrBlank()) {
+        if (
+            imageUrl.isNullOrBlank()
+        ) {
             return
         }
 
@@ -552,30 +575,18 @@ class MainActivity : AppCompatActivity() {
 
             if (bitmap != null) {
 
-                launch(Dispatchers.Main) {
+                launch(
+                    Dispatchers.Main
+                ) {
 
                     val image =
                         card.getChildAt(
                             0
                         ) as? ImageView
 
-                    if (
-                        image != null &&
-                        image.tag ==
-                        card.getChildAt(
-                            1
-                        )
-                    ) {
-                        image.setImageBitmap(
-                            bitmap
-                        )
-                    } else if (
-                        image != null
-                    ) {
-                        image.setImageBitmap(
-                            bitmap
-                        )
-                    }
+                    image?.setImageBitmap(
+                        bitmap
+                    )
                 }
             }
         }
@@ -657,10 +668,10 @@ class MainActivity : AppCompatActivity() {
         textView.textSize = 14f
 
         textView.setPadding(
-            0,
-            8,
-            0,
-            8
+            dp(12),
+            dp(12),
+            dp(12),
+            dp(12)
         )
 
         newsList.addView(
@@ -709,32 +720,29 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val url = if (
-            input.startsWith(
-                "http://"
-            ) ||
-            input.startsWith(
-                "https://"
-            )
-        ) {
+        val url =
+            if (
+                input.startsWith("http://") ||
+                input.startsWith("https://")
+            ) {
 
-            input
+                input
 
-        } else if (
-            input.contains(".") &&
-            !input.contains(" ")
-        ) {
+            } else if (
+                input.contains(".") &&
+                !input.contains(" ")
+            ) {
 
-            "https://$input"
+                "https://$input"
 
-        } else {
+            } else {
 
-            "https://www.google.com/search?q=" +
-                    input.replace(
-                        " ",
-                        "+"
-                    )
-        }
+                "https://www.google.com/search?q=" +
+                        input.replace(
+                            " ",
+                            "+"
+                        )
+            }
 
         openWebsite(url)
     }
