@@ -76,7 +76,7 @@
 
     </LinearLayout>
 
-    <!-- LOADING -->
+    <!-- PAGE LOADING -->
     <ProgressBar
         android:id="@+id/loadingBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -85,13 +85,13 @@
         android:max="100"
         android:visibility="gone" />
 
-    <!-- MAIN AREA -->
+    <!-- MAIN CONTENT -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- HOME -->
+        <!-- HOME PAGE -->
         <ScrollView
             android:id="@+id/homePage"
             android:layout_width="match_parent"
@@ -107,7 +107,7 @@
                 android:paddingTop="18dp"
                 android:paddingBottom="24dp">
 
-                <!-- QUICK SITES TITLE -->
+                <!-- QUICK SITES -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -117,7 +117,6 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />
 
-                <!-- QUICK SITES -->
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -296,29 +295,32 @@
 
                 </HorizontalScrollView>
 
-                <!-- WELCOME CARD -->
+                <!-- DEEPROWSS PROMO -->
                 <LinearLayout
+                    android:id="@+id/deeprowssPromo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp"
+                    android:padding="18dp"
                     android:layout_marginTop="20dp"
-                    android:background="#10141B">
+                    android:background="#151A22"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Welcome to Deeprowss"
+                        android:text="Deeprowss Live Football | Movies | Highlights"
                         android:textColor="#FFFFFF"
-                        android:textSize="22sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Browse the web faster."
-                        android:textColor="#8D96A5"
-                        android:textSize="14sp"
+                        android:text="deeprowss.com"
+                        android:textColor="#FF1744"
+                        android:textSize="13sp"
                         android:layout_marginTop="6dp" />
 
                 </LinearLayout>
