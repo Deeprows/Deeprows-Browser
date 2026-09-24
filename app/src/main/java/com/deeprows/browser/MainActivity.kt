@@ -2,6 +2,7 @@ package com.deeprows.browser
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -143,6 +144,28 @@ class MainActivity : AppCompatActivity() {
         homeButton.setOnClickListener {
             webView.loadUrl(homeUrl)
         }
+
+        // Quick Sites
+
+        findViewById<View>(R.id.siteFacebook).setOnClickListener {
+            webView.loadUrl("https://www.facebook.com")
+        }
+
+        findViewById<View>(R.id.siteInstagram).setOnClickListener {
+            webView.loadUrl("https://www.instagram.com")
+        }
+
+        findViewById<View>(R.id.siteSportyBet).setOnClickListener {
+            webView.loadUrl("https://www.sportybet.com")
+        }
+
+        findViewById<View>(R.id.siteBet9ja).setOnClickListener {
+            webView.loadUrl("https://www.bet9ja.com")
+        }
+
+        findViewById<View>(R.id.siteDeeprowss).setOnClickListener {
+            webView.loadUrl("https://deeprowss.com")
+        }
     }
 
     private fun loadAddress() {
@@ -179,3 +202,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+```
