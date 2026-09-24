@@ -19,7 +19,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.ScrollView
+import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,19 +36,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var addressBar: EditText
     private lateinit var loadingBar: ProgressBar
     private lateinit var homePage: ScrollView
+    private lateinit var settingsPage: ScrollView
     private lateinit var newsList: LinearLayout
     private lateinit var sportNewsList: LinearLayout
 
-    private val newsRepository =
-        NewsRepository()
+    private lateinit var dataSavingSwitch: Switch
+    private lateinit var adBlockingSwitch: Switch
 
-    private val activityJob =
-        Job()
+    private val newsRepository = NewsRepository()
+
+    private val activityJob = Job()
 
     private val activityScope =
         CoroutineScope(
             Dispatchers.Main + activityJob
         )
+
+    private val preferences by lazy {
+        getSharedPreferences(
+            "deeprows_browser",
+            MODE_PRIVATE
+        )
+    }
 
     override fun onCreate(
         savedInstanceState: Bundle?
@@ -75,14 +86,24 @@ class MainActivity : AppCompatActivity() {
         homePage =
             findViewById(R.id.homePage)
 
+        settingsPage =
+            findViewById(R.id.settingsPage)
+
         newsList =
             findViewById(R.id.newsList)
 
         sportNewsList =
             findViewById(R.id.sportNewsList)
 
+        dataSavingSwitch =
+            findViewById(R.id.dataSavingSwitch)
+
+        adBlockingSwitch =
+            findViewById(R.id.adBlockingSwitch)
+
         setupWebView()
         setupControls()
+        setupSettings()
 
         showHomePage()
 
@@ -93,11 +114,25 @@ class MainActivity : AppCompatActivity() {
     private fun setupWebView() {
 
         webView.settings.apply {
+
             javaScriptEnabled = true
+
             domStorageEnabled = true
+
             loadWithOverviewMode = true
+
             useWideViewPort = true
+
             mediaPlaybackRequiresUserGesture = false
+
+            if (
+                preferences.getBoolean(
+                    "data_saving",
+                    false
+                )
+            ) {
+                blockNetworkImage = true
+            }
         }
 
         webView.webViewClient =
@@ -107,6 +142,7 @@ class MainActivity : AppCompatActivity() {
                     view: WebView,
                     request: WebResourceRequest
                 ): Boolean {
+
                     return false
                 }
 
@@ -126,7 +162,10 @@ class MainActivity : AppCompatActivity() {
                         View.VISIBLE
 
                     if (!url.isNullOrEmpty()) {
+
                         addressBar.setText(url)
+
+                        saveHistory(url)
                     }
                 }
 
@@ -161,7 +200,9 @@ class MainActivity : AppCompatActivity() {
                         newProgress
 
                     loadingBar.visibility =
-                        if (newProgress >= 100) {
+                        if (
+                            newProgress >= 100
+                        ) {
                             View.GONE
                         } else {
                             View.VISIBLE
@@ -197,6 +238,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.homeButton
             )
 
+        val menuButton =
+            findViewById<ImageButton>(
+                R.id.menuButton
+            )
+
         goButton.setOnClickListener {
             loadAddress()
         }
@@ -222,10 +268,21 @@ class MainActivity : AppCompatActivity() {
         backButton.setOnClickListener {
 
             if (
+                settingsPage.visibility ==
+                View.VISIBLE
+            ) {
+
+                showHomePage()
+
+                return@setOnClickListener
+            }
+
+            if (
                 webView.visibility ==
                 View.VISIBLE &&
                 webView.canGoBack()
             ) {
+
                 webView.goBack()
             }
         }
@@ -237,6 +294,7 @@ class MainActivity : AppCompatActivity() {
                 View.VISIBLE &&
                 webView.canGoForward()
             ) {
+
                 webView.goForward()
             }
         }
@@ -247,8 +305,11 @@ class MainActivity : AppCompatActivity() {
                 webView.visibility ==
                 View.VISIBLE
             ) {
+
                 webView.reload()
+
             } else {
+
                 loadLatestNews()
                 loadSportNews()
             }
@@ -258,9 +319,14 @@ class MainActivity : AppCompatActivity() {
             showHomePage()
         }
 
+        menuButton.setOnClickListener {
+            showSettings()
+        }
+
         findViewById<View>(
             R.id.siteFacebook
         ).setOnClickListener {
+
             openWebsite(
                 "https://www.facebook.com"
             )
@@ -269,6 +335,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.siteInstagram
         ).setOnClickListener {
+
             openWebsite(
                 "https://www.instagram.com"
             )
@@ -277,6 +344,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.siteJobs
         ).setOnClickListener {
+
             openWebsite(
                 "https://www.indeed.com"
             )
@@ -285,6 +353,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.siteScholarships
         ).setOnClickListener {
+
             openWebsite(
                 "https://www.scholarships.com"
             )
@@ -293,6 +362,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.siteX
         ).setOnClickListener {
+
             openWebsite(
                 "https://x.com"
             )
@@ -301,6 +371,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.siteDeeprowss
         ).setOnClickListener {
+
             openWebsite(
                 "https://deeprowss.com"
             )
@@ -309,6 +380,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.deeprowssPromo
         ).setOnClickListener {
+
             openWebsite(
                 "https://deeprowss.com"
             )
@@ -317,6 +389,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.moreNewsButton
         ).setOnClickListener {
+
             openWebsite(
                 "https://news.google.com"
             )
@@ -325,10 +398,345 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.moreSportNewsButton
         ).setOnClickListener {
+
             openWebsite(
                 "https://news.google.com/search?q=sports"
             )
         }
+    }
+
+    private fun setupSettings() {
+
+        dataSavingSwitch.isChecked =
+            preferences.getBoolean(
+                "data_saving",
+                false
+            )
+
+        adBlockingSwitch.isChecked =
+            preferences.getBoolean(
+                "ad_blocking",
+                false
+            )
+
+        dataSavingSwitch.setOnCheckedChangeListener {
+                _, enabled ->
+
+            preferences.edit()
+                .putBoolean(
+                    "data_saving",
+                    enabled
+                )
+                .apply()
+
+            webView.settings.blockNetworkImage =
+                enabled
+
+            Toast.makeText(
+                this,
+                if (enabled)
+                    "Data Saving enabled"
+                else
+                    "Data Saving disabled",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        adBlockingSwitch.setOnCheckedChangeListener {
+                _, enabled ->
+
+            preferences.edit()
+                .putBoolean(
+                    "ad_blocking",
+                    enabled
+                )
+                .apply()
+
+            Toast.makeText(
+                this,
+                if (enabled)
+                    "Ad Blocking enabled"
+                else
+                    "Ad Blocking disabled",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        findViewById<View>(
+            R.id.historyButton
+        ).setOnClickListener {
+
+            showHistory()
+        }
+
+        findViewById<View>(
+            R.id.bookmarksButton
+        ).setOnClickListener {
+
+            saveCurrentBookmark()
+        }
+
+        findViewById<View>(
+            R.id.offlinePagesButton
+        ).setOnClickListener {
+
+            saveOfflinePage()
+        }
+
+        findViewById<View>(
+            R.id.clearCacheButton
+        ).setOnClickListener {
+
+            webView.clearCache(true)
+
+            Toast.makeText(
+                this,
+                "Browser cache cleared",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        findViewById<View>(
+            R.id.settingsBackButton
+        ).setOnClickListener {
+
+            showHomePage()
+        }
+    }
+
+    private fun saveHistory(
+        url: String
+    ) {
+
+        if (
+            url.isBlank() ||
+            url == "about:blank"
+        ) {
+            return
+        }
+
+        val history =
+            preferences.getStringSet(
+                "history",
+                emptySet()
+            )?.toMutableList()
+                ?: mutableListOf()
+
+        history.remove(url)
+
+        history.add(
+            0,
+            url
+        )
+
+        val limited =
+            history.take(50).toSet()
+
+        preferences.edit()
+            .putStringSet(
+                "history",
+                limited
+            )
+            .apply()
+    }
+
+    private fun showHistory() {
+
+        val history =
+            preferences.getStringSet(
+                "history",
+                emptySet()
+            )?.toList()
+                ?: emptyList()
+
+        if (history.isEmpty()) {
+
+            Toast.makeText(
+                this,
+                "No browsing history yet",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val builder =
+            android.app.AlertDialog.Builder(this)
+
+        builder.setTitle("History")
+
+        val items =
+            history.toTypedArray()
+
+        builder.setItems(items) {
+                _, which ->
+
+            openWebsite(
+                items[which]
+            )
+        }
+
+        builder.setNegativeButton(
+            "Close",
+            null
+        )
+
+        builder.setNeutralButton(
+            "Clear"
+        ) { _, _ ->
+
+            preferences.edit()
+                .remove("history")
+                .apply()
+
+            Toast.makeText(
+                this,
+                "History cleared",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        builder.show()
+    }
+
+    private fun saveCurrentBookmark() {
+
+        val url =
+            webView.url
+
+        if (
+            url.isNullOrBlank()
+        ) {
+
+            Toast.makeText(
+                this,
+                "Open a website first",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val bookmarks =
+            preferences.getStringSet(
+                "bookmarks",
+                emptySet()
+            )?.toMutableSet()
+                ?: mutableSetOf()
+
+        bookmarks.add(url)
+
+        preferences.edit()
+            .putStringSet(
+                "bookmarks",
+                bookmarks
+            )
+            .apply()
+
+        Toast.makeText(
+            this,
+            "Bookmark saved",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun showBookmarks() {
+
+        val bookmarks =
+            preferences.getStringSet(
+                "bookmarks",
+                emptySet()
+            )?.toList()
+                ?: emptyList()
+
+        if (bookmarks.isEmpty()) {
+
+            Toast.makeText(
+                this,
+                "No bookmarks yet",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val builder =
+            android.app.AlertDialog.Builder(this)
+
+        builder.setTitle("Bookmarks")
+
+        val items =
+            bookmarks.toTypedArray()
+
+        builder.setItems(items) {
+                _, which ->
+
+            openWebsite(
+                items[which]
+            )
+        }
+
+        builder.setNegativeButton(
+            "Close",
+            null
+        )
+
+        builder.setNeutralButton(
+            "Clear"
+        ) { _, _ ->
+
+            preferences.edit()
+                .remove("bookmarks")
+                .apply()
+
+            Toast.makeText(
+                this,
+                "Bookmarks cleared",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        builder.show()
+    }
+
+    private fun saveOfflinePage() {
+
+        val url =
+            webView.url
+
+        if (
+            url.isNullOrBlank()
+        ) {
+
+            Toast.makeText(
+                this,
+                "Open a website first",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        Toast.makeText(
+            this,
+            "Offline page saving will use WebView offline storage",
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun showSettings() {
+
+        homePage.visibility =
+            View.GONE
+
+        webView.visibility =
+            View.GONE
+
+        settingsPage.visibility =
+            View.VISIBLE
+
+        loadingBar.visibility =
+            View.GONE
     }
 
     private fun loadLatestNews() {
@@ -752,6 +1160,9 @@ class MainActivity : AppCompatActivity() {
         url: String
     ) {
 
+        settingsPage.visibility =
+            View.GONE
+
         homePage.visibility =
             View.GONE
 
@@ -762,6 +1173,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showHomePage() {
+
+        settingsPage.visibility =
+            View.GONE
 
         homePage.visibility =
             View.VISIBLE
@@ -827,6 +1241,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+
+        if (
+            settingsPage.visibility ==
+            View.VISIBLE
+        ) {
+
+            showHomePage()
+
+            return
+        }
 
         if (
             webView.visibility ==
