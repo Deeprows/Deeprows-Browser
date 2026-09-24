@@ -3,7 +3,10 @@ package com.deeprows.browser
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.webkit.WebChromeClient
@@ -32,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var loadingBar: ProgressBar
     private lateinit var homePage: ScrollView
     private lateinit var newsList: LinearLayout
+    private lateinit var sportNewsList: LinearLayout
 
     private val newsRepository =
         NewsRepository()
@@ -50,10 +54,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         window.statusBarColor =
-            Color.rgb(7, 9, 13)
+            Color.rgb(11, 18, 32)
 
         window.navigationBarColor =
-            Color.rgb(7, 9, 13)
+            Color.rgb(11, 18, 32)
 
         setContentView(
             R.layout.activity_main
@@ -74,18 +78,21 @@ class MainActivity : AppCompatActivity() {
         newsList =
             findViewById(R.id.newsList)
 
+        sportNewsList =
+            findViewById(R.id.sportNewsList)
+
         setupWebView()
         setupControls()
 
         showHomePage()
 
         loadLatestNews()
+        loadSportNews()
     }
 
     private fun setupWebView() {
 
         webView.settings.apply {
-
             javaScriptEnabled = true
             domStorageEnabled = true
             loadWithOverviewMode = true
@@ -100,7 +107,6 @@ class MainActivity : AppCompatActivity() {
                     view: WebView,
                     request: WebResourceRequest
                 ): Boolean {
-
                     return false
                 }
 
@@ -220,7 +226,6 @@ class MainActivity : AppCompatActivity() {
                 View.VISIBLE &&
                 webView.canGoBack()
             ) {
-
                 webView.goBack()
             }
         }
@@ -232,7 +237,6 @@ class MainActivity : AppCompatActivity() {
                 View.VISIBLE &&
                 webView.canGoForward()
             ) {
-
                 webView.goForward()
             }
         }
@@ -243,12 +247,10 @@ class MainActivity : AppCompatActivity() {
                 webView.visibility ==
                 View.VISIBLE
             ) {
-
                 webView.reload()
-
             } else {
-
                 loadLatestNews()
+                loadSportNews()
             }
         }
 
@@ -259,7 +261,6 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.siteFacebook
         ).setOnClickListener {
-
             openWebsite(
                 "https://www.facebook.com"
             )
@@ -268,34 +269,38 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.siteInstagram
         ).setOnClickListener {
-
             openWebsite(
                 "https://www.instagram.com"
             )
         }
 
         findViewById<View>(
-            R.id.siteSportyBet
+            R.id.siteJobs
         ).setOnClickListener {
-
             openWebsite(
-                "https://www.sportybet.com"
+                "https://www.indeed.com"
             )
         }
 
         findViewById<View>(
-            R.id.siteBet9ja
+            R.id.siteScholarships
         ).setOnClickListener {
-
             openWebsite(
-                "https://www.bet9ja.com"
+                "https://www.scholarships.com"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteX
+        ).setOnClickListener {
+            openWebsite(
+                "https://x.com"
             )
         }
 
         findViewById<View>(
             R.id.siteDeeprowss
         ).setOnClickListener {
-
             openWebsite(
                 "https://deeprowss.com"
             )
@@ -304,64 +309,49 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(
             R.id.deeprowssPromo
         ).setOnClickListener {
-
             openWebsite(
                 "https://deeprowss.com"
             )
         }
 
         findViewById<View>(
-            R.id.newsRefreshLabel
+            R.id.moreNewsButton
         ).setOnClickListener {
+            openWebsite(
+                "https://news.google.com"
+            )
+        }
 
-            loadLatestNews()
+        findViewById<View>(
+            R.id.moreSportNewsButton
+        ).setOnClickListener {
+            openWebsite(
+                "https://news.google.com/search?q=sports"
+            )
         }
     }
 
     private fun loadLatestNews() {
 
-        newsList.removeAllViews()
-
-        val loading =
-            TextView(this)
-
-        loading.text =
+        showLoading(
+            newsList,
             "Loading latest news..."
-
-        loading.setTextColor(
-            Color.rgb(
-                141,
-                150,
-                165
-            )
-        )
-
-        loading.textSize = 14f
-
-        loading.setPadding(
-            dp(12),
-            dp(12),
-            dp(12),
-            dp(12)
-        )
-
-        newsList.addView(
-            loading
         )
 
         activityScope.launch {
 
             val articles =
-                newsRepository.getLatestNews()
+                newsRepository.getLatestNews(
+                    limit = 4
+                )
 
             newsList.removeAllViews()
 
             if (articles.isEmpty()) {
 
                 showEmptyMessage(
-                    "Unable to load latest news.\n\n" +
-                            "Check your internet connection " +
-                            "and tap Refresh."
+                    newsList,
+                    "Unable to load latest news."
                 )
 
                 return@launch
@@ -376,12 +366,56 @@ class MainActivity : AppCompatActivity() {
 
                 newsList.addView(card)
 
-                if (
-                    !article.imageUrl.isNullOrBlank()
-                ) {
+                article.imageUrl?.let {
 
                     loadNewsImage(
-                        article.imageUrl,
+                        it,
+                        card
+                    )
+                }
+            }
+        }
+    }
+
+    private fun loadSportNews() {
+
+        showLoading(
+            sportNewsList,
+            "Loading sport news..."
+        )
+
+        activityScope.launch {
+
+            val articles =
+                newsRepository.getSportNews(
+                    limit = 4
+                )
+
+            sportNewsList.removeAllViews()
+
+            if (articles.isEmpty()) {
+
+                showEmptyMessage(
+                    sportNewsList,
+                    "Unable to load sport news."
+                )
+
+                return@launch
+            }
+
+            articles.forEach { article ->
+
+                val card =
+                    createNewsCard(
+                        article
+                    )
+
+                sportNewsList.addView(card)
+
+                article.imageUrl?.let {
+
+                    loadNewsImage(
+                        it,
                         card
                     )
                 }
@@ -400,34 +434,34 @@ class MainActivity : AppCompatActivity() {
             LinearLayout.HORIZONTAL
 
         card.gravity =
-            android.view.Gravity.CENTER_VERTICAL
+            Gravity.CENTER_VERTICAL
 
         card.setPadding(
-            dp(8),
-            dp(8),
-            dp(10),
-            dp(8)
+            dp(7),
+            dp(7),
+            dp(9),
+            dp(7)
         )
 
         card.setBackgroundColor(
             Color.rgb(
-                17,
                 22,
-                31
+                34,
+                53
             )
         )
 
         val params =
             LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(100)
+                dp(94)
             )
 
         params.setMargins(
             0,
             0,
             0,
-            dp(10)
+            dp(8)
         )
 
         card.layoutParams = params
@@ -437,8 +471,8 @@ class MainActivity : AppCompatActivity() {
 
         image.layoutParams =
             LinearLayout.LayoutParams(
-                dp(112),
-                dp(84)
+                dp(110),
+                dp(80)
             )
 
         image.scaleType =
@@ -446,9 +480,9 @@ class MainActivity : AppCompatActivity() {
 
         image.setBackgroundColor(
             Color.rgb(
-                27,
-                32,
-                41
+                30,
+                43,
+                62
             )
         )
 
@@ -461,12 +495,12 @@ class MainActivity : AppCompatActivity() {
             LinearLayout.VERTICAL
 
         content.gravity =
-            android.view.Gravity.CENTER_VERTICAL
+            Gravity.CENTER_VERTICAL
 
         content.setPadding(
-            dp(12),
+            dp(11),
             0,
-            dp(4),
+            dp(3),
             0
         )
 
@@ -487,17 +521,17 @@ class MainActivity : AppCompatActivity() {
             Color.WHITE
         )
 
-        title.textSize = 14f
+        title.textSize =
+            13.5f
 
-        title.setTypeface(
-            null,
-            android.graphics.Typeface.BOLD
-        )
+        title.typeface =
+            Typeface.DEFAULT_BOLD
 
-        title.maxLines = 3
+        title.maxLines =
+            3
 
         title.ellipsize =
-            android.text.TextUtils.TruncateAt.END
+            TextUtils.TruncateAt.END
 
         content.addView(title)
 
@@ -513,18 +547,20 @@ class MainActivity : AppCompatActivity() {
 
             source.setTextColor(
                 Color.rgb(
-                    141,
-                    150,
-                    165
+                    132,
+                    148,
+                    169
                 )
             )
 
-            source.textSize = 11f
+            source.textSize =
+                10.5f
 
-            source.maxLines = 1
+            source.maxLines =
+                1
 
             source.ellipsize =
-                android.text.TextUtils.TruncateAt.END
+                TextUtils.TruncateAt.END
 
             val sourceParams =
                 LinearLayout.LayoutParams(
@@ -533,7 +569,7 @@ class MainActivity : AppCompatActivity() {
                 )
 
             sourceParams.topMargin =
-                dp(6)
+                dp(5)
 
             source.layoutParams =
                 sourceParams
@@ -554,15 +590,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadNewsImage(
-        imageUrl: String?,
+        imageUrl: String,
         card: LinearLayout
     ) {
-
-        if (
-            imageUrl.isNullOrBlank()
-        ) {
-            return
-        }
 
         activityScope.launch(
             Dispatchers.IO
@@ -622,6 +652,11 @@ class MainActivity : AppCompatActivity() {
                 "Mozilla/5.0"
             )
 
+            connection.setRequestProperty(
+                "Accept",
+                "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8"
+            )
+
             connection.connect()
 
             if (
@@ -647,36 +682,70 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showEmptyMessage(
+    private fun showLoading(
+        container: LinearLayout,
         message: String
     ) {
 
-        val textView =
+        container.removeAllViews()
+
+        val text =
             TextView(this)
 
-        textView.text =
+        text.text =
             message
 
-        textView.setTextColor(
+        text.setTextColor(
             Color.rgb(
-                141,
-                150,
-                165
+                132,
+                148,
+                169
             )
         )
 
-        textView.textSize = 14f
+        text.textSize =
+            13f
 
-        textView.setPadding(
-            dp(12),
-            dp(12),
-            dp(12),
-            dp(12)
+        text.setPadding(
+            dp(10),
+            dp(10),
+            dp(10),
+            dp(10)
         )
 
-        newsList.addView(
-            textView
+        container.addView(text)
+    }
+
+    private fun showEmptyMessage(
+        container: LinearLayout,
+        message: String
+    ) {
+
+        val text =
+            TextView(this)
+
+        text.text =
+            message
+
+        text.setTextColor(
+            Color.rgb(
+                132,
+                148,
+                169
+            )
         )
+
+        text.textSize =
+            13f
+
+        text.setPadding(
+            dp(10),
+            dp(10),
+            dp(10),
+            dp(10)
+        )
+
+        container.addView(text)
     }
 
     private fun openWebsite(
