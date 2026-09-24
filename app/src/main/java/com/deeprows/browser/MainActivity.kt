@@ -11,6 +11,7 @@ import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var addressBar: EditText
     private lateinit var loadingBar: ProgressBar
+    private lateinit var homePage: ScrollView
 
     private val homeUrl = "https://www.google.com"
 
@@ -33,11 +35,13 @@ class MainActivity : AppCompatActivity() {
         webView = findViewById(R.id.webView)
         addressBar = findViewById(R.id.addressBar)
         loadingBar = findViewById(R.id.loadingBar)
+        homePage = findViewById(R.id.homePage)
 
         setupWebView()
         setupControls()
 
-        webView.loadUrl(homeUrl)
+        // Start on the custom local home page
+        showHomePage()
     }
 
     private fun setupWebView() {
@@ -126,46 +130,76 @@ class MainActivity : AppCompatActivity() {
         }
 
         backButton.setOnClickListener {
-            if (webView.canGoBack()) {
+            if (webView.visibility == View.VISIBLE && webView.canGoBack()) {
                 webView.goBack()
             }
         }
 
         forwardButton.setOnClickListener {
-            if (webView.canGoForward()) {
+            if (webView.visibility == View.VISIBLE && webView.canGoForward()) {
                 webView.goForward()
             }
         }
 
         refreshButton.setOnClickListener {
-            webView.reload()
+            if (webView.visibility == View.VISIBLE) {
+                webView.reload()
+            } else {
+                showHomePage()
+            }
         }
 
         homeButton.setOnClickListener {
-            webView.loadUrl(homeUrl)
+            showHomePage()
         }
 
         // Quick Sites
 
         findViewById<View>(R.id.siteFacebook).setOnClickListener {
-            webView.loadUrl("https://www.facebook.com")
+            openWebsite("https://www.facebook.com")
         }
 
         findViewById<View>(R.id.siteInstagram).setOnClickListener {
-            webView.loadUrl("https://www.instagram.com")
+            openWebsite("https://www.instagram.com")
         }
 
         findViewById<View>(R.id.siteSportyBet).setOnClickListener {
-            webView.loadUrl("https://www.sportybet.com")
+            openWebsite("https://www.sportybet.com")
         }
 
         findViewById<View>(R.id.siteBet9ja).setOnClickListener {
-            webView.loadUrl("https://www.bet9ja.com")
+            openWebsite("https://www.bet9ja.com")
         }
 
         findViewById<View>(R.id.siteDeeprowss).setOnClickListener {
-            webView.loadUrl("https://deeprowss.com")
+            openWebsite("https://deeprowss.com")
         }
+    }
+
+    private fun openWebsite(url: String) {
+
+        // Hide local home page
+        homePage.visibility = View.GONE
+
+        // Show browser WebView
+        webView.visibility = View.VISIBLE
+
+        webView.loadUrl(url)
+    }
+
+    private fun showHomePage() {
+
+        // Show local home page
+        homePage.visibility = View.VISIBLE
+
+        // Hide WebView
+        webView.visibility = View.GONE
+
+        loadingBar.visibility = ProgressBar.GONE
+
+        // Clear old URL from address bar
+        addressBar.setText("")
+        addressBar.hint = "Search or enter website"
     }
 
     private fun loadAddress() {
@@ -190,16 +224,21 @@ class MainActivity : AppCompatActivity() {
             "https://www.google.com/search?q=${input.replace(" ", "+")}"
         }
 
-        webView.loadUrl(url)
+        openWebsite(url)
     }
 
     override fun onBackPressed() {
 
-        if (webView.canGoBack()) {
-            webView.goBack()
+        if (webView.visibility == View.VISIBLE) {
+
+            if (webView.canGoBack()) {
+                webView.goBack()
+            } else {
+                showHomePage()
+            }
+
         } else {
             super.onBackPressed()
         }
     }
 }
-```
