@@ -5,16 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#07090D">
+    android:background="#07090D"
+    android:fitsSystemWindows="true">
 
     <!-- HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="58dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="8dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="10dp"
         android:background="#10141B">
 
         <TextView
@@ -23,14 +24,14 @@
             android:layout_weight="1"
             android:text="DEEPROWSS"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="21sp"
             android:textStyle="bold"
-            android:letterSpacing="0.08" />
+            android:letterSpacing="0.06" />
 
         <ImageButton
             android:id="@+id/menuButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_more"
             android:tint="#FFFFFF"
@@ -38,20 +39,20 @@
 
     </LinearLayout>
 
-    <!-- SEARCH / WEBSITE BAR -->
+    <!-- SEARCH BAR -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="58dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:background="#10141B">
 
         <EditText
             android:id="@+id/addressBar"
             android:layout_width="0dp"
-            android:layout_height="42dp"
+            android:layout_height="44dp"
             android:layout_weight="1"
             android:background="#1B2029"
             android:hint="Search or enter website"
@@ -60,13 +61,14 @@
             android:textSize="14sp"
             android:singleLine="true"
             android:imeOptions="actionGo"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp" />
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp" />
 
         <ImageButton
             android:id="@+id/goButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="6dp"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_play"
             android:tint="#FF1744"
@@ -83,13 +85,13 @@
         android:max="100"
         android:visibility="gone" />
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN AREA -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <!-- LOCAL HOME PAGE -->
+        <!-- HOME -->
         <ScrollView
             android:id="@+id/homePage"
             android:layout_width="match_parent"
@@ -100,18 +102,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="18dp"
+                android:paddingBottom="24dp">
 
-                <!-- QUICK SITES -->
+                <!-- QUICK SITES TITLE -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="QUICK SITES"
                     android:textColor="#FFFFFF"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginBottom="12dp" />
 
+                <!-- QUICK SITES -->
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -122,65 +128,175 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <TextView
+                        <!-- FACEBOOK -->
+                        <LinearLayout
                             android:id="@+id/siteFacebook"
-                            android:layout_width="110dp"
-                            android:layout_height="70dp"
-                            android:layout_marginEnd="8dp"
+                            android:layout_width="82dp"
+                            android:layout_height="92dp"
+                            android:layout_marginEnd="10dp"
+                            android:orientation="vertical"
                             android:gravity="center"
-                            android:text="Facebook"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:background="#151A22" />
+                            android:background="#151A22"
+                            android:padding="8dp"
+                            android:clickable="true"
+                            android:focusable="true">
 
-                        <TextView
+                            <TextView
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:gravity="center"
+                                android:text="f"
+                                android:textColor="#FFFFFF"
+                                android:textSize="26sp"
+                                android:textStyle="bold"
+                                android:background="#1877F2" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Facebook"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:layout_marginTop="6dp" />
+
+                        </LinearLayout>
+
+                        <!-- INSTAGRAM -->
+                        <LinearLayout
                             android:id="@+id/siteInstagram"
-                            android:layout_width="110dp"
-                            android:layout_height="70dp"
-                            android:layout_marginEnd="8dp"
+                            android:layout_width="82dp"
+                            android:layout_height="92dp"
+                            android:layout_marginEnd="10dp"
+                            android:orientation="vertical"
                             android:gravity="center"
-                            android:text="Instagram"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:background="#151A22" />
+                            android:background="#151A22"
+                            android:padding="8dp"
+                            android:clickable="true"
+                            android:focusable="true">
 
-                        <TextView
+                            <TextView
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:gravity="center"
+                                android:text="◎"
+                                android:textColor="#FFFFFF"
+                                android:textSize="27sp"
+                                android:textStyle="bold"
+                                android:background="#D62976" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Instagram"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:layout_marginTop="6dp" />
+
+                        </LinearLayout>
+
+                        <!-- SPORTYBET -->
+                        <LinearLayout
                             android:id="@+id/siteSportyBet"
-                            android:layout_width="110dp"
-                            android:layout_height="70dp"
-                            android:layout_marginEnd="8dp"
+                            android:layout_width="82dp"
+                            android:layout_height="92dp"
+                            android:layout_marginEnd="10dp"
+                            android:orientation="vertical"
                             android:gravity="center"
-                            android:text="SportyBet"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:background="#151A22" />
+                            android:background="#151A22"
+                            android:padding="8dp"
+                            android:clickable="true"
+                            android:focusable="true">
 
-                        <TextView
+                            <TextView
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:gravity="center"
+                                android:text="S"
+                                android:textColor="#FFFFFF"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                android:background="#16A34A" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="SportyBet"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:layout_marginTop="6dp" />
+
+                        </LinearLayout>
+
+                        <!-- BET9JA -->
+                        <LinearLayout
                             android:id="@+id/siteBet9ja"
-                            android:layout_width="110dp"
-                            android:layout_height="70dp"
-                            android:layout_marginEnd="8dp"
+                            android:layout_width="82dp"
+                            android:layout_height="92dp"
+                            android:layout_marginEnd="10dp"
+                            android:orientation="vertical"
                             android:gravity="center"
-                            android:text="Bet9ja"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:background="#151A22" />
+                            android:background="#151A22"
+                            android:padding="8dp"
+                            android:clickable="true"
+                            android:focusable="true">
 
-                        <TextView
+                            <TextView
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:gravity="center"
+                                android:text="B"
+                                android:textColor="#FFFFFF"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                android:background="#F59E0B" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bet9ja"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:layout_marginTop="6dp" />
+
+                        </LinearLayout>
+
+                        <!-- DEEPROWSS -->
+                        <LinearLayout
                             android:id="@+id/siteDeeprowss"
-                            android:layout_width="110dp"
-                            android:layout_height="70dp"
+                            android:layout_width="82dp"
+                            android:layout_height="92dp"
+                            android:orientation="vertical"
                             android:gravity="center"
-                            android:text="Deeprowss"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:background="#151A22" />
+                            android:background="#151A22"
+                            android:padding="8dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:gravity="center"
+                                android:text="D"
+                                android:textColor="#FFFFFF"
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                android:background="#FF1744" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Deeprowss"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:layout_marginTop="6dp" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
                 </HorizontalScrollView>
 
-                <!-- WELCOME -->
+                <!-- WELCOME CARD -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -192,17 +308,17 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="DEEPROWSS"
-                        android:textColor="#FF1744"
-                        android:textSize="24sp"
+                        android:text="Welcome to Deeprowss"
+                        android:textColor="#FFFFFF"
+                        android:textSize="22sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Everything you need, faster."
-                        android:textColor="#FFFFFF"
-                        android:textSize="15sp"
+                        android:text="Browse the web faster."
+                        android:textColor="#8D96A5"
+                        android:textSize="14sp"
                         android:layout_marginTop="6dp" />
 
                 </LinearLayout>
@@ -234,42 +350,11 @@
 
                 </LinearLayout>
 
-                <!-- GIST -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="LATEST GIST"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="10dp" />
-
-                <LinearLayout
-                    android:id="@+id/gistList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/gistLoading"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Loading latest gist..."
-                        android:textColor="#8D96A5"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp" />
-
             </LinearLayout>
 
         </ScrollView>
 
-        <!-- BROWSER WEBVIEW -->
+        <!-- WEBVIEW -->
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
@@ -281,15 +366,16 @@
     <!-- BOTTOM NAVIGATION -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="58dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#10141B">
+        android:background="#10141B"
+        android:paddingBottom="4dp">
 
         <ImageButton
             android:id="@+id/backButton"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="54dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_previous"
@@ -299,7 +385,7 @@
         <ImageButton
             android:id="@+id/forwardButton"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="54dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_next"
@@ -309,7 +395,7 @@
         <ImageButton
             android:id="@+id/refreshButton"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="54dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_popup_sync"
@@ -319,7 +405,7 @@
         <ImageButton
             android:id="@+id/homeButton"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="54dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_view"
