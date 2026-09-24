@@ -1,6 +1,7 @@
 package com.deeprows.browser
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -11,6 +12,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.ScrollView
@@ -20,6 +22,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.net.HttpURLConnection
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,9 +33,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var homePage: ScrollView
     private lateinit var newsList: LinearLayout
 
-    private val newsRepository = NewsRepository()
+    private val newsRepository =
+        NewsRepository()
 
-    private val activityJob = Job()
+    private val activityJob =
+        Job()
 
     private val activityScope =
         CoroutineScope(
@@ -84,7 +90,8 @@ class MainActivity : AppCompatActivity() {
             domStorageEnabled = true
             loadWithOverviewMode = true
             useWideViewPort = true
-            mediaPlaybackRequiresUserGesture = false
+            mediaPlaybackRequiresUserGesture =
+                false
         }
 
         webView.webViewClient =
@@ -294,6 +301,15 @@ class MainActivity : AppCompatActivity() {
                 "https://deeprowss.com"
             )
         }
+
+        findViewById<View>(
+            R.id.deeprowssPromo
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://deeprowss.com"
+            )
+        }
     }
 
     private fun loadLatestNews() {
@@ -307,7 +323,11 @@ class MainActivity : AppCompatActivity() {
             "Loading latest news..."
 
         loading.setTextColor(
-            Color.rgb(141, 150, 165)
+            Color.rgb(
+                141,
+                150,
+                165
+            )
         )
 
         loading.textSize = 14f
@@ -326,7 +346,9 @@ class MainActivity : AppCompatActivity() {
             if (articles.isEmpty()) {
 
                 showEmptyMessage(
-                    "Unable to load latest news.\n\nCheck your internet connection and tap refresh."
+                    "Unable to load latest news.\n\n" +
+                            "Check your internet connection " +
+                            "and tap refresh."
                 )
 
                 return@launch
@@ -334,48 +356,44 @@ class MainActivity : AppCompatActivity() {
 
             articles.forEach { article ->
 
-                newsList.addView(
-                    createNewsItem(
+                val card =
+                    createNewsCard(
                         article
                     )
-                )
+
+                newsList.addView(card)
+
+                if (
+                    !article.imageUrl.isNullOrBlank()
+                ) {
+
+                    loadNewsImage(
+                        article.imageUrl,
+                        card
+                    )
+                }
             }
         }
     }
 
-    private fun createNewsItem(
+    private fun createNewsCard(
         article: NewsArticle
-    ): TextView {
+    ): LinearLayout {
 
-        val item =
-            TextView(this)
+        val card =
+            LinearLayout(this)
 
-        item.text =
-            if (
-                article.source.isNotBlank()
-            ) {
+        card.orientation =
+            LinearLayout.HORIZONTAL
 
-                "${article.title}\n\n${article.source}"
-
-            } else {
-
-                article.title
-            }
-
-        item.setTextColor(
-            Color.WHITE
+        card.setPadding(
+            10,
+            10,
+            10,
+            10
         )
 
-        item.textSize = 15f
-
-        item.setPadding(
-            18,
-            18,
-            18,
-            18
-        )
-
-        item.setBackgroundColor(
+        card.setBackgroundColor(
             Color.rgb(
                 16,
                 20,
@@ -396,16 +414,226 @@ class MainActivity : AppCompatActivity() {
             10
         )
 
-        item.layoutParams = params
+        card.layoutParams = params
 
-        item.setOnClickListener {
+        val image =
+            ImageView(this)
+
+        image.tag =
+            article.link
+
+        image.layoutParams =
+            LinearLayout.LayoutParams(
+                dp(110),
+                dp(78)
+            )
+
+        image.scaleType =
+            ImageView.ScaleType.CENTER_CROP
+
+        image.setBackgroundColor(
+            Color.rgb(
+                27,
+                32,
+                41
+            )
+        )
+
+        card.addView(image)
+
+        val content =
+            LinearLayout(this)
+
+        content.orientation =
+            LinearLayout.VERTICAL
+
+        content.setPadding(
+            12,
+            2,
+            4,
+            2
+        )
+
+        content.layoutParams =
+            LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+            )
+
+        val title =
+            TextView(this)
+
+        title.text =
+            article.title
+
+        title.setTextColor(
+            Color.WHITE
+        )
+
+        title.textSize = 14f
+
+        title.maxLines = 3
+
+        title.ellipsize =
+            android.text.TextUtils.TruncateAt.END
+
+        content.addView(title)
+
+        if (
+            article.source.isNotBlank()
+        ) {
+
+            val source =
+                TextView(this)
+
+            source.text =
+                article.source
+
+            source.setTextColor(
+                Color.rgb(
+                    141,
+                    150,
+                    165
+                )
+            )
+
+            source.textSize = 11f
+
+            source.maxLines = 1
+
+            source.ellipsize =
+                android.text.TextUtils.TruncateAt.END
+
+            val sourceParams =
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+
+            sourceParams.topMargin =
+                dp(7)
+
+            source.layoutParams =
+                sourceParams
+
+            content.addView(source)
+        }
+
+        card.addView(content)
+
+        card.setOnClickListener {
 
             openWebsite(
                 article.link
             )
         }
 
-        return item
+        return card
+    }
+
+    private fun loadNewsImage(
+        imageUrl: String?,
+        card: LinearLayout
+    ) {
+
+        if (imageUrl.isNullOrBlank()) {
+            return
+        }
+
+        activityScope.launch(
+            Dispatchers.IO
+        ) {
+
+            val bitmap =
+                downloadImage(
+                    imageUrl
+                )
+
+            if (bitmap != null) {
+
+                launch(Dispatchers.Main) {
+
+                    val image =
+                        card.getChildAt(
+                            0
+                        ) as? ImageView
+
+                    if (
+                        image != null &&
+                        image.tag ==
+                        card.getChildAt(
+                            1
+                        )
+                    ) {
+                        image.setImageBitmap(
+                            bitmap
+                        )
+                    } else if (
+                        image != null
+                    ) {
+                        image.setImageBitmap(
+                            bitmap
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun downloadImage(
+        imageUrl: String
+    ): Bitmap? {
+
+        var connection:
+                HttpURLConnection? = null
+
+        return try {
+
+            val url =
+                URL(imageUrl)
+
+            connection =
+                url.openConnection()
+                    as HttpURLConnection
+
+            connection.connectTimeout =
+                10000
+
+            connection.readTimeout =
+                10000
+
+            connection.instanceFollowRedirects =
+                true
+
+            connection.setRequestProperty(
+                "User-Agent",
+                "Mozilla/5.0"
+            )
+
+            connection.connect()
+
+            if (
+                connection.responseCode
+                !in 200..299
+            ) {
+                return null
+            }
+
+            connection.inputStream.use {
+                BitmapFactory.decodeStream(it)
+            }
+
+        } catch (
+            e: Exception
+        ) {
+
+            null
+
+        } finally {
+
+            connection?.disconnect()
+        }
     }
 
     private fun showEmptyMessage(
@@ -415,7 +643,8 @@ class MainActivity : AppCompatActivity() {
         val textView =
             TextView(this)
 
-        textView.text = message
+        textView.text =
+            message
 
         textView.setTextColor(
             Color.rgb(
@@ -508,6 +737,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         openWebsite(url)
+    }
+
+    private fun dp(
+        value: Int
+    ): Int {
+
+        return (
+            value *
+                    resources.displayMetrics.density
+            ).toInt()
     }
 
     override fun onBackPressed() {
