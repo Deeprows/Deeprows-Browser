@@ -23,6 +23,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Keep Android system bars visible
+        window.statusBarColor = android.graphics.Color.rgb(7, 9, 13)
+        window.navigationBarColor = android.graphics.Color.rgb(7, 9, 13)
+
         setContentView(R.layout.activity_main)
 
         webView = findViewById(R.id.webView)
