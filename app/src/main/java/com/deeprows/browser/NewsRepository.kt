@@ -5,8 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
 import java.net.HttpURLConnection
-import java.net.URLEncoder
 import java.net.URL
+import java.net.URLEncoder
 
 data class NewsArticle(
     val title: String,
@@ -19,24 +19,12 @@ class NewsRepository {
 
     private val baseUrl = "https://news.google.com/rss/search"
 
-    /**
-     * Get latest general news.
-     *
-     * gl=EG targets Egypt.
-     * Change this later when we add the user's region selector.
-     */
     suspend fun getLatestNews(): List<NewsArticle> =
         fetchNews(
             query = "latest news",
             country = "EG"
         )
 
-    /**
-     * Get trending/gist content.
-     *
-     * This currently searches for Nigeria/Africa/trending topics.
-     * We can make this region-aware later.
-     */
     suspend fun getGist(): List<NewsArticle> =
         fetchNews(
             query = "Nigeria Africa trending entertainment",
@@ -66,11 +54,13 @@ class NewsRepository {
 
             val url = URL(urlString)
 
-            connection = url.openConnection() as HttpURLConnection
+            connection =
+                url.openConnection() as HttpURLConnection
 
             connection.requestMethod = "GET"
             connection.connectTimeout = 10000
             connection.readTimeout = 10000
+
             connection.setRequestProperty(
                 "User-Agent",
                 "DeeprowsBrowser/1.0"
@@ -110,9 +100,11 @@ class NewsRepository {
         parser: XmlPullParser
     ): List<NewsArticle> {
 
-        val articles = mutableListOf<NewsArticle>()
+        val articles =
+            mutableListOf<NewsArticle>()
 
-        var eventType = parser.eventType
+        var eventType =
+            parser.eventType
 
         var insideItem = false
 
@@ -145,32 +137,32 @@ class NewsRepository {
                         "title" -> {
 
                             if (insideItem) {
-
-                                title = parser.nextText().trim()
+                                title =
+                                    parser.nextText().trim()
                             }
                         }
 
                         "link" -> {
 
                             if (insideItem) {
-
-                                link = parser.nextText().trim()
+                                link =
+                                    parser.nextText().trim()
                             }
                         }
 
                         "source" -> {
 
                             if (insideItem) {
-
-                                source = parser.nextText().trim()
+                                source =
+                                    parser.nextText().trim()
                             }
                         }
 
                         "pubdate" -> {
 
                             if (insideItem) {
-
-                                published = parser.nextText().trim()
+                                published =
+                                    parser.nextText().trim()
                             }
                         }
                     }
@@ -192,9 +184,14 @@ class NewsRepository {
 
                             articles.add(
                                 NewsArticle(
-                                    title = cleanText(title),
+                                    title =
+                                        cleanText(title),
+
                                     link = link,
-                                    source = cleanText(source),
+
+                                    source =
+                                        cleanText(source),
+
                                     published = published
                                 )
                             )
@@ -218,8 +215,10 @@ class NewsRepository {
         return value
             .replace("\n", " ")
             .replace("\r", " ")
-            .replace(Regex("\\s+"), " ")
+            .replace(
+                Regex("\\s+"),
+                " "
+            )
             .trim()
     }
 }
-```
