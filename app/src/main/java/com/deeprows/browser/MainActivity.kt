@@ -95,7 +95,6 @@ class MainActivity : AppCompatActivity() {
 
             mediaPlaybackRequiresUserGesture = false
 
-            // Required for saved offline web archives
             allowFileAccess = true
 
             allowContentAccess = true
@@ -289,6 +288,19 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<View>(
             R.id.siteDeeprowss
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://deeprowss.com/"
+            )
+        }
+
+        // =====================================================
+        // DEEPROWSS PROMO SECTION
+        // =====================================================
+
+        findViewById<View>(
+            R.id.deeprowssPromo
         ).setOnClickListener {
 
             openWebsite(
@@ -1025,200 +1037,202 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addNewsCard(
-    container: android.widget.LinearLayout,
-    article: NewsArticle
-) {
-    val card = android.widget.LinearLayout(this)
+        container: android.widget.LinearLayout,
+        article: NewsArticle
+    ) {
+        val card =
+            android.widget.LinearLayout(this)
 
-    card.orientation =
-        android.widget.LinearLayout.HORIZONTAL
+        card.orientation =
+            android.widget.LinearLayout.HORIZONTAL
 
-    card.setPadding(
-        14,
-        14,
-        14,
-        14
-    )
-
-    card.setBackgroundColor(
-        android.graphics.Color.parseColor("#151A22")
-    )
-
-    val cardParams =
-        android.widget.LinearLayout.LayoutParams(
-            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+        card.setPadding(
+            14,
+            14,
+            14,
+            14
         )
 
-    cardParams.setMargins(
-        0,
-        0,
-        0,
-        10
-    )
-
-    card.layoutParams = cardParams
-
-    /* =========================
-       THUMBNAIL
-       ========================= */
-
-    val imageView =
-        android.widget.ImageView(this)
-
-    val imageParams =
-        android.widget.LinearLayout.LayoutParams(
-            105,
-            85
+        card.setBackgroundColor(
+            android.graphics.Color.parseColor(
+                "#151A22"
+            )
         )
 
-    imageParams.setMargins(
-        0,
-        0,
-        14,
-        0
-    )
+        val cardParams =
+            android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+            )
 
-    imageView.layoutParams = imageParams
-
-    imageView.scaleType =
-        android.widget.ImageView.ScaleType.CENTER_CROP
-
-    imageView.setBackgroundColor(
-        android.graphics.Color.parseColor("#1B2029")
-    )
-
-    /* =========================
-       TEXT CONTAINER
-       ========================= */
-
-    val textContainer =
-        android.widget.LinearLayout(this)
-
-    textContainer.orientation =
-        android.widget.LinearLayout.VERTICAL
-
-    textContainer.layoutParams =
-        android.widget.LinearLayout.LayoutParams(
+        cardParams.setMargins(
             0,
-            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-            1f
+            0,
+            0,
+            10
         )
 
-    /* =========================
-       TITLE
-       ========================= */
+        card.layoutParams =
+            cardParams
 
-    val title =
-        android.widget.TextView(this)
+        val imageView =
+            android.widget.ImageView(this)
 
-    title.text = article.title
+        val imageParams =
+            android.widget.LinearLayout.LayoutParams(
+                105,
+                85
+            )
 
-    title.setTextColor(
-        android.graphics.Color.WHITE
-    )
+        imageParams.setMargins(
+            0,
+            0,
+            14,
+            0
+        )
 
-    title.textSize = 15f
+        imageView.layoutParams =
+            imageParams
 
-    title.setTypeface(
-        null,
-        android.graphics.Typeface.BOLD
-    )
+        imageView.scaleType =
+            android.widget.ImageView.ScaleType.CENTER_CROP
 
-    title.maxLines = 3
+        imageView.setBackgroundColor(
+            android.graphics.Color.parseColor(
+                "#1B2029"
+            )
+        )
 
-    title.ellipsize =
-        android.text.TextUtils.TruncateAt.END
+        val textContainer =
+            android.widget.LinearLayout(this)
 
-    /* =========================
-       SOURCE
-       ========================= */
+        textContainer.orientation =
+            android.widget.LinearLayout.VERTICAL
 
-    val source =
-        android.widget.TextView(this)
+        textContainer.layoutParams =
+            android.widget.LinearLayout.LayoutParams(
+                0,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+            )
 
-    source.text =
-        if (article.source.isNotBlank()) {
-            article.source
-        } else {
-            "Google News"
+        val title =
+            android.widget.TextView(this)
+
+        title.text =
+            article.title
+
+        title.setTextColor(
+            android.graphics.Color.WHITE
+        )
+
+        title.textSize =
+            15f
+
+        title.setTypeface(
+            null,
+            android.graphics.Typeface.BOLD
+        )
+
+        title.maxLines =
+            3
+
+        title.ellipsize =
+            android.text.TextUtils.TruncateAt.END
+
+        val source =
+            android.widget.TextView(this)
+
+        source.text =
+            if (article.source.isNotBlank()) {
+                article.source
+            } else {
+                "Google News"
+            }
+
+        source.setTextColor(
+            android.graphics.Color.parseColor(
+                "#FF1744"
+            )
+        )
+
+        source.textSize =
+            12f
+
+        source.setPadding(
+            0,
+            8,
+            0,
+            0
+        )
+
+        textContainer.addView(
+            title
+        )
+
+        textContainer.addView(
+            source
+        )
+
+        card.addView(
+            imageView
+        )
+
+        card.addView(
+            textContainer
+        )
+
+        card.setOnClickListener {
+
+            openWebsite(
+                article.link
+            )
         }
 
-    source.setTextColor(
-        android.graphics.Color.parseColor("#FF1744")
-    )
+        container.addView(
+            card
+        )
 
-    source.textSize = 12f
+        if (
+            article.imageUrl.isNotBlank()
+        ) {
 
-    source.setPadding(
-        0,
-        8,
-        0,
-        0
-    )
+            kotlinx.coroutines.CoroutineScope(
+                kotlinx.coroutines.Dispatchers.IO
+            ).launch {
 
-    textContainer.addView(title)
+                try {
 
-    textContainer.addView(source)
+                    val connection =
+                        java.net.URL(
+                            article.imageUrl
+                        ).openConnection()
 
-    card.addView(imageView)
+                    connection.connect()
 
-    card.addView(textContainer)
+                    val input =
+                        connection.getInputStream()
 
-    /* =========================
-       CLICK
-       ========================= */
+                    val bitmap =
+                        android.graphics.BitmapFactory
+                            .decodeStream(input)
 
-    card.setOnClickListener {
-        openWebsite(article.link)
-    }
+                    input.close()
 
-    container.addView(card)
+                    runOnUiThread {
 
-    /* =========================
-       LOAD IMAGE
-       ========================= */
+                        if (bitmap != null) {
 
-    if (article.imageUrl.isNotBlank()) {
-
-        kotlinx.coroutines.CoroutineScope(
-            kotlinx.coroutines.Dispatchers.IO
-        ).launch {
-
-            try {
-
-                val connection =
-                    java.net.URL(
-                        article.imageUrl
-                    ).openConnection()
-
-                connection.connect()
-
-                val input =
-                    connection.getInputStream()
-
-                val bitmap =
-                    android.graphics.BitmapFactory
-                        .decodeStream(input)
-
-                input.close()
-
-                runOnUiThread {
-
-                    if (bitmap != null) {
-
-                        imageView.setImageBitmap(
-                            bitmap
-                        )
-
+                            imageView.setImageBitmap(
+                                bitmap
+                            )
+                        }
                     }
+
+                } catch (_: Exception) {
+
+                    // Keep placeholder
                 }
-
-            } catch (_: Exception) {
-
-                // Keep the dark placeholder
-                // if the image cannot be loaded.
-
             }
         }
     }
