@@ -12,7 +12,8 @@ data class NewsArticle(
     val title: String,
     val link: String,
     val source: String,
-    val published: String
+    val published: String,
+    val imageUrl: String?
 )
 
 class NewsRepository {
@@ -39,11 +40,11 @@ class NewsRepository {
 
             try {
 
-                val connectionUrl =
+                val url =
                     URL(urlString)
 
                 connection =
-                    connectionUrl.openConnection()
+                    url.openConnection()
                         as HttpURLConnection
 
                 connection.requestMethod = "GET"
@@ -114,10 +115,10 @@ class NewsRepository {
         var link = ""
         var source = ""
         var published = ""
+        var imageUrl: String? = null
 
         while (
-            eventType !=
-            XmlPullParser.END_DOCUMENT &&
+            eventType != XmlPullParser.END_DOCUMENT &&
             articles.size < 10
         ) {
 
@@ -128,9 +129,9 @@ class NewsRepository {
                     val tag =
                         parser.name.lowercase()
 
-                    when (tag) {
+                    when {
 
-                        "item" -> {
+                        tag == "item" -> {
 
                             insideItem = true
 
@@ -138,45 +139,57 @@ class NewsRepository {
                             link = ""
                             source = ""
                             published = ""
+                            imageUrl = null
                         }
 
-                        "title" -> {
+                        tag == "title" &&
+                                insideItem -> {
 
-                            if (insideItem) {
-
-                                title =
-                                    parser.nextText()
-                                        .trim()
-                            }
+                            title =
+                                parser.nextText()
+                                    .trim()
                         }
 
-                        "link" -> {
+                        tag == "link" &&
+                                insideItem -> {
 
-                            if (insideItem) {
-
-                                link =
-                                    parser.nextText()
-                                        .trim()
-                            }
+                            link =
+                                parser.nextText()
+                                    .trim()
                         }
 
-                        "source" -> {
+                        tag == "source" &&
+                                insideItem -> {
 
-                            if (insideItem) {
-
-                                source =
-                                    parser.nextText()
-                                        .trim()
-                            }
+                            source =
+                                parser.nextText()
+                                    .trim()
                         }
 
-                        "pubdate" -> {
+                        tag == "pubdate" &&
+                                insideItem -> {
 
-                            if (insideItem) {
+                            published =
+                                parser.nextText()
+                                    .trim()
+                        }
 
-                                published =
-                                    parser.nextText()
-                                        .trim()
+                        (
+                            tag == "media:content" ||
+                            tag == "media:thumbnail" ||
+                            tag == "enclosure"
+                        ) && insideItem -> {
+
+                            val url =
+                                parser.getAttributeValue(
+                                    null,
+                                    "url"
+                                )
+
+                            if (
+                                !url.isNullOrBlank()
+                            ) {
+                                imageUrl = url
                             }
                         }
                     }
@@ -208,7 +221,10 @@ class NewsRepository {
                                         cleanText(source),
 
                                     published =
-                                        published
+                                        published,
+
+                                    imageUrl =
+                                        imageUrl
                                 )
                             )
                         }
