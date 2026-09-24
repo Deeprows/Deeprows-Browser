@@ -8,9 +8,7 @@
     android:background="#0B1220"
     android:fitsSystemWindows="true">
 
-    <!-- ========================================================= -->
     <!-- HEADER -->
-    <!-- ========================================================= -->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,14 +55,12 @@
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_more"
             android:tint="#B8C2D3"
-            android:contentDescription="Menu" />
+            android:contentDescription="Settings" />
 
     </LinearLayout>
 
 
-    <!-- ========================================================= -->
     <!-- SEARCH -->
-    <!-- ========================================================= -->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -134,9 +130,7 @@
         android:visibility="gone" />
 
 
-    <!-- ========================================================= -->
     <!-- MAIN -->
-    <!-- ========================================================= -->
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -161,10 +155,7 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="18dp">
 
-
-                <!-- ================================================= -->
                 <!-- QUICK SITES -->
-                <!-- ================================================= -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -189,7 +180,6 @@
 
                 </LinearLayout>
 
-
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -200,9 +190,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
-
-                        <!-- FACEBOOK -->
 
                         <LinearLayout
                             android:id="@+id/siteFacebook"
@@ -236,9 +223,6 @@
 
                         </LinearLayout>
 
-
-                        <!-- INSTAGRAM -->
-
                         <LinearLayout
                             android:id="@+id/siteInstagram"
                             android:layout_width="84dp"
@@ -270,9 +254,6 @@
                                 android:textSize="10sp" />
 
                         </LinearLayout>
-
-
-                        <!-- JOBS -->
 
                         <LinearLayout
                             android:id="@+id/siteJobs"
@@ -306,9 +287,6 @@
 
                         </LinearLayout>
 
-
-                        <!-- SCHOLARSHIPS -->
-
                         <LinearLayout
                             android:id="@+id/siteScholarships"
                             android:layout_width="84dp"
@@ -341,9 +319,6 @@
 
                         </LinearLayout>
 
-
-                        <!-- X -->
-
                         <LinearLayout
                             android:id="@+id/siteX"
                             android:layout_width="84dp"
@@ -375,9 +350,6 @@
                                 android:textSize="10sp" />
 
                         </LinearLayout>
-
-
-                        <!-- DEEPROWSS -->
 
                         <LinearLayout
                             android:id="@+id/siteDeeprowss"
@@ -414,10 +386,7 @@
 
                 </HorizontalScrollView>
 
-
-                <!-- ================================================= -->
-                <!-- DEEPROWSS PROMO -->
-                <!-- ================================================= -->
+                <!-- PROMO -->
 
                 <LinearLayout
                     android:id="@+id/deeprowssPromo"
@@ -460,30 +429,16 @@
 
                 </LinearLayout>
 
+                <!-- LATEST NEWS -->
 
-                <!-- ================================================= -->
-                <!-- LATEST NEWS HEADER -->
-                <!-- ================================================= -->
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="23dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Latest News"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
-                <!-- LATEST NEWS -->
+                    android:text="Latest News"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/newsList"
@@ -493,7 +448,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/newsLoading"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Loading latest news..."
@@ -502,9 +456,6 @@
                         android:padding="10dp" />
 
                 </LinearLayout>
-
-
-                <!-- MORE NEWS -->
 
                 <TextView
                     android:id="@+id/moreNewsButton"
@@ -520,10 +471,7 @@
                     android:clickable="true"
                     android:focusable="true" />
 
-
-                <!-- ================================================= -->
                 <!-- SPORT NEWS -->
-                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="match_parent"
@@ -542,7 +490,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/sportNewsLoading"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Loading sport news..."
@@ -551,9 +498,6 @@
                         android:padding="10dp" />
 
                 </LinearLayout>
-
-
-                <!-- MORE SPORT NEWS -->
 
                 <TextView
                     android:id="@+id/moreSportNewsButton"
@@ -582,12 +526,220 @@
             android:layout_height="match_parent"
             android:visibility="gone" />
 
+
+        <!-- SETTINGS -->
+
+        <ScrollView
+            android:id="@+id/settingsPage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="#0B1220"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Settings"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Customize your Deeprows Browser"
+                    android:textColor="#8795AA"
+                    android:textSize="12sp" />
+
+
+                <!-- DATA SAVING -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="68dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="8dp"
+                    android:background="#162235">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Data Saving"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="Reduce images and page data"
+                            android:textColor="#8795AA"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                    <android.widget.Switch
+                        android:id="@+id/dataSavingSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="#E91E4D" />
+
+                </LinearLayout>
+
+
+                <!-- AD BLOCKING -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="68dp"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="8dp"
+                    android:background="#162235">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Ad Blocking"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="Block common advertising requests"
+                            android:textColor="#8795AA"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                    <android.widget.Switch
+                        android:id="@+id/adBlockingSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="#E91E4D" />
+
+                </LinearLayout>
+
+
+                <!-- HISTORY -->
+
+                <TextView
+                    android:id="@+id/historyButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:layout_marginTop="18dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="15dp"
+                    android:text="🕘   History"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:background="#162235"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+
+                <!-- BOOKMARKS -->
+
+                <TextView
+                    android:id="@+id/bookmarksButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="15dp"
+                    android:text="★   Bookmarks"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:background="#162235"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+
+                <!-- OFFLINE PAGES -->
+
+                <TextView
+                    android:id="@+id/offlinePagesButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="15dp"
+                    android:text="↓   Offline Pages"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:background="#162235"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+
+                <!-- CLEAR CACHE -->
+
+                <TextView
+                    android:id="@+id/clearCacheButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="58dp"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="15dp"
+                    android:text="♻   Clear Cache"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:background="#162235"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+
+                <TextView
+                    android:id="@+id/settingsBackButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="← Back to Browser"
+                    android:textColor="#E91E4D"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:background="#142033"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
     </FrameLayout>
 
 
-    <!-- ========================================================= -->
     <!-- SLIM BOTTOM NAVIGATION -->
-    <!-- ========================================================= -->
 
     <LinearLayout
         android:layout_width="match_parent"
