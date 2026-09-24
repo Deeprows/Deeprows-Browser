@@ -7,17 +7,15 @@
     android:orientation="vertical"
     android:background="#07090D">
 
-    <!-- ===================================================== -->
     <!-- HEADER -->
-    <!-- ===================================================== -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="16dp"
-        android:paddingEnd="10dp">
+        android:paddingEnd="8dp"
+        android:background="#10141B">
 
         <TextView
             android:layout_width="0dp"
@@ -31,485 +29,247 @@
 
         <ImageButton
             android:id="@+id/menuButton"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Menu"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_more"
-            android:tint="#FFFFFF" />
+            android:tint="#FFFFFF"
+            android:contentDescription="Menu" />
 
     </LinearLayout>
 
-
-    <!-- ===================================================== -->
     <!-- SEARCH / WEBSITE BAR -->
-    <!-- ===================================================== -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="8dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="#151A22"
-        android:paddingStart="14dp"
-        android:paddingEnd="6dp">
-
-        <TextView
-            android:layout_width="22dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="⌕"
-            android:textColor="#8D96A5"
-            android:textSize="24sp" />
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:background="#10141B">
 
         <EditText
             android:id="@+id/addressBar"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="42dp"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
+            android:background="#1B2029"
             android:hint="Search or enter website"
-            android:singleLine="true"
             android:textColor="#FFFFFF"
             android:textColorHint="#8D96A5"
-            android:textSize="15sp"
-            android:inputType="textUri"
+            android:textSize="14sp"
+            android:singleLine="true"
             android:imeOptions="actionGo"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp" />
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp" />
 
         <ImageButton
             android:id="@+id/goButton"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Search"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_play"
-            android:tint="#FF1744" />
+            android:tint="#FF1744"
+            android:contentDescription="Go" />
 
     </LinearLayout>
 
-
-    <!-- ===================================================== -->
-    <!-- LOADING BAR -->
-    <!-- ===================================================== -->
-
+    <!-- LOADING -->
     <ProgressBar
         android:id="@+id/loadingBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:visibility="gone"
-        android:progress="0" />
+        android:layout_height="3dp"
+        android:max="100"
+        android:visibility="gone" />
 
-
-    <!-- ===================================================== -->
     <!-- MAIN CONTENT -->
-    <!-- ===================================================== -->
-
     <FrameLayout
-        android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-
-        <!-- ================================================= -->
         <!-- LOCAL HOME PAGE -->
-        <!-- ================================================= -->
-
         <ScrollView
             android:id="@+id/homePage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:scrollbars="none">
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="20dp">
-
+                android:padding="16dp">
 
                 <!-- QUICK SITES -->
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="QUICK SITES"
-                    android:textColor="#8D96A5"
-                    android:textSize="12sp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
                     android:textStyle="bold"
-                    android:letterSpacing="0.12"
-                    android:layout_marginTop="4dp"
                     android:layout_marginBottom="10dp" />
 
-
-                <LinearLayout
+                <HorizontalScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="92dp"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-
-
-                    <!-- FACEBOOK -->
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
 
                     <LinearLayout
-                        android:id="@+id/siteFacebook"
-                        android:layout_width="0dp"
-                        android:layout_height="88dp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="5dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="#11161E"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <TextView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:gravity="center"
-                            android:text="f"
-                            android:textColor="#FFFFFF"
-                            android:textSize="27sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Facebook"
-                            android:textColor="#FFFFFF"
-                            android:textSize="10sp" />
-
-                    </LinearLayout>
-
-
-                    <!-- INSTAGRAM -->
-
-                    <LinearLayout
-                        android:id="@+id/siteInstagram"
-                        android:layout_width="0dp"
-                        android:layout_height="88dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="#11161E"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <TextView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:gravity="center"
-                            android:text="◎"
-                            android:textColor="#FFFFFF"
-                            android:textSize="28sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Instagram"
-                            android:textColor="#FFFFFF"
-                            android:textSize="10sp" />
-
-                    </LinearLayout>
-
-
-                    <!-- SPORTYBET -->
-
-                    <LinearLayout
-                        android:id="@+id/siteSportyBet"
-                        android:layout_width="0dp"
-                        android:layout_height="88dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="#11161E"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <TextView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:gravity="center"
-                            android:text="S"
-                            android:textColor="#FFFFFF"
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="SportyBet"
-                            android:textColor="#FFFFFF"
-                            android:textSize="10sp" />
-
-                    </LinearLayout>
-
-
-                    <!-- BET9JA -->
-
-                    <LinearLayout
-                        android:id="@+id/siteBet9ja"
-                        android:layout_width="0dp"
-                        android:layout_height="88dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="#11161E"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <TextView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:gravity="center"
-                            android:text="B"
-                            android:textColor="#FFFFFF"
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Bet9ja"
-                            android:textColor="#FFFFFF"
-                            android:textSize="10sp" />
-
-                    </LinearLayout>
-
-
-                    <!-- DEEPROWSS -->
-
-                    <LinearLayout
-                        android:id="@+id/siteDeeprowss"
-                        android:layout_width="0dp"
-                        android:layout_height="88dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="5dp"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="#11161E"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <TextView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:gravity="center"
-                            android:text="D"
-                            android:textColor="#FF1744"
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Deeprowss"
-                            android:textColor="#FFFFFF"
-                            android:textSize="10sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-                <!-- ================================================= -->
-                <!-- WELCOME CARD -->
-                <!-- ================================================= -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginTop="18dp"
-                    android:orientation="vertical"
-                    android:gravity="center_vertical"
-                    android:padding="20dp"
-                    android:background="#151A22">
-
-                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="DEEPROWSS"
-                        android:textColor="#FF1744"
-                        android:textSize="13sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.12" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/siteFacebook"
+                            android:layout_width="110dp"
+                            android:layout_height="70dp"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center"
+                            android:text="Facebook"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="#151A22" />
+
+                        <TextView
+                            android:id="@+id/siteInstagram"
+                            android:layout_width="110dp"
+                            android:layout_height="70dp"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center"
+                            android:text="Instagram"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="#151A22" />
+
+                        <TextView
+                            android:id="@+id/siteSportyBet"
+                            android:layout_width="110dp"
+                            android:layout_height="70dp"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center"
+                            android:text="SportyBet"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="#151A22" />
+
+                        <TextView
+                            android:id="@+id/siteBet9ja"
+                            android:layout_width="110dp"
+                            android:layout_height="70dp"
+                            android:layout_marginEnd="8dp"
+                            android:gravity="center"
+                            android:text="Bet9ja"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="#151A22" />
+
+                        <TextView
+                            android:id="@+id/siteDeeprowss"
+                            android:layout_width="110dp"
+                            android:layout_height="70dp"
+                            android:gravity="center"
+                            android:text="Deeprowss"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:background="#151A22" />
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+                <!-- WELCOME -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:layout_marginTop="20dp"
+                    android:background="#10141B">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Everything you need, faster."
-                        android:textColor="#FFFFFF"
-                        android:textSize="23sp"
+                        android:text="DEEPROWSS"
+                        android:textColor="#FF1744"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Browse the web, follow the latest stories and discover what's trending."
-                        android:textColor="#8D96A5"
-                        android:textSize="13sp" />
+                        android:text="Everything you need, faster."
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp"
+                        android:layout_marginTop="6dp" />
 
                 </LinearLayout>
 
-
-                <!-- ================================================= -->
                 <!-- LATEST NEWS -->
-                <!-- ================================================= -->
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="22dp"
+                    android:text="LATEST NEWS"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="10dp" />
+
+                <LinearLayout
+                    android:id="@+id/newsList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/newsLoading"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Latest News"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="VIEW ALL"
-                            android:textColor="#FF1744"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="86dp"
-                        android:layout_marginTop="10dp"
-                        android:orientation="vertical"
-                        android:gravity="center_vertical"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="15dp"
-                        android:background="#11161E">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Latest stories will appear here"
-                            android:textColor="#FFFFFF"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="News updates will be connected in the next stage."
-                            android:textColor="#8D96A5"
-                            android:textSize="12sp" />
-
-                    </LinearLayout>
+                        android:text="Loading latest news..."
+                        android:textColor="#8D96A5"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
-
-                <!-- ================================================= -->
                 <!-- GIST -->
-                <!-- ================================================= -->
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="22dp"
+                    android:text="LATEST GIST"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="10dp" />
+
+                <LinearLayout
+                    android:id="@+id/gistList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/gistLoading"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Gist"
-                            android:textColor="#FFFFFF"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="TRENDING"
-                            android:textColor="#FF1744"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="86dp"
-                        android:layout_marginTop="10dp"
-                        android:orientation="vertical"
-                        android:gravity="center_vertical"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="15dp"
-                        android:background="#11161E">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Trending gist from your region"
-                            android:textColor="#FFFFFF"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="Local and trending stories will appear here."
-                            android:textColor="#8D96A5"
-                            android:textSize="12sp" />
-
-                    </LinearLayout>
+                        android:text="Loading latest gist..."
+                        android:textColor="#8D96A5"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
 
             </LinearLayout>
 
         </ScrollView>
 
-
-        <!-- ================================================= -->
-        <!-- WEBVIEW -->
-        <!-- ================================================= -->
-
+        <!-- BROWSER WEBVIEW -->
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
@@ -518,53 +278,53 @@
 
     </FrameLayout>
 
-
-    <!-- ===================================================== -->
     <!-- BOTTOM NAVIGATION -->
-    <!-- ===================================================== -->
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="54dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#07090D">
+        android:background="#10141B">
 
         <ImageButton
             android:id="@+id/backButton"
-            android:layout_width="64dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_previous"
-            android:tint="#FFFFFF" />
+            android:tint="#FFFFFF"
+            android:contentDescription="Back" />
 
         <ImageButton
             android:id="@+id/forwardButton"
-            android:layout_width="64dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Forward"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_next"
-            android:tint="#FFFFFF" />
+            android:tint="#FFFFFF"
+            android:contentDescription="Forward" />
 
         <ImageButton
             android:id="@+id/refreshButton"
-            android:layout_width="64dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Refresh"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:src="@android:drawable/ic_popup_sync"
-            android:tint="#FFFFFF" />
+            android:tint="#FFFFFF"
+            android:contentDescription="Refresh" />
 
         <ImageButton
             android:id="@+id/homeButton"
-            android:layout_width="64dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:src="@android:drawable/ic_menu_view"
-            android:tint="#FFFFFF" />
+            android:tint="#FF1744"
+            android:contentDescription="Home" />
 
     </LinearLayout>
 
