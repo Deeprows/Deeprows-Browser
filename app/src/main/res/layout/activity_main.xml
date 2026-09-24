@@ -8,25 +8,47 @@
     android:background="#07090D"
     android:fitsSystemWindows="true">
 
-    <!-- HEADER -->
+    <!-- ========================================================= -->
+    <!-- TOP HEADER -->
+    <!-- ========================================================= -->
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="62dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingStart="18dp"
         android:paddingEnd="10dp"
-        android:background="#10141B">
+        android:background="#0B0E14">
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="DEEPROWSS"
-            android:textColor="#FFFFFF"
-            android:textSize="21sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.06" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:gravity="center"
+                android:text="D"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:background="#FF1744" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="DEEPR0WSS"
+                android:textColor="#FFFFFF"
+                android:textSize="19sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/menuButton"
@@ -39,44 +61,70 @@
 
     </LinearLayout>
 
-    <!-- SEARCH BAR -->
+
+    <!-- ========================================================= -->
+    <!-- SEARCH -->
+    <!-- ========================================================= -->
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="64dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:background="#10141B">
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:background="#0B0E14">
 
-        <EditText
-            android:id="@+id/addressBar"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="44dp"
+            android:layout_height="46dp"
             android:layout_weight="1"
-            android:background="#1B2029"
-            android:hint="Search or enter website"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#8D96A5"
-            android:textSize="14sp"
-            android:singleLine="true"
-            android:imeOptions="actionGo"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="#171C25"
+            android:paddingStart="12dp"
+            android:paddingEnd="4dp">
+
+            <TextView
+                android:layout_width="28dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="⌕"
+                android:textColor="#8D96A5"
+                android:textSize="22sp" />
+
+            <EditText
+                android:id="@+id/addressBar"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Search or enter website"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#737C8C"
+                android:textSize="14sp"
+                android:singleLine="true"
+                android:imeOptions="actionGo"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp" />
+
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/goButton"
             android:layout_width="46dp"
             android:layout_height="46dp"
-            android:layout_marginStart="6dp"
-            android:background="@android:color/transparent"
+            android:layout_marginStart="8dp"
+            android:background="#FF1744"
             android:src="@android:drawable/ic_media_play"
-            android:tint="#FF1744"
+            android:tint="#FFFFFF"
             android:contentDescription="Go" />
 
     </LinearLayout>
 
-    <!-- PAGE LOADING -->
+
+    <!-- LOADING BAR -->
+
     <ProgressBar
         android:id="@+id/loadingBar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -85,18 +133,26 @@
         android:max="100"
         android:visibility="gone" />
 
-    <!-- MAIN CONTENT -->
+
+    <!-- ========================================================= -->
+    <!-- MAIN AREA -->
+    <!-- ========================================================= -->
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
+        <!-- ===================================================== -->
         <!-- HOME PAGE -->
+        <!-- ===================================================== -->
+
         <ScrollView
             android:id="@+id/homePage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -107,19 +163,40 @@
                 android:paddingTop="18dp"
                 android:paddingBottom="24dp">
 
+
+                <!-- ================================================= -->
                 <!-- QUICK SITES -->
-                <TextView
+                <!-- ================================================= -->
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="QUICK SITES"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Quick Sites"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Swipe →"
+                        android:textColor="#737C8C"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
+
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:scrollbars="none">
 
                     <LinearLayout
@@ -127,167 +204,177 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
+
                         <!-- FACEBOOK -->
+
                         <LinearLayout
                             android:id="@+id/siteFacebook"
-                            android:layout_width="82dp"
-                            android:layout_height="92dp"
+                            android:layout_width="92dp"
+                            android:layout_height="100dp"
                             android:layout_marginEnd="10dp"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:background="#151A22"
+                            android:background="#11161F"
                             android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true">
 
                             <TextView
-                                android:layout_width="44dp"
-                                android:layout_height="44dp"
+                                android:layout_width="46dp"
+                                android:layout_height="46dp"
                                 android:gravity="center"
                                 android:text="f"
                                 android:textColor="#FFFFFF"
-                                android:textSize="26sp"
+                                android:textSize="27sp"
                                 android:textStyle="bold"
                                 android:background="#1877F2" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
                                 android:text="Facebook"
-                                android:textColor="#FFFFFF"
-                                android:textSize="11sp"
-                                android:layout_marginTop="6dp" />
+                                android:textColor="#D9DEE7"
+                                android:textSize="11sp" />
 
                         </LinearLayout>
 
+
                         <!-- INSTAGRAM -->
+
                         <LinearLayout
                             android:id="@+id/siteInstagram"
-                            android:layout_width="82dp"
-                            android:layout_height="92dp"
+                            android:layout_width="92dp"
+                            android:layout_height="100dp"
                             android:layout_marginEnd="10dp"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:background="#151A22"
+                            android:background="#11161F"
                             android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true">
 
                             <TextView
-                                android:layout_width="44dp"
-                                android:layout_height="44dp"
+                                android:layout_width="46dp"
+                                android:layout_height="46dp"
                                 android:gravity="center"
                                 android:text="◎"
                                 android:textColor="#FFFFFF"
-                                android:textSize="27sp"
+                                android:textSize="28sp"
                                 android:textStyle="bold"
                                 android:background="#D62976" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
                                 android:text="Instagram"
-                                android:textColor="#FFFFFF"
-                                android:textSize="11sp"
-                                android:layout_marginTop="6dp" />
+                                android:textColor="#D9DEE7"
+                                android:textSize="11sp" />
 
                         </LinearLayout>
 
+
                         <!-- SPORTYBET -->
+
                         <LinearLayout
                             android:id="@+id/siteSportyBet"
-                            android:layout_width="82dp"
-                            android:layout_height="92dp"
+                            android:layout_width="92dp"
+                            android:layout_height="100dp"
                             android:layout_marginEnd="10dp"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:background="#151A22"
+                            android:background="#11161F"
                             android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true">
 
                             <TextView
-                                android:layout_width="44dp"
-                                android:layout_height="44dp"
+                                android:layout_width="46dp"
+                                android:layout_height="46dp"
                                 android:gravity="center"
                                 android:text="S"
                                 android:textColor="#FFFFFF"
-                                android:textSize="24sp"
+                                android:textSize="25sp"
                                 android:textStyle="bold"
                                 android:background="#16A34A" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
                                 android:text="SportyBet"
-                                android:textColor="#FFFFFF"
-                                android:textSize="11sp"
-                                android:layout_marginTop="6dp" />
+                                android:textColor="#D9DEE7"
+                                android:textSize="11sp" />
 
                         </LinearLayout>
 
+
                         <!-- BET9JA -->
+
                         <LinearLayout
                             android:id="@+id/siteBet9ja"
-                            android:layout_width="82dp"
-                            android:layout_height="92dp"
+                            android:layout_width="92dp"
+                            android:layout_height="100dp"
                             android:layout_marginEnd="10dp"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:background="#151A22"
+                            android:background="#11161F"
                             android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true">
 
                             <TextView
-                                android:layout_width="44dp"
-                                android:layout_height="44dp"
+                                android:layout_width="46dp"
+                                android:layout_height="46dp"
                                 android:gravity="center"
                                 android:text="B"
                                 android:textColor="#FFFFFF"
-                                android:textSize="24sp"
+                                android:textSize="25sp"
                                 android:textStyle="bold"
                                 android:background="#F59E0B" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
                                 android:text="Bet9ja"
-                                android:textColor="#FFFFFF"
-                                android:textSize="11sp"
-                                android:layout_marginTop="6dp" />
+                                android:textColor="#D9DEE7"
+                                android:textSize="11sp" />
 
                         </LinearLayout>
 
+
                         <!-- DEEPROWSS -->
+
                         <LinearLayout
                             android:id="@+id/siteDeeprowss"
-                            android:layout_width="82dp"
-                            android:layout_height="92dp"
+                            android:layout_width="92dp"
+                            android:layout_height="100dp"
                             android:orientation="vertical"
                             android:gravity="center"
-                            android:background="#151A22"
+                            android:background="#11161F"
                             android:padding="8dp"
                             android:clickable="true"
                             android:focusable="true">
 
                             <TextView
-                                android:layout_width="44dp"
-                                android:layout_height="44dp"
+                                android:layout_width="46dp"
+                                android:layout_height="46dp"
                                 android:gravity="center"
                                 android:text="D"
                                 android:textColor="#FFFFFF"
-                                android:textSize="24sp"
+                                android:textSize="25sp"
                                 android:textStyle="bold"
                                 android:background="#FF1744" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
                                 android:text="Deeprowss"
-                                android:textColor="#FFFFFF"
-                                android:textSize="11sp"
-                                android:layout_marginTop="6dp" />
+                                android:textColor="#D9DEE7"
+                                android:textSize="11sp" />
 
                         </LinearLayout>
 
@@ -295,51 +382,90 @@
 
                 </HorizontalScrollView>
 
+
+                <!-- ================================================= -->
                 <!-- DEEPROWSS PROMO -->
+                <!-- ================================================= -->
+
                 <LinearLayout
                     android:id="@+id/deeprowssPromo"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="18dp"
+                    android:layout_height="120dp"
                     android:layout_marginTop="20dp"
-                    android:background="#151A22"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:background="#171C25"
                     android:clickable="true"
                     android:focusable="true">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Deeprowss Live Football | Movies | Highlights"
+                        android:text="DEEPR0WSS"
+                        android:textColor="#FF1744"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.12" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Live Football • Movies • Highlights"
                         android:textColor="#FFFFFF"
-                        android:textSize="15sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="deeprowss.com"
-                        android:textColor="#FF1744"
-                        android:textSize="13sp"
-                        android:layout_marginTop="6dp" />
+                        android:layout_marginTop="6dp"
+                        android:text="Tap to visit deeprowss.com  →"
+                        android:textColor="#8D96A5"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
-                <!-- LATEST NEWS -->
-                <TextView
+
+                <!-- ================================================= -->
+                <!-- NEWS HEADER -->
+                <!-- ================================================= -->
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="LATEST NEWS"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="10dp" />
+                    android:layout_marginTop="26dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Latest News"
+                        android:textColor="#FFFFFF"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/newsRefreshLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Refresh"
+                        android:textColor="#FF1744"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+
+                <!-- NEWS -->
 
                 <LinearLayout
                     android:id="@+id/newsList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -348,7 +474,8 @@
                         android:layout_height="wrap_content"
                         android:text="Loading latest news..."
                         android:textColor="#8D96A5"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:padding="12dp" />
 
                 </LinearLayout>
 
@@ -356,7 +483,11 @@
 
         </ScrollView>
 
+
+        <!-- ===================================================== -->
         <!-- WEBVIEW -->
+        <!-- ===================================================== -->
+
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
@@ -365,14 +496,19 @@
 
     </FrameLayout>
 
+
+    <!-- ========================================================= -->
     <!-- BOTTOM NAVIGATION -->
+    <!-- ========================================================= -->
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="58dp"
+        android:layout_height="62dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#10141B"
-        android:paddingBottom="4dp">
+        android:background="#0B0E14"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp">
 
         <ImageButton
             android:id="@+id/backButton"
@@ -381,7 +517,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_previous"
-            android:tint="#FFFFFF"
+            android:tint="#8D96A5"
             android:contentDescription="Back" />
 
         <ImageButton
@@ -391,7 +527,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_media_next"
-            android:tint="#FFFFFF"
+            android:tint="#8D96A5"
             android:contentDescription="Forward" />
 
         <ImageButton
@@ -401,7 +537,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:src="@android:drawable/ic_popup_sync"
-            android:tint="#FFFFFF"
+            android:tint="#8D96A5"
             android:contentDescription="Refresh" />
 
         <ImageButton
