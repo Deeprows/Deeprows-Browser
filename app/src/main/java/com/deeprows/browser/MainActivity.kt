@@ -1,11 +1,12 @@
 package com.deeprows.browser
 
 import android.app.AlertDialog
-import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -18,8 +19,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        hideSystemNavigationBar()
 
         setContentView(R.layout.activity_main)
 
@@ -78,31 +76,41 @@ class MainActivity : AppCompatActivity() {
 
         loadLatestNews()
         loadSportNews()
+
+        // Hide Android system navigation bar
+        hideSystemNavigationBar()
     }
-private fun hideSystemNavigationBar() {
 
-    if (android.os.Build.VERSION.SDK_INT >=
-        android.os.Build.VERSION_CODES.R
-    ) {
+    // =========================================================
+    // SYSTEM NAVIGATION BAR
+    // =========================================================
 
-        window.insetsController?.let { controller ->
+    private fun hideSystemNavigationBar() {
 
-            controller.hide(
-                WindowInsets.Type.navigationBars()
-            )
+        if (
+            android.os.Build.VERSION.SDK_INT >=
+            android.os.Build.VERSION_CODES.R
+        ) {
 
-            controller.systemBarsBehavior =
-                WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            window.insetsController?.let { controller ->
+
+                controller.hide(
+                    WindowInsets.Type.navigationBars()
+                )
+
+                controller.systemBarsBehavior =
+                    WindowInsetsController
+                        .BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+
+        } else {
+
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
         }
-
-    } else {
-
-        @Suppress("DEPRECATION")
-        window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
     }
-}
 
     // =========================================================
     // WEBVIEW
@@ -152,7 +160,9 @@ private fun hideSystemNavigationBar() {
                             url.startsWith("https://")
                         )
                     ) {
+
                         addressBar.setText(url)
+
                         saveHistory(url)
                     }
                 }
@@ -172,6 +182,7 @@ private fun hideSystemNavigationBar() {
                             url.startsWith("https://")
                         )
                     ) {
+
                         addressBar.setText(url)
                     }
                 }
@@ -215,11 +226,16 @@ private fun hideSystemNavigationBar() {
             R.id.backButton
         ).setOnClickListener {
 
-            if (settingsPage.visibility == View.VISIBLE) {
+            if (
+                settingsPage.visibility ==
+                View.VISIBLE
+            ) {
 
                 showHomePage()
 
-            } else if (webView.canGoBack()) {
+            } else if (
+                webView.canGoBack()
+            ) {
 
                 webView.goBack()
 
@@ -233,7 +249,9 @@ private fun hideSystemNavigationBar() {
             R.id.forwardButton
         ).setOnClickListener {
 
-            if (webView.canGoForward()) {
+            if (
+                webView.canGoForward()
+            ) {
 
                 webView.goForward()
             }
@@ -243,7 +261,10 @@ private fun hideSystemNavigationBar() {
             R.id.refreshButton
         ).setOnClickListener {
 
-            if (webView.visibility == View.VISIBLE) {
+            if (
+                webView.visibility ==
+                View.VISIBLE
+            ) {
 
                 webView.reload()
 
@@ -1067,6 +1088,7 @@ private fun hideSystemNavigationBar() {
         container: android.widget.LinearLayout,
         article: NewsArticle
     ) {
+
         val card =
             android.widget.LinearLayout(this)
 
