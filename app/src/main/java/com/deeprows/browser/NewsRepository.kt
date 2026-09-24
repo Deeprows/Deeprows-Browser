@@ -21,22 +21,43 @@ class NewsRepository {
     private val baseUrl =
         "https://news.google.com/rss/search"
 
-    suspend fun getLatestNews(): List<NewsArticle> =
+    suspend fun getLatestNews(
+        limit: Int = 4
+    ): List<NewsArticle> =
+        getFeed(
+            query = "latest news",
+            limit = limit
+        )
+
+    suspend fun getSportNews(
+        limit: Int = 4
+    ): List<NewsArticle> =
+        getFeed(
+            query = "football OR soccer OR sports",
+            limit = limit
+        )
+
+    private suspend fun getFeed(
+        query: String,
+        limit: Int
+    ): List<NewsArticle> =
         withContext(Dispatchers.IO) {
 
-            val query =
+            val encodedQuery =
                 URLEncoder.encode(
-                    "latest news",
+                    query,
                     "UTF-8"
                 )
 
             val urlString =
-                "$baseUrl?q=$query" +
-                "&hl=en-US" +
-                "&gl=US" +
-                "&ceid=US:en"
+                "$baseUrl" +
+                        "?q=$encodedQuery" +
+                        "&hl=en-US" +
+                        "&gl=US" +
+                        "&ceid=US:en"
 
-            var connection: HttpURLConnection? = null
+            var connection:
+                    HttpURLConnection? = null
 
             try {
 
@@ -47,10 +68,17 @@ class NewsRepository {
                     url.openConnection()
                         as HttpURLConnection
 
-                connection.requestMethod = "GET"
-                connection.connectTimeout = 15000
-                connection.readTimeout = 15000
-                connection.instanceFollowRedirects = true
+                connection.requestMethod =
+                    "GET"
+
+                connection.connectTimeout =
+                    15000
+
+                connection.readTimeout =
+                    15000
+
+                connection.instanceFollowRedirects =
+                    true
 
                 connection.setRequestProperty(
                     "User-Agent",
@@ -65,7 +93,9 @@ class NewsRepository {
                 val responseCode =
                     connection.responseCode
 
-                if (responseCode !in 200..299) {
+                if (
+                    responseCode !in 200..299
+                ) {
                     return@withContext emptyList()
                 }
 
@@ -84,10 +114,15 @@ class NewsRepository {
                         "UTF-8"
                     )
 
-                    parseFeed(parser)
+                    parseFeed(
+                        parser,
+                        limit
+                    )
                 }
 
-            } catch (e: Exception) {
+            } catch (
+                e: Exception
+            ) {
 
                 e.printStackTrace()
 
@@ -100,7 +135,8 @@ class NewsRepository {
         }
 
     private fun parseFeed(
-        parser: XmlPullParser
+        parser: XmlPullParser,
+        limit: Int
     ): List<NewsArticle> {
 
         val articles =
@@ -109,17 +145,20 @@ class NewsRepository {
         var eventType =
             parser.eventType
 
-        var insideItem = false
+        var insideItem =
+            false
 
         var title = ""
         var link = ""
         var source = ""
         var published = ""
+        var description = ""
         var imageUrl: String? = null
 
         while (
-            eventType != XmlPullParser.END_DOCUMENT &&
-            articles.size < 10
+            eventType !=
+            XmlPullParser.END_DOCUMENT &&
+            articles.size < limit
         ) {
 
             when (eventType) {
@@ -127,18 +166,21 @@ class NewsRepository {
                 XmlPullParser.START_TAG -> {
 
                     val tag =
-                        parser.name.lowercase()
+                        parser.name
+                            .lowercase()
 
                     when {
 
                         tag == "item" -> {
 
-                            insideItem = true
+                            insideItem =
+                                true
 
                             title = ""
                             link = ""
                             source = ""
                             published = ""
+                            description = ""
                             imageUrl = null
                         }
 
@@ -174,22 +216,42 @@ class NewsRepository {
                                     .trim()
                         }
 
+                        tag == "description" &&
+                                insideItem -> {
+
+                            description =
+                                parser.nextText()
+                                    .trim()
+
+                            if (
+                                imageUrl.isNullOrBlank()
+                            ) {
+
+                                imageUrl =
+                                    extractImageFromHtml(
+                                        description
+                                    )
+                            }
+                        }
+
                         (
                             tag == "media:content" ||
                             tag == "media:thumbnail" ||
                             tag == "enclosure"
                         ) && insideItem -> {
 
-                            val url =
+                            val mediaUrl =
                                 parser.getAttributeValue(
                                     null,
                                     "url"
                                 )
 
                             if (
-                                !url.isNullOrBlank()
+                                !mediaUrl.isNullOrBlank()
                             ) {
-                                imageUrl = url
+
+                                imageUrl =
+                                    mediaUrl
                             }
                         }
                     }
@@ -212,13 +274,17 @@ class NewsRepository {
                             articles.add(
                                 NewsArticle(
                                     title =
-                                        cleanText(title),
+                                        cleanText(
+                                            title
+                                        ),
 
                                     link =
                                         link,
 
                                     source =
-                                        cleanText(source),
+                                        cleanText(
+                                            source
+                                        ),
 
                                     published =
                                         published,
@@ -229,7 +295,8 @@ class NewsRepository {
                             )
                         }
 
-                        insideItem = false
+                        insideItem =
+                            false
                     }
                 }
             }
@@ -241,11 +308,79 @@ class NewsRepository {
         return articles
     }
 
+    private fun extractImageFromHtml(
+        html: String
+    ): String? {
+
+        val patterns =
+            listOf(
+                Regex(
+                    """<img[^>]+src=["']([^"']+)["']"""
+                ),
+                Regex(
+                    """<img[^>]+src=([^ >]+)"""
+                )
+            )
+
+        for (
+            pattern in patterns
+        ) {
+
+            val match =
+                pattern.find(
+                    html
+                )
+
+            if (
+                match != null
+            ) {
+
+                val image =
+                    match.groupValues[1]
+                        .replace(
+                            "&amp;",
+                            "&"
+                        )
+                        .trim()
+
+                if (
+                    image.startsWith(
+                        "http://"
+                    ) ||
+                    image.startsWith(
+                        "https://"
+                    )
+                ) {
+
+                    return image
+                }
+            }
+        }
+
+        return null
+    }
+
     private fun cleanText(
         value: String
     ): String {
 
         return value
+            .replace(
+                Regex("<[^>]*>"),
+                ""
+            )
+            .replace(
+                "&amp;",
+                "&"
+            )
+            .replace(
+                "&quot;",
+                "\""
+            )
+            .replace(
+                "&#39;",
+                "'"
+            )
             .replace(
                 "\n",
                 " "
