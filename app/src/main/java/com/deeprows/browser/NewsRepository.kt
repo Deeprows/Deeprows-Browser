@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.URLEncoder
 
 data class NewsArticle(
     val title: String,
@@ -51,7 +52,7 @@ class NewsRepository {
         try {
 
             val encodedQuery =
-                java.net.URLEncoder.encode(
+                URLEncoder.encode(
                     query,
                     "UTF-8"
                 )
@@ -63,8 +64,8 @@ class NewsRepository {
                         "&ceid=US:en"
 
             val connection =
-                URL(urlString).openConnection()
-                        as HttpURLConnection
+                URL(urlString)
+                    .openConnection() as HttpURLConnection
 
             connection.requestMethod = "GET"
 
@@ -81,7 +82,10 @@ class NewsRepository {
                 "application/rss+xml, application/xml, text/xml"
             )
 
-            if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+            if (
+                connection.responseCode !=
+                HttpURLConnection.HTTP_OK
+            ) {
                 connection.disconnect()
                 return emptyList()
             }
@@ -142,7 +146,10 @@ class NewsRepository {
                                 when (tag) {
 
                                     "title" -> {
-                                        if (title.isEmpty()) {
+
+                                        if (
+                                            title.isEmpty()
+                                        ) {
                                             title =
                                                 parser.nextText()
                                                     .trim()
@@ -150,7 +157,10 @@ class NewsRepository {
                                     }
 
                                     "link" -> {
-                                        if (link.isEmpty()) {
+
+                                        if (
+                                            link.isEmpty()
+                                        ) {
                                             link =
                                                 parser.nextText()
                                                     .trim()
@@ -158,15 +168,21 @@ class NewsRepository {
                                     }
 
                                     "source" -> {
-                                        if (source.isEmpty()) {
+
+                                        if (
+                                            source.isEmpty()
+                                        ) {
                                             source =
                                                 parser.nextText()
                                                     .trim()
-                                    }
+                                        }
                                     }
 
                                     "pubdate" -> {
-                                        if (pubDate.isEmpty()) {
+
+                                        if (
+                                            pubDate.isEmpty()
+                                        ) {
                                             pubDate =
                                                 parser.nextText()
                                                     .trim()
@@ -174,7 +190,10 @@ class NewsRepository {
                                     }
 
                                     "description" -> {
-                                        if (description.isEmpty()) {
+
+                                        if (
+                                            description.isEmpty()
+                                        ) {
                                             description =
                                                 parser.nextText()
                                                     .trim()
@@ -207,11 +226,10 @@ class NewsRepository {
                         XmlPullParser.END_TAG -> {
 
                             if (
-                                parser.name
-                                    ?.equals(
-                                        "item",
-                                        ignoreCase = true
-                                    ) == true
+                                parser.name.equals(
+                                    "item",
+                                    ignoreCase = true
+                                )
                             ) {
 
                                 insideItem = false
@@ -283,7 +301,7 @@ class NewsRepository {
         candidates: List<String>
     ): String {
 
-        // 1. Prefer media/enclosure thumbnail
+        // First: media:content / media:thumbnail / enclosure
         candidates.forEach { url ->
 
             if (
@@ -294,7 +312,7 @@ class NewsRepository {
             }
         }
 
-        // 2. Look for normal HTML image
+        // Second: normal HTML image
         val imageRegex =
             Regex(
                 """<img[^>]+src=["']([^"']+)["']""",
@@ -319,7 +337,7 @@ class NewsRepository {
             }
         }
 
-        // 3. Look for lazy-loaded images
+        // Third: lazy-loaded image
         val lazyRegex =
             Regex(
                 """(?:data-src|data-original|data-lazy-src)=["']([^"']+)["']""",
@@ -388,5 +406,3 @@ class NewsRepository {
     }
 }
 ```
-
-After replacing it, **build and test the app first**. If the cards still show the placeholder instead of images, the next thing to fix is `addNewsCard()` in `MainActivity.kt`, because the repository may be receiving the image URL correctly but the `ImageView` may not be displaying it.
