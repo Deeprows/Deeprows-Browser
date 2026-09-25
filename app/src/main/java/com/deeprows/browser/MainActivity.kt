@@ -1381,108 +1381,215 @@ private fun loadWebsiteLogoToImage(
     }
 }
 
-    // =========================================================
-    // SETTINGS
-    // =========================================================
+   // =========================================================
+// SETTINGS
+// =========================================================
 
-    private fun setupSettings() {
+private fun setupSettings() {
 
-        dataSavingSwitch.isChecked =
-            preferences.getBoolean(
+    dataSavingSwitch.isChecked =
+        preferences.getBoolean(
+            "data_saving",
+            false
+        )
+
+    adBlockingSwitch.isChecked =
+        preferences.getBoolean(
+            "ad_blocking",
+            false
+        )
+
+    dataSavingSwitch.setOnCheckedChangeListener {
+            _, enabled ->
+
+        preferences.edit()
+            .putBoolean(
                 "data_saving",
-                false
-            )
-
-        adBlockingSwitch.isChecked =
-            preferences.getBoolean(
-                "ad_blocking",
-                false
-            )
-
-        dataSavingSwitch.setOnCheckedChangeListener {
-                _, enabled ->
-
-            preferences.edit()
-                .putBoolean(
-                    "data_saving",
-                    enabled
-                )
-                .apply()
-
-            webView.settings.blockNetworkImage =
                 enabled
+            )
+            .apply()
 
-            Toast.makeText(
-                this,
-                if (enabled)
-                    "Data Saving enabled"
-                else
-                    "Data Saving disabled",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        webView.settings.blockNetworkImage =
+            enabled
 
-        adBlockingSwitch.setOnCheckedChangeListener {
-                _, enabled ->
+        Toast.makeText(
+            this,
+            if (enabled)
+                "Data Saving enabled"
+            else
+                "Data Saving disabled",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
 
-            preferences.edit()
-                .putBoolean(
-                    "ad_blocking",
-                    enabled
+    adBlockingSwitch.setOnCheckedChangeListener {
+            _, enabled ->
+
+        preferences.edit()
+            .putBoolean(
+                "ad_blocking",
+                enabled
+            )
+            .apply()
+
+        Toast.makeText(
+            this,
+            if (enabled)
+                "Ad Blocking enabled"
+            else
+                "Ad Blocking disabled",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    findViewById<View>(
+        R.id.historyButton
+    ).setOnClickListener {
+
+        showHistory()
+    }
+
+    findViewById<View>(
+        R.id.bookmarksButton
+    ).setOnClickListener {
+
+        showBookmarks()
+    }
+
+    findViewById<View>(
+        R.id.offlinePagesButton
+    ).setOnClickListener {
+
+        showOfflinePages()
+    }
+
+    findViewById<View>(
+        R.id.clearCacheButton
+    ).setOnClickListener {
+
+        webView.clearCache(true)
+
+        Toast.makeText(
+            this,
+            "Browser cache cleared",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    findViewById<View>(
+        R.id.downloadsButton
+    ).setOnClickListener {
+
+        try {
+
+            val intent =
+                android.content.Intent(
+                    android.content.Intent.ACTION_VIEW
                 )
-                .apply()
+
+            intent.data =
+                android.net.Uri.parse(
+                    "content://downloads/my_downloads"
+                )
+
+            startActivity(intent)
+
+        } catch (e: Exception) {
 
             Toast.makeText(
                 this,
-                if (enabled)
-                    "Ad Blocking enabled"
-                else
-                    "Ad Blocking disabled",
+                "Unable to open Downloads",
                 Toast.LENGTH_SHORT
             ).show()
-        }
-
-        findViewById<View>(
-            R.id.historyButton
-        ).setOnClickListener {
-
-            showHistory()
-        }
-
-        findViewById<View>(
-            R.id.bookmarksButton
-        ).setOnClickListener {
-
-            showBookmarks()
-        }
-
-        findViewById<View>(
-            R.id.offlinePagesButton
-        ).setOnClickListener {
-
-            showOfflinePages()
-        }
-
-        findViewById<View>(
-            R.id.clearCacheButton
-        ).setOnClickListener {
-
-            webView.clearCache(true)
-
-            Toast.makeText(
-                this,
-                "Browser cache cleared",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        findViewById<View>(
-            R.id.settingsBackButton
-        ).setOnClickListener {
-
-            showHomePage()
         }
     }
+
+    findViewById<View>(
+        R.id.shareButton
+    ).setOnClickListener {
+
+        val currentUrl =
+            webView.url
+
+        if (
+            currentUrl.isNullOrBlank()
+        ) {
+
+            Toast.makeText(
+                this,
+                "No webpage to share",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return@setOnClickListener
+        }
+
+        val shareIntent =
+            android.content.Intent(
+                android.content.Intent.ACTION_SEND
+            ).apply {
+
+                type = "text/plain"
+
+                putExtra(
+                    android.content.Intent.EXTRA_TEXT,
+                    currentUrl
+                )
+
+                putExtra(
+                    android.content.Intent.EXTRA_SUBJECT,
+                    webView.title
+                        ?: "Deeprows Browser"
+                )
+            }
+
+        startActivity(
+            android.content.Intent.createChooser(
+                shareIntent,
+                "Share page"
+            )
+        )
+    }
+
+    findViewById<View>(
+        R.id.translateButton
+    ).setOnClickListener {
+
+        val currentUrl =
+            webView.url
+
+        if (
+            currentUrl.isNullOrBlank()
+        ) {
+
+            Toast.makeText(
+                this,
+                "No webpage to translate",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return@setOnClickListener
+        }
+
+        val translateUrl =
+            "https://translate.google.com/translate" +
+                    "?sl=auto&tl=en&u=" +
+                    android.net.Uri.encode(
+                        currentUrl
+                    )
+
+        openWebsite(
+            translateUrl
+        )
+    }
+
+    findViewById<View>(
+        R.id.settingsBackButton
+    ).setOnClickListener {
+
+        showHomePage()
+    }
+}
 
     // =========================================================
     // HOME / SETTINGS / WEB
