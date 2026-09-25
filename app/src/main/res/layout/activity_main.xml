@@ -8,58 +8,6 @@
     android:background="#0B1220"
     android:fitsSystemWindows="true">
 
-    <!-- HEADER -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="8dp"
-        android:background="#101A2A">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:gravity="center"
-                android:text="D"
-                android:textColor="#FFFFFF"
-                android:textSize="19sp"
-                android:textStyle="bold"
-                android:background="#E91E4D" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="9dp"
-                android:text="DEEPR0WSS"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.04" />
-
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/menuButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_menu_more"
-            android:tint="#B8C2D3"
-            android:contentDescription="Settings" />
-
-    </LinearLayout>
-
-
     <!-- SEARCH -->
 
     <LinearLayout
@@ -768,25 +716,35 @@
             android:tint="#8795AA"
             android:contentDescription="Forward" />
 
-        <ImageButton
-            android:id="@+id/refreshButton"
-            android:layout_width="0dp"
-            android:layout_height="46dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_popup_sync"
-            android:tint="#8795AA"
-            android:contentDescription="Refresh" />
+       <ImageButton
+    android:id="@+id/refreshButton"
+    android:layout_width="0dp"
+    android:layout_height="46dp"
+    android:layout_weight="1"
+    android:background="@android:color/transparent"
+    android:src="@android:drawable/ic_popup_sync"
+    android:tint="#8795AA"
+    android:contentDescription="Refresh" />
 
-        <ImageButton
-            android:id="@+id/homeButton"
-            android:layout_width="0dp"
-            android:layout_height="46dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_menu_view"
-            android:tint="#E91E4D"
-            android:contentDescription="Home" />
+<ImageButton
+    android:id="@+id/menuButton"
+    android:layout_width="0dp"
+    android:layout_height="46dp"
+    android:layout_weight="1"
+    android:background="@android:color/transparent"
+    android:src="@android:drawable/ic_menu_manage"
+    android:tint="#8795AA"
+    android:contentDescription="Settings" />
+
+<ImageButton
+    android:id="@+id/homeButton"
+    android:layout_width="0dp"
+    android:layout_height="46dp"
+    android:layout_weight="1"
+    android:background="@android:color/transparent"
+    android:src="@android:drawable/ic_menu_view"
+    android:tint="#E91E4D"
+    android:contentDescription="Home" />
 
     </LinearLayout>
 
