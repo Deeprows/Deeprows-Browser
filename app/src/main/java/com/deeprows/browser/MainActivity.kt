@@ -445,6 +445,8 @@ private fun setupDynamicHomepage() {
                 subCategory.sites
             )
         }
+    }
+  }
 
 private fun addMainCategoryHeader(
     container: LinearLayout,
