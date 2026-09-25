@@ -210,96 +210,115 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // =========================================================
-    // CONTROLS
-    // =========================================================
+   // =========================================================
+// CONTROLS
+// =========================================================
 
-    private fun setupControls() {
+private fun setupControls() {
 
-        findViewById<View>(
-            R.id.goButton
-        ).setOnClickListener {
+    findViewById<View>(
+        R.id.goButton
+    ).setOnClickListener {
 
-            openAddress()
-        }
+        openAddress()
+    }
 
-        addressBar.setOnEditorActionListener {
-                _, _, _ ->
+    addressBar.setOnEditorActionListener {
+            _, _, _ ->
 
-            openAddress()
+        openAddress()
 
-            true
-        }
+        true
+    }
 
-        findViewById<View>(
-            R.id.backButton
-        ).setOnClickListener {
+    findViewById<View>(
+        R.id.backButton
+    ).setOnClickListener {
 
-            if (
-                settingsPage.visibility ==
-                View.VISIBLE
-            ) {
+        if (
+            settingsPage.visibility ==
+            View.VISIBLE
+        ) {
 
-                showHomePage()
+            showHomePage()
 
-            } else if (
-                webView.visibility ==
-                View.VISIBLE &&
-                webView.canGoBack()
-            ) {
+        } else if (
+            webView.visibility ==
+            View.VISIBLE &&
+            webView.canGoBack()
+        ) {
 
-                webView.goBack()
+            webView.goBack()
 
-            } else {
-
-                showHomePage()
-            }
-        }
-
-        findViewById<View>(
-            R.id.forwardButton
-        ).setOnClickListener {
-
-            if (
-                webView.canGoForward()
-            ) {
-
-                webView.goForward()
-            }
-        }
-
-        findViewById<View>(
-            R.id.refreshButton
-        ).setOnClickListener {
-
-            if (
-                webView.visibility ==
-                View.VISIBLE
-            ) {
-
-                webView.reload()
-
-            } else {
-
-                loadLatestNews()
-                loadSportNews()
-            }
-        }
-
-        findViewById<View>(
-            R.id.homeButton
-        ).setOnClickListener {
+        } else {
 
             showHomePage()
         }
+    }
 
-        findViewById<View>(
-            R.id.menuButton
-        ).setOnClickListener {
+    findViewById<View>(
+        R.id.forwardButton
+    ).setOnClickListener {
 
-            showSettings()
+        if (
+            webView.visibility ==
+            View.VISIBLE &&
+            webView.canGoForward()
+        ) {
+
+            webView.goForward()
         }
+    }
 
+    // =====================================================
+    // OPEN PAGES
+    // =====================================================
+
+    findViewById<View>(
+        R.id.refreshButton
+    ).setOnClickListener {
+
+        // Pages functionality will be added next.
+        Toast.makeText(
+            this,
+            "Open Pages",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    // =====================================================
+    // HOME
+    // =====================================================
+
+    findViewById<View>(
+        R.id.homeButton
+    ).setOnClickListener {
+
+        showHomePage()
+    }
+
+    // =====================================================
+    // BOOKMARK
+    // =====================================================
+
+    findViewById<View>(
+        R.id.bookmarkButton
+    ).setOnClickListener {
+
+        saveCurrentBookmark()
+    }
+
+    // =====================================================
+    // MENU
+    // =====================================================
+
+    findViewById<View>(
+        R.id.menuButton
+    ).setOnClickListener {
+
+        showSettings()
+    }
+}
         // =====================================================
         // NEWS BUTTONS
         // =====================================================
