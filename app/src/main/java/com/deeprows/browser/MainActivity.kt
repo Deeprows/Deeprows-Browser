@@ -97,7 +97,8 @@ applyAppTheme()
 showHomePage()
 
         loadLatestNews()
-        loadSportNews()
+loadSportNews()
+loadGoogleTrends()
 
         hideSystemNavigationBar()
     }
@@ -268,7 +269,7 @@ if (activeTab != null) {
         }
     }
 
-   // =========================================================
+ // =========================================================
 // CONTROLS
 // =========================================================
 
@@ -327,7 +328,16 @@ private fun setupControls() {
             webView.goForward()
         }
     }
-    
+
+    findViewById<View>(
+        R.id.moreTrendsButton
+    ).setOnClickListener {
+
+        openWebsite(
+            "https://trends.google.com/trending"
+        )
+    }
+}
     // =====================================================
 // REFRESH
 // =====================================================
@@ -2240,227 +2250,432 @@ private fun updateTabsCount() {
         }
     }
 
-    private fun loadSportNews() {
+ private fun loadSportNews() {
 
-        val sportNewsList =
-            findViewById<android.widget.LinearLayout>(
-                R.id.sportNewsList
+    val sportNewsList =
+        findViewById<android.widget.LinearLayout>(
+            R.id.sportNewsList
+        )
+
+    sportNewsList.removeAllViews()
+
+    kotlinx.coroutines.CoroutineScope(
+        kotlinx.coroutines.Dispatchers.Main
+    ).launch {
+
+        val articles =
+            newsRepository.getSportNews(4)
+
+        articles.forEach { article ->
+
+            addNewsCard(
+                sportNewsList,
+                article
             )
-
-        sportNewsList.removeAllViews()
-
-        kotlinx.coroutines.CoroutineScope(
-            kotlinx.coroutines.Dispatchers.Main
-        ).launch {
-
-            val articles =
-                newsRepository.getSportNews(4)
-
-            articles.forEach { article ->
-
-                addNewsCard(
-                    sportNewsList,
-                    article
-                )
-            }
         }
     }
+}
 
-    private fun addNewsCard(
-        container: android.widget.LinearLayout,
-        article: NewsArticle
-    ) {
+private fun loadGoogleTrends() {
 
-        val card =
-            android.widget.LinearLayout(this)
-
-        card.orientation =
-            android.widget.LinearLayout.HORIZONTAL
-
-        card.setPadding(
-            14,
-            14,
-            14,
-            14
+    val trendsList =
+        findViewById<android.widget.LinearLayout>(
+            R.id.trendsList
         )
 
-       card.setBackgroundColor(
-    getThemeSurfaceColor()
-        )
+    trendsList.removeAllViews()
 
-        val cardParams =
-            android.widget.LinearLayout.LayoutParams(
-                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+    kotlinx.coroutines.CoroutineScope(
+        kotlinx.coroutines.Dispatchers.Main
+    ).launch {
+
+        val trends =
+            newsRepository.getGoogleTrends(10)
+
+        if (trends.isEmpty()) {
+
+            val emptyText =
+                android.widget.TextView(this@MainActivity)
+
+            emptyText.text =
+                "Unable to load Google Trends"
+
+            emptyText.setTextColor(
+                android.graphics.Color.LTGRAY
             )
 
-        cardParams.setMargins(
-            0,
-            0,
-            0,
-            10
-        )
+            emptyText.textSize =
+                13f
 
-        card.layoutParams =
-            cardParams
-
-        val imageView =
-            android.widget.ImageView(this)
-
-        val imageParams =
-            android.widget.LinearLayout.LayoutParams(
-                105,
-                85
+            emptyText.setPadding(
+                8,
+                12,
+                8,
+                12
             )
 
-        imageParams.setMargins(
-            0,
-            0,
-            14,
-            0
-        )
-
-        imageView.layoutParams =
-            imageParams
-
-        imageView.scaleType =
-            android.widget.ImageView.ScaleType.CENTER_CROP
-
-        imageView.setBackgroundColor(
-    getThemeSurface2Color()
-        )
-
-        val textContainer =
-            android.widget.LinearLayout(this)
-
-        textContainer.orientation =
-            android.widget.LinearLayout.VERTICAL
-
-        textContainer.layoutParams =
-            android.widget.LinearLayout.LayoutParams(
-                0,
-                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                1f
+            trendsList.addView(
+                emptyText
             )
 
-        val title =
-            android.widget.TextView(this)
-
-        title.text =
-            article.title
-
-        title.setTextColor(
-            android.graphics.Color.WHITE
-        )
-
-        title.textSize =
-            15f
-
-        title.setTypeface(
-            null,
-            android.graphics.Typeface.BOLD
-        )
-
-        title.maxLines =
-            3
-
-        title.ellipsize =
-            android.text.TextUtils.TruncateAt.END
-
-        val source =
-            android.widget.TextView(this)
-
-        source.text =
-            if (article.source.isNotBlank()) {
-                article.source
-            } else {
-                "Google News"
-            }
-
-        source.setTextColor(
-    getThemeAccentColor()
-        )
-
-        source.textSize =
-            12f
-
-        source.setPadding(
-            0,
-            8,
-            0,
-            0
-        )
-
-        textContainer.addView(
-            title
-        )
-
-        textContainer.addView(
-            source
-        )
-
-        card.addView(
-            imageView
-        )
-
-        card.addView(
-            textContainer
-        )
-
-        card.setOnClickListener {
-
-            openWebsite(
-                article.link
-            )
+            return@launch
         }
 
-        container.addView(
-            card
-        )
+        trends.forEachIndexed { index, trend ->
 
-        if (
-            article.imageUrl.isNotBlank()
-        ) {
+            val trendRow =
+                android.widget.LinearLayout(
+                    this@MainActivity
+                )
 
-            kotlinx.coroutines.CoroutineScope(
-                kotlinx.coroutines.Dispatchers.IO
-            ).launch {
+            trendRow.orientation =
+                android.widget.LinearLayout.HORIZONTAL
 
-                try {
+            trendRow.gravity =
+                android.view.Gravity.CENTER_VERTICAL
 
-                    val connection =
-                        java.net.URL(
-                            article.imageUrl
-                        ).openConnection()
+            trendRow.setPadding(
+                8,
+                10,
+                8,
+                10
+            )
 
-                    connection.connect()
+            trendRow.setBackgroundColor(
+                getThemeSurface2Color()
+            )
 
-                    val input =
-                        connection.getInputStream()
+            val number =
+                android.widget.TextView(
+                    this@MainActivity
+                )
 
-                    val bitmap =
-                        android.graphics.BitmapFactory
-                            .decodeStream(input)
+            number.text =
+                "${index + 1}"
 
-                    input.close()
+            number.setTextColor(
+                getThemeAccentColor()
+            )
 
-                    runOnUiThread {
+            number.textSize =
+                14f
 
-                        if (bitmap != null) {
+            number.gravity =
+                android.view.Gravity.CENTER
 
-                            imageView.setImageBitmap(
-                                bitmap
-                            )
-                        }
-                    }
+            val numberParams =
+                android.widget.LinearLayout.LayoutParams(
+                    32,
+                    48
+                )
 
-                } catch (_: Exception) {
+            trendRow.addView(
+                number,
+                numberParams
+            )
 
-                    // Keep placeholder
+            val textContainer =
+                android.widget.LinearLayout(
+                    this@MainActivity
+                )
+
+            textContainer.orientation =
+                android.widget.LinearLayout.VERTICAL
+
+            textContainer.layoutParams =
+                android.widget.LinearLayout.LayoutParams(
+                    0,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+
+            val title =
+                android.widget.TextView(
+                    this@MainActivity
+                )
+
+            title.text =
+                trend.title
+
+            title.setTextColor(
+                android.graphics.Color.WHITE
+            )
+
+            title.textSize =
+                14f
+
+            title.maxLines =
+                2
+
+            title.ellipsize =
+                android.text.TextUtils.TruncateAt.END
+
+            textContainer.addView(
+                title
+            )
+
+            val source =
+                android.widget.TextView(
+                    this@MainActivity
+                )
+
+            source.text =
+                if (trend.source.isNotBlank()) {
+                    trend.source
+                } else {
+                    "Google Trends"
+                }
+
+            source.setTextColor(
+                getThemeAccentColor()
+            )
+
+            source.textSize =
+                10f
+
+            source.setPadding(
+                0,
+                4,
+                0,
+                0
+            )
+
+            textContainer.addView(
+                source
+            )
+
+            trendRow.addView(
+                textContainer
+            )
+
+            trendRow.setOnClickListener {
+
+                if (
+                    trend.link.isNotBlank()
+                ) {
+
+                    openWebsite(
+                        trend.link
+                    )
                 }
             }
+
+            val rowParams =
+                android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+
+            rowParams.setMargins(
+                0,
+                0,
+                0,
+                5
+            )
+
+            trendsList.addView(
+                trendRow,
+                rowParams
+            )
         }
     }
+}
+
+private fun addNewsCard(
+    container: android.widget.LinearLayout,
+    article: NewsArticle
+) {
+
+    val card =
+        android.widget.LinearLayout(this)
+
+    card.orientation =
+        android.widget.LinearLayout.HORIZONTAL
+
+    card.setPadding(
+        14,
+        14,
+        14,
+        14
+    )
+
+    card.setBackgroundColor(
+        getThemeSurfaceColor()
+    )
+
+    val cardParams =
+        android.widget.LinearLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+    cardParams.setMargins(
+        0,
+        0,
+        0,
+        10
+    )
+
+    card.layoutParams =
+        cardParams
+
+    val imageView =
+        android.widget.ImageView(this)
+
+    val imageParams =
+        android.widget.LinearLayout.LayoutParams(
+            105,
+            85
+        )
+
+    imageParams.setMargins(
+        0,
+        0,
+        14,
+        0
+    )
+
+    imageView.layoutParams =
+        imageParams
+
+    imageView.scaleType =
+        android.widget.ImageView.ScaleType.CENTER_CROP
+
+    imageView.setBackgroundColor(
+        getThemeSurface2Color()
+    )
+
+    val textContainer =
+        android.widget.LinearLayout(this)
+
+    textContainer.orientation =
+        android.widget.LinearLayout.VERTICAL
+
+    textContainer.layoutParams =
+        android.widget.LinearLayout.LayoutParams(
+            0,
+            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+            1f
+        )
+
+    val title =
+        android.widget.TextView(this)
+
+    title.text =
+        article.title
+
+    title.setTextColor(
+        android.graphics.Color.WHITE
+    )
+
+    title.textSize =
+        15f
+
+    title.setTypeface(
+        null,
+        android.graphics.Typeface.BOLD
+    )
+
+    title.maxLines =
+        3
+
+    title.ellipsize =
+        android.text.TextUtils.TruncateAt.END
+
+    val source =
+        android.widget.TextView(this)
+
+    source.text =
+        if (article.source.isNotBlank()) {
+            article.source
+        } else {
+            "News"
+        }
+
+    source.setTextColor(
+        getThemeAccentColor()
+    )
+
+    source.textSize =
+        12f
+
+    source.setPadding(
+        0,
+        8,
+        0,
+        0
+    )
+
+    textContainer.addView(
+        title
+    )
+
+    textContainer.addView(
+        source
+    )
+
+    card.addView(
+        imageView
+    )
+
+    card.addView(
+        textContainer
+    )
+
+    card.setOnClickListener {
+
+        openWebsite(
+            article.link
+        )
+    }
+
+    container.addView(
+        card
+    )
+
+    if (
+        article.imageUrl.isNotBlank()
+    ) {
+
+        kotlinx.coroutines.CoroutineScope(
+            kotlinx.coroutines.Dispatchers.IO
+        ).launch {
+
+            try {
+
+                val connection =
+                    java.net.URL(
+                        article.imageUrl
+                    ).openConnection()
+
+                connection.connect()
+
+                val input =
+                    connection.getInputStream()
+
+                val bitmap =
+                    android.graphics.BitmapFactory
+                        .decodeStream(input)
+
+                input.close()
+
+                runOnUiThread {
+
+                    if (bitmap != null) {
+
+                        imageView.setImageBitmap(
+                            bitmap
+                        )
+                    }
+                }
+
+            } catch (_: Exception) {
+
+                // Keep placeholder
+            }
+        }
+    }
+}
     // =========================================================
 // THEME SELECTOR
 // =========================================================
