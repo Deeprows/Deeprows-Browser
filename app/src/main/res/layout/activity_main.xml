@@ -130,21 +130,13 @@
 
                     </LinearLayout>
 
-                <!-- =========================================================
-     DYNAMIC SITE CATEGORIES
-     ========================================================= -->
-
-<LinearLayout
+                <LinearLayout
     android:id="@+id/siteCategoriesContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="8dp" />
-
-<!-- =========================================================
-     LATEST NEWS
-     ========================================================= -->
-
+                    
                     <!-- =========================================================
                          LATEST NEWS
                          ========================================================= -->
