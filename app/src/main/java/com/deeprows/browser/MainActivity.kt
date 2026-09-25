@@ -312,36 +312,35 @@ private fun setupControls() {
     // MENU
     // =====================================================
 
-    findViewById<View>(
+       findViewById<View>(
         R.id.menuButton
     ).setOnClickListener {
 
         showSettings()
     }
-}
-        // =====================================================
-        // NEWS BUTTONS
-        // =====================================================
 
-        findViewById<View>(
-            R.id.moreNewsButton
-        ).setOnClickListener {
+    // =====================================================
+    // NEWS BUTTONS
+    // =====================================================
 
-            openWebsite(
-                "https://news.google.com/"
-            )
-        }
+    findViewById<View>(
+        R.id.moreNewsButton
+    ).setOnClickListener {
 
-        findViewById<View>(
-            R.id.moreSportNewsButton
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://news.google.com/search?q=football"
-            )
-        }
+        openWebsite(
+            "https://news.google.com/"
+        )
     }
 
+    findViewById<View>(
+        R.id.moreSportNewsButton
+    ).setOnClickListener {
+
+        openWebsite(
+            "https://news.google.com/search?q=football"
+        )
+    }
+}
     // =========================================================
     // CATEGORY LINKS
     // =========================================================
