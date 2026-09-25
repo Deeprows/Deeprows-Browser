@@ -151,10 +151,10 @@ useWideViewPort = false
 
             mediaPlaybackRequiresUserGesture = false
 
-            userAgentString =
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+           userAgentString =
+    "Mozilla/5.0 (Linux; Android 15; Mobile) " +
     "AppleWebKit/537.36 (KHTML, like Gecko) " +
-    "Chrome/153.0.0.0 Safari/537.36"
+    "Chrome/153.0.0.0 Mobile Safari/537.36"
 
 setSupportZoom(true)
 builtInZoomControls = true
