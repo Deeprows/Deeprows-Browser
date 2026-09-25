@@ -18,40 +18,35 @@ data class NewsArticle(
 
 class NewsRepository {
 
-    private val baseUrl =
+    private val googleNewsUrl =
         "https://news.google.com/rss/search"
 
     suspend fun getLatestNews(
         limit: Int = 4
     ): List<NewsArticle> =
         withContext(Dispatchers.IO) {
-
             fetchGoogleNews(
-                query = "latest news",
-                limit = limit
+                "latest news",
+                limit
             )
         }
 
     suspend fun getSportNews(
-    limit: Int = 4
-): List<NewsArticle> =
-    withContext(Dispatchers.IO) {
-        fetchGoogleNews(
-            "football",
-            limit
-        )
-    }
+        limit: Int = 4
+    ): List<NewsArticle> =
+        withContext(Dispatchers.IO) {
+            fetchGoogleNews(
+                "football",
+                limit
+            )
+        }
 
     private fun fetchGoogleNews(
         query: String,
         limit: Int
     ): List<NewsArticle> {
 
-        val articles =
-            mutableListOf<NewsArticle>()
-
-        var connection:
-                HttpURLConnection? = null
+        val articles = mutableListOf<NewsArticle>()
 
         try {
 
@@ -61,22 +56,24 @@ class NewsRepository {
                     "UTF-8"
                 )
 
-            val url =
-                "$baseUrl?q=$encodedQuery&hl=en-US&gl=US&ceid=US:en"
+            val urlString =
+                "$googleNewsUrl?q=$encodedQuery" +
+                        "&hl=en-US" +
+                        "&gl=US" +
+                        "&ceid=US:en"
 
-            connection =
-                URL(url)
-                    .openConnection() as HttpURLConnection
+            val connection =
+                URL(urlString).openConnection()
+                        as HttpURLConnection
 
             connection.requestMethod = "GET"
 
             connection.connectTimeout = 15000
-
             connection.readTimeout = 15000
 
             connection.setRequestProperty(
                 "User-Agent",
-                "Mozilla/5.0"
+                "Mozilla/5.0 (Android) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36"
             )
 
             connection.setRequestProperty(
@@ -84,59 +81,50 @@ class NewsRepository {
                 "application/rss+xml, application/xml, text/xml"
             )
 
-            val responseCode =
-                connection.responseCode
-
-            if (
-                responseCode !in 200..299
-            ) {
+            if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+                connection.disconnect()
                 return emptyList()
             }
 
-            val inputStream =
-                connection.inputStream
+            connection.inputStream.use { inputStream ->
 
-            val parser =
-                Xml.newPullParser()
+                val parser =
+                    Xml.newPullParser()
 
-            parser.setInput(
-                inputStream,
-                null
-            )
+                parser.setInput(
+                    inputStream,
+                    "UTF-8"
+                )
 
-            var eventType =
-                parser.eventType
+                var eventType =
+                    parser.eventType
 
-            var insideItem = false
+                var insideItem = false
 
-            var title = ""
+                var title = ""
+                var link = ""
+                var source = ""
+                var pubDate = ""
+                var description = ""
 
-            var link = ""
+                val imageCandidates =
+                    mutableListOf<String>()
 
-            var source = ""
+                while (
+                    eventType !=
+                    XmlPullParser.END_DOCUMENT
+                ) {
 
-            var pubDate = ""
+                    when (eventType) {
 
-            var description = ""
+                        XmlPullParser.START_TAG -> {
 
-            var imageUrl = ""
+                            val tag =
+                                parser.name
+                                    ?.lowercase()
+                                    ?: ""
 
-            while (
-                eventType !=
-                XmlPullParser.END_DOCUMENT &&
-                articles.size < limit
-            ) {
-
-                when (eventType) {
-
-                    XmlPullParser.START_TAG -> {
-
-                        when (
-                            parser.name
-                                .lowercase()
-                        ) {
-
-                            "item" -> {
+                            if (tag == "item") {
 
                                 insideItem = true
 
@@ -145,238 +133,214 @@ class NewsRepository {
                                 source = ""
                                 pubDate = ""
                                 description = ""
-                                imageUrl = ""
+
+                                imageCandidates.clear()
                             }
 
-                            "title" -> {
+                            if (insideItem) {
 
-                                if (insideItem) {
+                                when (tag) {
 
-                                    title =
-                                        parser.nextText()
-                                            .trim()
-                                }
-                            }
-
-                            "link" -> {
-
-                                if (insideItem) {
-
-                                    link =
-                                        parser.nextText()
-                                            .trim()
-                                }
-                            }
-
-                            "source" -> {
-
-                                if (insideItem) {
-
-                                    source =
-                                        parser.nextText()
-                                            .trim()
-                                }
-                            }
-
-                            "pubdate" -> {
-
-                                if (insideItem) {
-
-                                    pubDate =
-                                        parser.nextText()
-                                            .trim()
-                                }
-                            }
-
-                            "description" -> {
-
-                                if (insideItem) {
-
-                                    description =
-                                        parser.nextText()
-                                            .trim()
-
-                                    if (
-                                        imageUrl.isBlank()
-                                    ) {
-
-                                        imageUrl =
-                                            extractImageFromHtml(
-                                                description
-                                            )
+                                    "title" -> {
+                                        if (title.isEmpty()) {
+                                            title =
+                                                parser.nextText()
+                                                    .trim()
+                                        }
                                     }
-                                }
-                            }
 
-                            "thumbnail" -> {
-
-                                if (insideItem) {
-
-                                    imageUrl =
-                                        parser
-                                            .getAttributeValue(
-                                                null,
-                                                "url"
-                                            )
-                                            ?: imageUrl
-                                }
-                            }
-
-                            "content" -> {
-
-                                if (insideItem) {
-
-                                    val mediaUrl =
-                                        parser
-                                            .getAttributeValue(
-                                                null,
-                                                "url"
-                                            )
-
-                                    if (
-                                        !mediaUrl.isNullOrBlank()
-                                    ) {
-
-                                        imageUrl =
-                                            mediaUrl
+                                    "link" -> {
+                                        if (link.isEmpty()) {
+                                            link =
+                                                parser.nextText()
+                                                    .trim()
+                                        }
                                     }
-                                }
-                            }
 
-                            "enclosure" -> {
+                                    "source" -> {
+                                        if (source.isEmpty()) {
+                                            source =
+                                                parser.nextText()
+                                                    .trim()
+                                    }
+                                    }
 
-                                if (insideItem) {
+                                    "pubdate" -> {
+                                        if (pubDate.isEmpty()) {
+                                            pubDate =
+                                                parser.nextText()
+                                                    .trim()
+                                        }
+                                    }
 
-                                    val enclosureUrl =
-                                        parser
-                                            .getAttributeValue(
+                                    "description" -> {
+                                        if (description.isEmpty()) {
+                                            description =
+                                                parser.nextText()
+                                                    .trim()
+                                        }
+                                    }
+
+                                    "media:content",
+                                    "media:thumbnail",
+                                    "thumbnail",
+                                    "enclosure" -> {
+
+                                        val image =
+                                            parser.getAttributeValue(
                                                 null,
                                                 "url"
                                             )
 
-                                    if (
-                                        !enclosureUrl.isNullOrBlank()
-                                    ) {
-
-                                        imageUrl =
-                                            enclosureUrl
+                                        if (
+                                            !image.isNullOrBlank()
+                                        ) {
+                                            imageCandidates.add(
+                                                image
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    XmlPullParser.END_TAG -> {
-
-                        if (
-                            parser.name.equals(
-                                "item",
-                                ignoreCase = true
-                            )
-                        ) {
-
-                            insideItem = false
+                        XmlPullParser.END_TAG -> {
 
                             if (
-                                title.isNotBlank() &&
-                                link.isNotBlank()
+                                parser.name
+                                    ?.equals(
+                                        "item",
+                                        ignoreCase = true
+                                    ) == true
                             ) {
 
-                                articles.add(
-                                    NewsArticle(
-                                        title =
-                                            cleanText(
-                                                title
-                                            ),
+                                insideItem = false
 
-                                        link =
-                                            link,
-
-                                        source =
-                                            cleanText(
-                                                source
-                                            ),
-
-                                        pubDate =
-                                            pubDate,
-
-                                        description =
-                                            cleanText(
-                                                description
-                                            ),
-
-                                        imageUrl =
-                                            imageUrl
+                                val imageUrl =
+                                    findImageUrl(
+                                        description,
+                                        imageCandidates
                                     )
-                                )
+
+                                if (
+                                    title.isNotBlank() &&
+                                    link.isNotBlank()
+                                ) {
+
+                                    articles.add(
+                                        NewsArticle(
+                                            title =
+                                                cleanText(title),
+
+                                            link =
+                                                link,
+
+                                            source =
+                                                cleanText(source),
+
+                                            pubDate =
+                                                cleanText(pubDate),
+
+                                            description =
+                                                cleanText(
+                                                    description
+                                                ),
+
+                                            imageUrl =
+                                                imageUrl
+                                        )
+                                    )
+                                }
+
+                                if (
+                                    articles.size >= limit
+                                ) {
+                                    break
+                                }
                             }
                         }
                     }
-                }
 
-                eventType =
-                    parser.next()
+                    eventType =
+                        parser.next()
+                }
             }
 
-            inputStream.close()
+            connection.disconnect()
 
         } catch (
-            exception: Exception
+            e: Exception
         ) {
 
-            exception.printStackTrace()
-
-            return emptyList()
-
-        } finally {
-
-            connection?.disconnect()
+            e.printStackTrace()
         }
 
         return articles
     }
 
-    private fun extractImageFromHtml(
-        html: String
+    private fun findImageUrl(
+        description: String,
+        candidates: List<String>
     ): String {
 
-        if (html.isBlank()) {
-            return ""
+        // 1. Prefer media/enclosure thumbnail
+        candidates.forEach { url ->
+
+            if (
+                url.startsWith("http://") ||
+                url.startsWith("https://")
+            ) {
+                return url
+            }
         }
 
-        val patterns =
-            listOf(
-
-                Regex(
-                    """<img[^>]+src=["']([^"']+)["']""",
-                    RegexOption.IGNORE_CASE
-                ),
-
-                Regex(
-                    """<img[^>]+src=([^ >]+)""",
-                    RegexOption.IGNORE_CASE
-                ),
-
-                Regex(
-                    """<img[^>]+data-src=["']([^"']+)["']""",
-                    RegexOption.IGNORE_CASE
-                )
+        // 2. Look for normal HTML image
+        val imageRegex =
+            Regex(
+                """<img[^>]+src=["']([^"']+)["']""",
+                RegexOption.IGNORE_CASE
             )
 
-        for (pattern in patterns) {
+        val imageMatch =
+            imageRegex.find(description)
 
-            val match =
-                pattern.find(html)
+        if (
+            imageMatch != null
+        ) {
 
-            if (match != null) {
+            val image =
+                imageMatch.groupValues[1]
 
-                return match
-                    .groupValues[1]
-                    .replace(
-                        "&amp;",
-                        "&"
-                    )
-                    .trim()
+            if (
+                image.startsWith("http://") ||
+                image.startsWith("https://")
+            ) {
+                return image
+            }
+        }
+
+        // 3. Look for lazy-loaded images
+        val lazyRegex =
+            Regex(
+                """(?:data-src|data-original|data-lazy-src)=["']([^"']+)["']""",
+                RegexOption.IGNORE_CASE
+            )
+
+        val lazyMatch =
+            lazyRegex.find(description)
+
+        if (
+            lazyMatch != null
+        ) {
+
+            val image =
+                lazyMatch.groupValues[1]
+
+            if (
+                image.startsWith("http://") ||
+                image.startsWith("https://")
+            ) {
+                return image
             }
         }
 
@@ -387,12 +351,42 @@ class NewsRepository {
         text: String
     ): String {
 
-        return android.text.Html
-            .fromHtml(
-                text,
-                android.text.Html.FROM_HTML_MODE_LEGACY
+        return text
+            .replace(
+                Regex("<[^>]*>"),
+                ""
             )
-            .toString()
+            .replace(
+                "&amp;",
+                "&"
+            )
+            .replace(
+                "&quot;",
+                "\""
+            )
+            .replace(
+                "&#39;",
+                "'"
+            )
+            .replace(
+                "&apos;",
+                "'"
+            )
+            .replace(
+                "&lt;",
+                "<"
+            )
+            .replace(
+                "&gt;",
+                ">"
+            )
+            .replace(
+                Regex("\\s+"),
+                " "
+            )
             .trim()
     }
 }
+```
+
+After replacing it, **build and test the app first**. If the cards still show the placeholder instead of images, the next thing to fix is `addNewsCard()` in `MainActivity.kt`, because the repository may be receiving the image URL correctly but the `ImageView` may not be displaying it.
