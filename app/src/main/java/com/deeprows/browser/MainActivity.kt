@@ -1,5 +1,12 @@
 package com.deeprows.browser
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import android.webkit.CookieManager
 import android.app.AlertDialog
 import android.graphics.Bitmap
