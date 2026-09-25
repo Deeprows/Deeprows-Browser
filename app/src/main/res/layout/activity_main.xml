@@ -103,279 +103,443 @@
                 android:paddingTop="15dp"
                 android:paddingBottom="18dp">
 
-                <!-- QUICK SITES -->
+               <!-- =========================================================
+     WEBSITE CATEGORIES
+     ========================================================= -->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+<LinearLayout
+    android:id="@+id/categoryContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
+    <!-- WATCH FOOTBALL / MOVIES -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WATCH FOOTBALL • LATEST MOVIES"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="10dp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:id="@+id/liveCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <LinearLayout
+                android:id="@+id/siteWatchFootball"
+                android:layout_width="150dp"
+                android:layout_height="110dp"
+                android:layout_marginEnd="12dp"
+                android:background="#151A22"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@android:drawable/ic_media_play"
+                    android:tint="#FF1744" />
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical">
+                    android:layout_marginTop="8dp"
+                    android:text="Watch Football"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Quick Sites"
-                        android:textColor="#FFFFFF"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
+            </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Swipe →"
-                        android:textColor="#77869B"
-                        android:textSize="10sp" />
+            <LinearLayout
+                android:id="@+id/siteLatestMovies"
+                android:layout_width="150dp"
+                android:layout_height="110dp"
+                android:background="#151A22"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="12dp">
 
-                </LinearLayout>
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@android:drawable/ic_menu_save"
+                    android:tint="#FF1744" />
 
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:scrollbars="none">
+                    android:layout_marginTop="8dp"
+                    android:text="Latest Movies"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+            </LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/siteFacebook"
-                            android:layout_width="84dp"
-                            android:layout_height="88dp"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:background="#162235"
-                            android:padding="7dp"
-                            android:clickable="true"
-                            android:focusable="true">
+        </LinearLayout>
 
-                            <TextView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:gravity="center"
-                                android:text="f"
-                                android:textColor="#FFFFFF"
-                                android:textSize="24sp"
-                                android:textStyle="bold"
-                                android:background="#1877F2" />
+    </HorizontalScrollView>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:text="Facebook"
-                                android:textColor="#D6DEEA"
-                                android:textSize="10sp" />
 
-                        </LinearLayout>
+    <!-- SOCIAL & VIDEO -->
 
-                        <LinearLayout
-                            android:id="@+id/siteInstagram"
-                            android:layout_width="84dp"
-                            android:layout_height="88dp"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:background="#162235"
-                            android:padding="7dp"
-                            android:clickable="true"
-                            android:focusable="true">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SOCIAL &amp; VIDEO"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="10dp" />
 
-                            <TextView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:gravity="center"
-                                android:text="◎"
-                                android:textColor="#FFFFFF"
-                                android:textSize="24sp"
-                                android:textStyle="bold"
-                                android:background="#D62976" />
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:overScrollMode="never">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:text="Instagram"
-                                android:textColor="#D6DEEA"
-                                android:textSize="10sp" />
+        <LinearLayout
+            android:id="@+id/socialCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-                        </LinearLayout>
+            <TextView
+                android:id="@+id/siteFacebook"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="10dp"
+                android:background="#151A22"
+                android:gravity="center"
+                android:text="Facebook"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
 
-                        <LinearLayout
-                            android:id="@+id/siteJobs"
-                            android:layout_width="84dp"
-                            android:layout_height="88dp"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:background="#162235"
-                            android:padding="7dp"
-                            android:clickable="true"
-                            android:focusable="true">
+            <TextView
+                android:id="@+id/siteTikTok"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="10dp"
+                android:background="#151A22"
+                android:gravity="center"
+                android:text="TikTok"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
 
-                            <TextView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:gravity="center"
-                                android:text="J"
-                                android:textColor="#FFFFFF"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
-                                android:background="#2563EB" />
+            <TextView
+                android:id="@+id/siteYouTube"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="10dp"
+                android:background="#151A22"
+                android:gravity="center"
+                android:text="YouTube"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:text="Jobs"
-                                android:textColor="#D6DEEA"
-                                android:textSize="10sp" />
+            <TextView
+                android:id="@+id/siteX"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="10dp"
+                android:background="#151A22"
+                android:gravity="center"
+                android:text="X"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
 
-                        </LinearLayout>
+            <TextView
+                android:id="@+id/siteDailymotion"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:background="#151A22"
+                android:gravity="center"
+                android:text="Dailymotion"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
 
-                        <LinearLayout
-                            android:id="@+id/siteScholarships"
-                            android:layout_width="84dp"
-                            android:layout_height="88dp"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:background="#162235"
-                            android:padding="7dp"
-                            android:clickable="true"
-                            android:focusable="true">
+        </LinearLayout>
 
-                            <TextView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:gravity="center"
-                                android:text="S"
-                                android:textColor="#FFFFFF"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
-                                android:background="#7C3AED" />
+    </HorizontalScrollView>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:text="Scholarships"
-                                android:textColor="#D6DEEA"
-                                android:textSize="9sp" />
 
-                        </LinearLayout>
+    <!-- MESSAGING -->
 
-                        <LinearLayout
-                            android:id="@+id/siteX"
-                            android:layout_width="84dp"
-                            android:layout_height="88dp"
-                            android:layout_marginEnd="8dp"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:background="#162235"
-                            android:padding="7dp"
-                            android:clickable="true"
-                            android:focusable="true">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MESSAGING"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="10dp" />
 
-                            <TextView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:gravity="center"
-                                android:text="X"
-                                android:textColor="#FFFFFF"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                android:background="#000000" />
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:overScrollMode="never">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:text="X"
-                                android:textColor="#D6DEEA"
-                                android:textSize="10sp" />
+        <LinearLayout
+            android:id="@+id/messagingCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-                        </LinearLayout>
+            <TextView
+                android:id="@+id/siteWhatsApp"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="10dp"
+                android:background="#151A22"
+                android:gravity="center"
+                android:text="WhatsApp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
 
-                        <LinearLayout
-                            android:id="@+id/siteDeeprowss"
-                            android:layout_width="84dp"
-                            android:layout_height="88dp"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:background="#162235"
-                            android:padding="7dp"
-                            android:clickable="true"
-                            android:focusable="true">
+            <TextView
+                android:id="@+id/siteSnapchat"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="10dp"
+                android:background="#151A22"
+                android:gravity="center"
+                android:text="Snapchat"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
 
-                            <TextView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:gravity="center"
-                                android:text="D"
-                                android:textColor="#FFFFFF"
-                                android:textSize="22sp"
-                                android:textStyle="bold"
-                                android:background="#E91E4D" />
+            <TextView
+                android:id="@+id/siteTelegram"
+                android:layout_width="130dp"
+                android:layout_height="90dp"
+                android:background="#151A22"
+                android:gravity="center"
+                android:text="Telegram"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="6dp"
-                                android:text="Deeprowss"
-                                android:textColor="#D6DEEA"
-                                android:textSize="10sp" />
+        </LinearLayout>
 
-                        </LinearLayout>
+    </HorizontalScrollView>
 
-                    </LinearLayout>
 
-                </HorizontalScrollView>
+    <!-- JOBS -->
 
-                <!-- PROMO -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="JOBS"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="10dp" />
 
-                <LinearLayout
-                    android:id="@+id/deeprowssPromo"
-                    android:layout_width="match_parent"
-                    android:layout_height="112dp"
-                    android:layout_marginTop="17dp"
-                    android:orientation="vertical"
-                    android:gravity="center_vertical"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:background="#182638"
-                    android:clickable="true"
-                    android:focusable="true">
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:overScrollMode="never">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="DEEPR0WSS"
-                        android:textColor="#E91E4D"
-                        android:textSize="10sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.15" />
+        <LinearLayout
+            android:id="@+id/jobsCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Live Football • Movies • Highlights"
-                        android:textColor="#FFFFFF"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
+            <TextView android:id="@+id/siteLinkedInJobs" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="LinkedIn Jobs" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteIndeed" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Indeed" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteGlassdoor" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Glassdoor" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteZipRecruiter" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="ZipRecruiter" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteBayt" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Bayt" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteJooble" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Jooble" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteMonster" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Monster" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteJobStreet" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="JobStreet" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteWellfound" android:layout_width="130dp" android:layout_height="90dp" android:background="#151A22" android:gravity="center" android:text="Wellfound" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="Visit deeprowss.com  →"
-                        android:textColor="#8EA0B7"
-                        android:textSize="11sp" />
+        </LinearLayout>
 
-                </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <!-- SPORTS -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SPORTS"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="10dp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:id="@+id/sportsCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <TextView android:id="@+id/siteESPN" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="ESPN" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteBBCSport" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="BBC Sport" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteSkySports" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Sky Sports" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteGoal" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Goal" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteAthletic" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="The Athletic" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteCBSSports" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="CBS Sports" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteFoxSports" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="FOX Sports" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteSportingNews" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Sporting News" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteEurosport" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Eurosport" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteSportsIllustrated" android:layout_width="130dp" android:layout_height="90dp" android:background="#151A22" android:gravity="center" android:text="Sports Illustrated" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+
+    <!-- NEWS -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEWS"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="10dp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:id="@+id/newsCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <TextView android:id="@+id/siteBBCNews" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="BBC News" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteReuters" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Reuters" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteAP" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Associated Press" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteCNN" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="CNN" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteAlJazeera" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Al Jazeera" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteGuardian" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="The Guardian" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteNYTimes" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="New York Times" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteSkyNews" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Sky News" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteFrance24" android:layout_width="130dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="France 24" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteDW" android:layout_width="130dp" android:layout_height="90dp" android:background="#151A22" android:gravity="center" android:text="DW" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+
+    <!-- SCHOLARSHIPS & SPONSORSHIPS -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SCHOLARSHIPS &amp; SPONSORSHIPS"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="10dp" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:id="@+id/scholarshipCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <TextView android:id="@+id/siteChevening" android:layout_width="150dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Chevening" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteErasmus" android:layout_width="150dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Erasmus Mundus" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteDAAD" android:layout_width="150dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="DAAD" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteCommonwealth" android:layout_width="150dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Commonwealth" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteMastercard" android:layout_width="150dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Mastercard Foundation" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteSwedishInstitute" android:layout_width="150dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Swedish Institute" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteOpportunityDesk" android:layout_width="150dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Opportunity Desk" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteScholarshipPositions" android:layout_width="150dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Scholarship Positions" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteStudyportals" android:layout_width="150dp" android:layout_height="90dp" android:layout_marginEnd="10dp" android:background="#151A22" android:gravity="center" android:text="Studyportals" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+            <TextView android:id="@+id/siteAfricanUnion" android:layout_width="150dp" android:layout_height="90dp" android:background="#151A22" android:gravity="center" android:text="African Union" android:textColor="#FFFFFF" android:textStyle="bold" android:clickable="true" android:focusable="true"/>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+</LinearLayout>
 
                 <!-- LATEST NEWS -->
 
