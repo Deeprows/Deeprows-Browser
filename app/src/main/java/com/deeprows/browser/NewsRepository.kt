@@ -301,7 +301,6 @@ class NewsRepository {
         candidates: List<String>
     ): String {
 
-        // First: media:content / media:thumbnail / enclosure
         candidates.forEach { url ->
 
             if (
@@ -312,7 +311,6 @@ class NewsRepository {
             }
         }
 
-        // Second: normal HTML image
         val imageRegex =
             Regex(
                 """<img[^>]+src=["']([^"']+)["']""",
@@ -337,7 +335,6 @@ class NewsRepository {
             }
         }
 
-        // Third: lazy-loaded image
         val lazyRegex =
             Regex(
                 """(?:data-src|data-original|data-lazy-src)=["']([^"']+)["']""",
@@ -405,4 +402,3 @@ class NewsRepository {
             .trim()
     }
 }
-```
