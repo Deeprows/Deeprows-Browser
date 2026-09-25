@@ -490,6 +490,73 @@ private fun addSubCategoryHeader(
     container.addView(titleView)
 }
 
+private fun addSiteGrid(
+    container: LinearLayout,
+    sites: List<HomeSite>
+) {
+
+    val grid = GridLayout(this)
+
+    grid.columnCount = 3
+    grid.layoutParams =
+        LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+    sites.forEach { site ->
+
+        val card = TextView(this)
+
+        card.text = site.name
+        card.textSize = 12f
+        card.gravity = Gravity.CENTER
+        card.setTextColor(Color.WHITE)
+
+        card.setPadding(
+            dp(5),
+            dp(8),
+            dp(5),
+            dp(8)
+        )
+
+        val background = GradientDrawable()
+        background.cornerRadius = dp(14).toFloat()
+        background.setColor(Color.rgb(21, 26, 34))
+
+        card.background = background
+
+        val params =
+            GridLayout.LayoutParams().apply {
+
+                width = 0
+                height = dp(82)
+
+                columnSpec =
+                    GridLayout.spec(
+                        GridLayout.UNDEFINED,
+                        1f
+                    )
+
+                setMargins(
+                    dp(4),
+                    dp(4),
+                    dp(4),
+                    dp(4)
+                )
+            }
+
+        card.layoutParams = params
+
+        card.setOnClickListener {
+            openWebsite(site.url)
+        }
+
+        grid.addView(card)
+    }
+
+    container.addView(grid)
+}
     // =========================================================
     // SYSTEM NAVIGATION BAR
     // =========================================================
