@@ -120,8 +120,7 @@ private var nextTabId = 1
 
         setupWebView()
         setupControls()
-        setupCategoryLinks()
-        setupCategoryLogos()
+        setupDynamicHomepage()
         setupSettings()
 
 createNotificationChannel()
