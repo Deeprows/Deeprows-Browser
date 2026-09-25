@@ -357,6 +357,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // =====================================================
+// NEWS BUTTONS
+// =====================================================
+
+findViewById<View>(
+    R.id.moreNewsButton
+).setOnClickListener {
+
+    openWebsite(
+        "https://news.google.com/"
+    )
+}
+
+findViewById<View>(
+    R.id.moreSportNewsButton
+).setOnClickListener {
+
+    openWebsite(
+        "https://news.google.com/search?q=football"
+    )
+}
+
     // =========================================================
     // SETTINGS
     // =========================================================
