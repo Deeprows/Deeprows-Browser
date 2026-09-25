@@ -520,10 +520,10 @@ private fun addSiteGrid(
         )
 
         val background = GradientDrawable()
-        background.cornerRadius = dp(14).toFloat()
-        background.setColor(Color.rgb(21, 26, 34))
+background.cornerRadius = dp(14).toFloat()
+background.setColor(getThemeSurfaceColor())
 
-        card.background = background
+card.background = background
 
         val params =
             GridLayout.LayoutParams().apply {
