@@ -5,6 +5,8 @@
 
     <application
         android:allowBackup="true"
+        android:icon="@drawable/deeprows_logo"
+        android:roundIcon="@drawable/deeprows_logo"
         android:label="Deeprows Browser"
         android:supportsRtl="true"
         android:theme="@style/Theme.DeeprowsBrowser">
