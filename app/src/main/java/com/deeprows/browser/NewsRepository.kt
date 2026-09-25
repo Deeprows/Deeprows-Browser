@@ -29,8 +29,8 @@ class NewsRepository {
         "https://feeds.bbci.co.uk/sport/rss.xml"
 
     // Current Google Trends RSS endpoint
-    private val googleTrendsUrl =
-        "https://trends.google.com/trending/rss?geo=EG"
+   private val googleTrendsUrl =
+    "https://trends.google.com/trending/rss"
 
     // =========================================================
     // LATEST NEWS
