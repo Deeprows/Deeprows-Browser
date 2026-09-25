@@ -448,6 +448,28 @@ private fun setupDynamicHomepage() {
         }
     )
 }
+
+private fun addMainCategoryHeader(
+    container: LinearLayout,
+    title: String
+) {
+    val titleView = TextView(this)
+
+    titleView.text = title
+    titleView.textSize = 21f
+    titleView.setTypeface(null, Typeface.BOLD)
+    titleView.setTextColor(Color.WHITE)
+
+    titleView.setPadding(
+        dp(8),
+        dp(18),
+        dp(8),
+        dp(10)
+    )
+
+    container.addView(titleView)
+}
+
     // =========================================================
     // SYSTEM NAVIGATION BAR
     // =========================================================
