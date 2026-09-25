@@ -1437,7 +1437,7 @@
     </FrameLayout>
 
 
-  <!-- =========================================================
+ <!-- =========================================================
      MODERN BROWSER BOTTOM BAR
      ========================================================= -->
 
@@ -1452,15 +1452,12 @@
     android:paddingEnd="4dp">
 
     <!-- BACK -->
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true">
+        android:gravity="center">
 
         <ImageButton
             android:id="@+id/backButton"
@@ -1481,17 +1478,13 @@
 
     </LinearLayout>
 
-
     <!-- FORWARD -->
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true">
+        android:gravity="center">
 
         <ImageButton
             android:id="@+id/forwardButton"
@@ -1512,17 +1505,13 @@
 
     </LinearLayout>
 
-
     <!-- HOME -->
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true">
+        android:gravity="center">
 
         <ImageButton
             android:id="@+id/homeButton"
@@ -1544,9 +1533,7 @@
 
     </LinearLayout>
 
-
     <!-- OPEN PAGES -->
-
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -1556,9 +1543,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center"
-            android:clickable="true"
-            android:focusable="true">
+            android:gravity="center">
 
             <ImageButton
                 android:id="@+id/refreshButton"
@@ -1579,8 +1564,6 @@
 
         </LinearLayout>
 
-        <!-- PAGE COUNT BADGE -->
-
         <TextView
             android:id="@+id/pagesCount"
             android:layout_width="18dp"
@@ -1593,22 +1576,17 @@
             android:textColor="#FFFFFF"
             android:textSize="8sp"
             android:textStyle="bold"
-            android:background="#E91E4D"
-            android:visibility="visible" />
+            android:background="#E91E4D" />
 
     </FrameLayout>
 
-
     <!-- BOOKMARK -->
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true">
+        android:gravity="center">
 
         <ImageButton
             android:id="@+id/bookmarkButton"
@@ -1629,17 +1607,13 @@
 
     </LinearLayout>
 
-
     <!-- MENU -->
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:gravity="center"
-        android:clickable="true"
-        android:focusable="true">
+        android:gravity="center">
 
         <ImageButton
             android:id="@+id/menuButton"
@@ -1659,4 +1633,5 @@
             android:textSize="8sp" />
 
     </LinearLayout>
+
 </LinearLayout>
