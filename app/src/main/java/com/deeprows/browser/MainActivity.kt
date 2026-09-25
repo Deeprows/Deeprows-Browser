@@ -1372,6 +1372,19 @@ private fun openWebsite(
         url
     )
 }  
+
+// =========================================================
+// UPDATE TABS COUNT
+// =========================================================
+
+private fun updateTabsCount() {
+
+    findViewById<android.widget.TextView>(
+        R.id.pagesCount
+    ).text =
+        openTabs.size.toString()
+}
+
     // =========================================================
     // ADDRESS BAR
     // =========================================================
