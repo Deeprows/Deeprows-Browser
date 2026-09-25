@@ -959,17 +959,17 @@ private fun loadWebsiteLogo(
 
                 runOnUiThread {
 
+                    val density =
+                        resources.displayMetrics.density
+
+                    val size =
+                        (30 * density).toInt()
+
                     val drawable =
                         android.graphics.drawable.BitmapDrawable(
                             resources,
                             bitmap
                         )
-
-                    val size =
-                        (
-                            26 *
-                                resources.displayMetrics.density
-                            ).toInt()
 
                     drawable.setBounds(
                         0,
@@ -986,13 +986,20 @@ private fun loadWebsiteLogo(
                     )
 
                     textView.compoundDrawablePadding =
-                        (
-                            5 *
-                                resources.displayMetrics.density
-                            ).toInt()
+                        (7 * density).toInt()
 
                     textView.gravity =
                         android.view.Gravity.CENTER
+
+                    textView.includeFontPadding =
+                        false
+
+                    textView.setPadding(
+                        (4 * density).toInt(),
+                        (8 * density).toInt(),
+                        (4 * density).toInt(),
+                        (8 * density).toInt()
+                    )
                 }
             }
 
