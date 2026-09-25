@@ -2624,18 +2624,6 @@ private fun applyAppTheme() {
         surfaceColor
     )
 
-    // =====================================================
-    // BOTTOM NAVIGATION
-    // =====================================================
-
-    val bottomBar =
-        findViewById<View>(
-            R.id.bottomBar
-        )
-
-    bottomBar.setBackgroundColor(
-        surfaceColor
-    )
 
     // =====================================================
     // TEXT COLORS
