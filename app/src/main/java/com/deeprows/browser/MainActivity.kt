@@ -3358,4 +3358,3 @@ private fun applyCardTheme(
     }
 }
 }
-}
