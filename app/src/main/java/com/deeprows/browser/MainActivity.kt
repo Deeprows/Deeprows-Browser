@@ -1306,7 +1306,11 @@ private fun loadWebsiteLogoToImage(
             View.GONE
     }
 
-   private fun openWebsite(
+  // =========================================================
+// OPEN WEBSITE
+// =========================================================
+
+private fun openWebsite(
     url: String
 ) {
 
@@ -1319,44 +1323,35 @@ private fun loadWebsiteLogoToImage(
     webView.visibility =
         View.VISIBLE
 
-    val existingTab =
-        openTabs.find {
-            it.id == activeTabId
-        }
+    addressBar.visibility =
+        View.GONE
 
-    if (existingTab == null) {
+    findViewById<View>(
+        R.id.goButton
+    ).visibility =
+        View.GONE
 
-        val newTab =
-            BrowserTab(
-                id = nextTabId++,
-                title = "New Tab",
-                url = url
-            )
+    // Create a new tab
+    val newTab =
+        BrowserTab(
+            id = nextTabId++,
+            title = "New Tab",
+            url = url
+        )
 
-        openTabs.add(newTab)
+    openTabs.add(
+        newTab
+    )
 
-        activeTabId =
-            newTab.id
-
-    } else {
-
-        existingTab.url =
-            url
-    }
+    activeTabId =
+        newTab.id
 
     updateTabsCount()
 
-    webView.loadUrl(url)
-}
-   
-    private fun updateTabsCount() {
-
-    findViewById<android.widget.TextView>(
-        R.id.pagesCount
-    ).text =
-        openTabs.size.toString()
-}
-    
+    webView.loadUrl(
+        url
+    )
+}  
     // =========================================================
     // ADDRESS BAR
     // =========================================================
