@@ -28,9 +28,46 @@ class NewsRepository {
     private val sportNewsUrl =
         "https://feeds.bbci.co.uk/sport/rss.xml"
 
-    // Current Google Trends RSS endpoint
-   private val googleTrendsUrl =
-    "https://trends.google.com/trending/rss"
+    // =========================================================
+    // GOOGLE TRENDS RSS
+    // =========================================================
+    //
+    // The country/geo is added dynamically.
+    //
+    // Example:
+    // Egypt   -> ?geo=EG
+    // Nigeria -> ?geo=NG
+    // UK      -> ?geo=GB
+    // USA     -> ?geo=US
+    //
+    // If no country is available, the worldwide/default
+    // Google Trends feed is used.
+    //
+    // =========================================================
+
+    private fun getGoogleTrendsUrl(
+        countryCode: String?
+    ): String {
+
+        val geo =
+            countryCode
+                ?.trim()
+                ?.uppercase()
+                ?.takeIf {
+                    it.length == 2
+                }
+
+        return if (
+            geo != null
+        ) {
+
+            "https://trends.google.com/trending/rss?geo=$geo"
+
+        } else {
+
+            "https://trends.google.com/trending/rss"
+        }
+    }
 
     // =========================================================
     // LATEST NEWS
@@ -65,13 +102,28 @@ class NewsRepository {
     // =========================================================
     // GOOGLE TRENDS
     // =========================================================
+    //
+    // countryCode should come from CountryProvider.
+    //
+    // Example:
+    //
+    // val countryCode =
+    //     CountryProvider.getCountryCode(context)
+    //
+    // repository.getGoogleTrends(
+    //     countryCode = countryCode
+    // )
+    //
+    // =========================================================
 
     suspend fun getGoogleTrends(
+        countryCode: String?,
         limit: Int = 10
     ): List<NewsArticle> =
         withContext(Dispatchers.IO) {
 
             fetchGoogleTrends(
+                countryCode,
                 limit
             )
         }
@@ -434,6 +486,7 @@ class NewsRepository {
     // =========================================================
 
     private fun fetchGoogleTrends(
+        countryCode: String?,
         limit: Int
     ): List<NewsArticle> {
 
@@ -445,8 +498,17 @@ class NewsRepository {
 
         try {
 
+            // -----------------------------------------------------
+            // BUILD LOCATION-SPECIFIC GOOGLE TRENDS URL
+            // -----------------------------------------------------
+
+            val trendsUrl =
+                getGoogleTrendsUrl(
+                    countryCode
+                )
+
             connection =
-                URL(googleTrendsUrl)
+                URL(trendsUrl)
                     .openConnection()
                         as HttpURLConnection
 
@@ -475,6 +537,11 @@ class NewsRepository {
             )
 
             connection.setRequestProperty(
+                "Accept-Language",
+                "en-US,en;q=0.9"
+            )
+
+            connection.setRequestProperty(
                 "Cache-Control",
                 "no-cache"
             )
@@ -492,9 +559,24 @@ class NewsRepository {
                 val parser =
                     Xml.newPullParser()
 
+                // -------------------------------------------------
+                // IMPORTANT
+                // -------------------------------------------------
+                //
+                // Google Trends uses XML namespaces:
+                //
+                // ht:news_item_title
+                // ht:news_item_url
+                // ht:news_item_source
+                // ht:news_item_picture
+                //
+                // We enable namespace processing.
+                //
+                // -------------------------------------------------
+
                 parser.setFeature(
                     XmlPullParser.FEATURE_PROCESS_NAMESPACES,
-                    false
+                    true
                 )
 
                 parser.setInput(
@@ -508,23 +590,43 @@ class NewsRepository {
                 var insideItem =
                     false
 
-                var title =
+                var insideNewsItem =
+                    false
+
+                // -------------------------------------------------
+                // TREND INFORMATION
+                // -------------------------------------------------
+
+                var trendTitle =
                     ""
 
-                var link =
+                var trendTraffic =
                     ""
 
-                var description =
+                var trendDate =
                     ""
 
-                var pubDate =
+                var trendPicture =
                     ""
 
-                var imageUrl =
+                // -------------------------------------------------
+                // NEWS ARTICLE INFORMATION
+                // -------------------------------------------------
+
+                var newsTitle =
                     ""
 
-                var source =
-                    "Google Trends"
+                var newsUrl =
+                    ""
+
+                var newsSource =
+                    ""
+
+                var newsPicture =
+                    ""
+
+                var newsSnippet =
+                    ""
 
                 while (
                     eventType !=
@@ -535,166 +637,373 @@ class NewsRepository {
 
                         XmlPullParser.START_TAG -> {
 
-                            val tag =
+                            val name =
                                 parser.name
                                     ?.lowercase()
                                     ?: ""
 
+                            val namespace =
+                                parser.namespace
+                                    ?.lowercase()
+                                    ?: ""
+
+                            // =================================================
+                            // TREND ITEM START
+                            // =================================================
+
                             if (
-                                tag == "item"
+                                name == "item"
                             ) {
 
                                 insideItem =
                                     true
 
-                                title =
+                                insideNewsItem =
+                                    false
+
+                                trendTitle =
                                     ""
 
-                                link =
+                                trendTraffic =
                                     ""
 
-                                description =
+                                trendDate =
                                     ""
 
-                                pubDate =
+                                trendPicture =
                                     ""
 
-                                imageUrl =
+                                newsTitle =
+                                    ""
+
+                                newsUrl =
+                                    ""
+
+                                newsSource =
+                                    ""
+
+                                newsPicture =
+                                    ""
+
+                                newsSnippet =
                                     ""
                             }
 
+                            // =================================================
+                            // TREND TITLE
+                            // =================================================
+
                             if (
-                                insideItem
+                                insideItem &&
+                                !insideNewsItem &&
+                                name == "title" &&
+                                namespace.isEmpty()
                             ) {
 
-                                when (tag) {
+                                if (
+                                    trendTitle.isEmpty()
+                                ) {
 
-                                    "title" -> {
-
-                                        if (
-                                            title.isEmpty()
-                                        ) {
-
-                                            title =
-                                                safeNextText(
-                                                    parser
-                                                )
-                                        }
-                                    }
-
-                                    "link" -> {
-
-                                        if (
-                                            link.isEmpty()
-                                        ) {
-
-                                            link =
-                                                safeNextText(
-                                                    parser
-                                                )
-                                        }
-                                    }
-
-                                    "description" -> {
-
-                                        if (
-                                            description.isEmpty()
-                                        ) {
-
-                                            description =
-                                                safeNextText(
-                                                    parser
-                                                )
-                                        }
-                                    }
-
-                                    "pubdate" -> {
-
-                                        if (
-                                            pubDate.isEmpty()
-                                        ) {
-
-                                            pubDate =
-                                                safeNextText(
-                                                    parser
-                                                )
-                                        }
-                                    }
-
-                                    // Google Trends image
-                                    "ht:picture" -> {
-
-                                        if (
-                                            imageUrl.isEmpty()
-                                        ) {
-
-                                            imageUrl =
-                                                getElementText(
-                                                    parser
-                                                )
-                                        }
-                                    }
-
-                                    // Google Trends news image
-                                    "ht:news_item_picture" -> {
-
-                                        if (
-                                            imageUrl.isEmpty()
-                                        ) {
-
-                                            imageUrl =
-                                                getElementText(
-                                                    parser
-                                                )
-                                        }
-                                    }
+                                    trendTitle =
+                                        safeNextText(
+                                            parser
+                                        )
                                 }
+                            }
+
+                            // =================================================
+                            // APPROXIMATE TRAFFIC
+                            // =================================================
+
+                            if (
+                                insideItem &&
+                                !insideNewsItem &&
+                                name == "approx_traffic"
+                            ) {
+
+                                if (
+                                    trendTraffic.isEmpty()
+                                ) {
+
+                                    trendTraffic =
+                                        safeNextText(
+                                            parser
+                                        )
+                                }
+                            }
+
+                            // =================================================
+                            // TREND DATE
+                            // =================================================
+
+                            if (
+                                insideItem &&
+                                !insideNewsItem &&
+                                name == "pubdate" &&
+                                namespace.isEmpty()
+                            ) {
+
+                                if (
+                                    trendDate.isEmpty()
+                                ) {
+
+                                    trendDate =
+                                        safeNextText(
+                                            parser
+                                        )
+                                }
+                            }
+
+                            // =================================================
+                            // TREND PICTURE
+                            // =================================================
+
+                            if (
+                                insideItem &&
+                                !insideNewsItem &&
+                                name == "picture"
+                            ) {
+
+                                if (
+                                    trendPicture.isEmpty()
+                                ) {
+
+                                    trendPicture =
+                                        safeNextText(
+                                            parser
+                                        )
+                                }
+                            }
+
+                            // =================================================
+                            // NEWS ITEM START
+                            // =================================================
+
+                            if (
+                                name == "news_item"
+                            ) {
+
+                                insideNewsItem =
+                                    true
+                            }
+
+                            // =================================================
+                            // NEWS ARTICLE TITLE
+                            // =================================================
+
+                            if (
+                                insideNewsItem &&
+                                name == "news_item_title"
+                            ) {
+
+                                newsTitle =
+                                    safeNextText(
+                                        parser
+                                    )
+                            }
+
+                            // =================================================
+                            // NEWS ARTICLE URL
+                            // =================================================
+
+                            if (
+                                insideNewsItem &&
+                                name == "news_item_url"
+                            ) {
+
+                                newsUrl =
+                                    safeNextText(
+                                        parser
+                                    )
+                            }
+
+                            // =================================================
+                            // NEWS SOURCE
+                            // =================================================
+
+                            if (
+                                insideNewsItem &&
+                                name == "news_item_source"
+                            ) {
+
+                                newsSource =
+                                    safeNextText(
+                                        parser
+                                    )
+                            }
+
+                            // =================================================
+                            // NEWS IMAGE
+                            // =================================================
+
+                            if (
+                                insideNewsItem &&
+                                name == "news_item_picture"
+                            ) {
+
+                                newsPicture =
+                                    safeNextText(
+                                        parser
+                                    )
+                            }
+
+                            // =================================================
+                            // NEWS SNIPPET
+                            // =================================================
+
+                            if (
+                                insideNewsItem &&
+                                name == "news_item_snippet"
+                            ) {
+
+                                newsSnippet =
+                                    safeNextText(
+                                        parser
+                                    )
                             }
                         }
 
                         XmlPullParser.END_TAG -> {
 
-                            val tag =
+                            val name =
                                 parser.name
                                     ?.lowercase()
                                     ?: ""
 
+                            // =================================================
+                            // NEWS ITEM END
+                            // =================================================
+
                             if (
-                                tag == "item"
+                                name == "news_item"
+                            ) {
+
+                                insideNewsItem =
+                                    false
+                            }
+
+                            // =================================================
+                            // TREND ITEM END
+                            // =================================================
+
+                            if (
+                                name == "item"
                             ) {
 
                                 insideItem =
                                     false
 
+                                // -------------------------------------------------
+                                // IMPORTANT:
+                                //
+                                // We use the nested news article URL.
+                                //
+                                // We DO NOT use:
+                                //
+                                // https://trends.google.com/trending/rss
+                                //
+                                // -------------------------------------------------
+
+                                val finalTitle =
+                                    if (
+                                        newsTitle.isNotBlank()
+                                    ) {
+
+                                        newsTitle
+
+                                    } else {
+
+                                        trendTitle
+                                    }
+
+                                val finalUrl =
+                                    newsUrl.trim()
+
+                                val finalSource =
+                                    if (
+                                        newsSource.isNotBlank()
+                                    ) {
+
+                                        newsSource
+
+                                    } else {
+
+                                        "Google Trends"
+                                    }
+
+                                val finalImage =
+                                    if (
+                                        newsPicture.isNotBlank()
+                                    ) {
+
+                                        newsPicture
+
+                                    } else {
+
+                                        trendPicture
+                                    }
+
+                                // -------------------------------------------------
+                                // DESCRIPTION
+                                // -------------------------------------------------
+
+                                val finalDescription =
+                                    if (
+                                        newsSnippet.isNotBlank()
+                                    ) {
+
+                                        newsSnippet
+
+                                    } else if (
+                                        trendTraffic.isNotBlank()
+                                    ) {
+
+                                        "$trendTraffic searches"
+
+                                    } else {
+
+                                        ""
+                                    }
+
+                                // -------------------------------------------------
+                                // ONLY ADD REAL NEWS ARTICLES
+                                // -------------------------------------------------
+
                                 if (
-                                    title.isNotBlank()
+                                    finalTitle.isNotBlank() &&
+                                    finalUrl.isNotBlank() &&
+                                    isValidUrl(
+                                        finalUrl
+                                    )
                                 ) {
 
                                     articles.add(
                                         NewsArticle(
                                             title =
                                                 cleanText(
-                                                    title
+                                                    finalTitle
                                                 ),
 
                                             link =
-                                                link.trim(),
+                                                finalUrl,
 
                                             source =
-                                                source,
+                                                cleanText(
+                                                    finalSource
+                                                ),
 
                                             pubDate =
                                                 cleanText(
-                                                    pubDate
+                                                    trendDate
                                                 ),
 
                                             description =
                                                 cleanText(
-                                                    description
+                                                    finalDescription
                                                 ),
 
                                             imageUrl =
-                                                imageUrl.trim()
+                                                finalImage.trim()
                                         )
                                     )
                                 }
@@ -782,7 +1091,10 @@ class NewsRepository {
         candidates: List<String>
     ): String {
 
-        // First try RSS image fields.
+        // ---------------------------------------------------------
+        // FIRST: RSS IMAGE FIELDS
+        // ---------------------------------------------------------
+
         for (
             candidate in candidates
         ) {
@@ -799,7 +1111,10 @@ class NewsRepository {
             }
         }
 
-        // Try HTML image inside description.
+        // ---------------------------------------------------------
+        // SECOND: HTML IMAGE INSIDE DESCRIPTION
+        // ---------------------------------------------------------
+
         val imageRegex =
             Regex(
                 """<img[^>]+(?:src|data-src|data-original|data-lazy-src)=["']([^"']+)["']""",
@@ -832,7 +1147,10 @@ class NewsRepository {
             }
         }
 
-        // Try normal image URL.
+        // ---------------------------------------------------------
+        // THIRD: NORMAL IMAGE URL
+        // ---------------------------------------------------------
+
         val urlRegex =
             Regex(
                 """https?://[^\s"'<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\s"'<>]*)?""",
@@ -871,23 +1189,6 @@ class NewsRepository {
     // =========================================================
 
     private fun safeNextText(
-        parser: XmlPullParser
-    ): String {
-
-        return try {
-
-            parser.nextText()
-                .trim()
-
-        } catch (
-            e: Exception
-        ) {
-
-            ""
-        }
-    }
-
-    private fun getElementText(
         parser: XmlPullParser
     ): String {
 
