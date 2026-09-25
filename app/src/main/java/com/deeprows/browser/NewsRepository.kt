@@ -33,15 +33,14 @@ class NewsRepository {
         }
 
     suspend fun getSportNews(
-        limit: Int = 4
-    ): List<NewsArticle> =
-        withContext(Dispatchers.IO) {
-
-            fetchGoogleNews(
-                query = "football OR soccer OR sports",
-                limit = limit
-            )
-        }
+    limit: Int = 4
+): List<NewsArticle> =
+    withContext(Dispatchers.IO) {
+        fetchGoogleNews(
+            "football",
+            limit
+        )
+    }
 
     private fun fetchGoogleNews(
         query: String,
