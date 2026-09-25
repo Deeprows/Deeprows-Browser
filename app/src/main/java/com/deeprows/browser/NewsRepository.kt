@@ -6,7 +6,6 @@ import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
 import java.net.HttpURLConnection
 import java.net.URL
-import java.net.URLEncoder
 
 data class NewsArticle(
     val title: String,
@@ -19,31 +18,70 @@ data class NewsArticle(
 
 class NewsRepository {
 
-    private val googleNewsUrl =
-        "https://news.google.com/rss/search"
+    // =========================================================
+    // NEWS SOURCES
+    // =========================================================
+
+    private val latestNewsUrl =
+        "https://feeds.bbci.co.uk/news/rss.xml"
+
+    private val sportNewsUrl =
+        "https://feeds.bbci.co.uk/sport/rss.xml"
+
+    // Current Google Trends RSS endpoint
+    private val googleTrendsUrl =
+        "https://trends.google.com/trending/rss?geo=EG"
+
+    // =========================================================
+    // LATEST NEWS
+    // =========================================================
 
     suspend fun getLatestNews(
         limit: Int = 4
     ): List<NewsArticle> =
         withContext(Dispatchers.IO) {
-            fetchGoogleNews(
-                "latest news",
+
+            fetchRssFeed(
+                latestNewsUrl,
                 limit
             )
         }
+
+    // =========================================================
+    // SPORT NEWS
+    // =========================================================
 
     suspend fun getSportNews(
         limit: Int = 4
     ): List<NewsArticle> =
         withContext(Dispatchers.IO) {
-            fetchGoogleNews(
-                "football",
+
+            fetchRssFeed(
+                sportNewsUrl,
                 limit
             )
         }
 
-    private fun fetchGoogleNews(
-        query: String,
+    // =========================================================
+    // GOOGLE TRENDS
+    // =========================================================
+
+    suspend fun getGoogleTrends(
+        limit: Int = 10
+    ): List<NewsArticle> =
+        withContext(Dispatchers.IO) {
+
+            fetchGoogleTrends(
+                limit
+            )
+        }
+
+    // =========================================================
+    // GENERIC RSS READER
+    // =========================================================
+
+    private fun fetchRssFeed(
+        feedUrl: String,
         limit: Int
     ): List<NewsArticle> {
 
@@ -55,25 +93,13 @@ class NewsRepository {
 
         try {
 
-            val encodedQuery =
-                URLEncoder.encode(
-                    query,
-                    "UTF-8"
-                )
-
-            val urlString =
-                "$googleNewsUrl" +
-                        "?q=$encodedQuery" +
-                        "&hl=en-US" +
-                        "&gl=US" +
-                        "&ceid=US:en"
-
             connection =
-                URL(urlString)
+                URL(feedUrl)
                     .openConnection()
                         as HttpURLConnection
 
-            connection.requestMethod = "GET"
+            connection.requestMethod =
+                "GET"
 
             connection.connectTimeout =
                 20000
@@ -105,6 +131,7 @@ class NewsRepository {
                 connection.responseCode !=
                 HttpURLConnection.HTTP_OK
             ) {
+
                 return emptyList()
             }
 
@@ -126,13 +153,23 @@ class NewsRepository {
                 var eventType =
                     parser.eventType
 
-                var insideItem = false
+                var insideItem =
+                    false
 
-                var title = ""
-                var link = ""
-                var source = ""
-                var pubDate = ""
-                var description = ""
+                var title =
+                    ""
+
+                var link =
+                    ""
+
+                var source =
+                    ""
+
+                var pubDate =
+                    ""
+
+                var description =
+                    ""
 
                 val imageCandidates =
                     mutableListOf<String>()
@@ -151,17 +188,31 @@ class NewsRepository {
                                     ?.lowercase()
                                     ?: ""
 
+                            // -------------------------------------------------
+                            // ITEM START
+                            // -------------------------------------------------
+
                             if (
                                 tag == "item"
                             ) {
 
-                                insideItem = true
+                                insideItem =
+                                    true
 
-                                title = ""
-                                link = ""
-                                source = ""
-                                pubDate = ""
-                                description = ""
+                                title =
+                                    ""
+
+                                link =
+                                    ""
+
+                                source =
+                                    ""
+
+                                pubDate =
+                                    ""
+
+                                description =
+                                    ""
 
                                 imageCandidates.clear()
                             }
@@ -172,6 +223,10 @@ class NewsRepository {
 
                                 when (tag) {
 
+                                    // -----------------------------------------
+                                    // TITLE
+                                    // -----------------------------------------
+
                                     "title" -> {
 
                                         if (
@@ -179,10 +234,15 @@ class NewsRepository {
                                         ) {
 
                                             title =
-                                                parser.nextText()
-                                                    .trim()
+                                                safeNextText(
+                                                    parser
+                                                )
                                         }
                                     }
+
+                                    // -----------------------------------------
+                                    // LINK
+                                    // -----------------------------------------
 
                                     "link" -> {
 
@@ -191,10 +251,15 @@ class NewsRepository {
                                         ) {
 
                                             link =
-                                                parser.nextText()
-                                                    .trim()
+                                                safeNextText(
+                                                    parser
+                                                )
                                         }
                                     }
+
+                                    // -----------------------------------------
+                                    // SOURCE
+                                    // -----------------------------------------
 
                                     "source" -> {
 
@@ -203,52 +268,70 @@ class NewsRepository {
                                         ) {
 
                                             source =
-                                                parser.nextText()
-                                                    .trim()
+                                                safeNextText(
+                                                    parser
+                                                )
                                         }
                                     }
 
-                                    "pubdate" -> {
+                                    // -----------------------------------------
+                                    // DATE
+                                    // -----------------------------------------
+
+                                    "pubdate",
+                                    "published",
+                                    "updated" -> {
 
                                         if (
                                             pubDate.isEmpty()
                                         ) {
 
                                             pubDate =
-                                                parser.nextText()
-                                                    .trim()
+                                                safeNextText(
+                                                    parser
+                                                )
                                         }
                                     }
 
-                                    "description" -> {
+                                    // -----------------------------------------
+                                    // DESCRIPTION
+                                    // -----------------------------------------
+
+                                    "description",
+                                    "content:encoded" -> {
 
                                         if (
                                             description.isEmpty()
                                         ) {
 
                                             description =
-                                                parser.nextText()
-                                                    .trim()
+                                                safeNextText(
+                                                    parser
+                                                )
                                         }
                                     }
 
+                                    // -----------------------------------------
+                                    // IMAGES
+                                    // -----------------------------------------
+
                                     "media:content",
                                     "media:thumbnail",
-                                    "content",
+                                    "enclosure",
                                     "thumbnail",
-                                    "enclosure" -> {
+                                    "content" -> {
 
-                                        val url =
+                                        val imageUrl =
                                             getImageUrl(
                                                 parser
                                             )
 
                                         if (
-                                            !url.isNullOrBlank()
+                                            !imageUrl.isNullOrBlank()
                                         ) {
 
                                             imageCandidates.add(
-                                                url
+                                                imageUrl
                                             )
                                         }
                                     }
@@ -267,7 +350,8 @@ class NewsRepository {
                                 tag == "item"
                             ) {
 
-                                insideItem = false
+                                insideItem =
+                                    false
 
                                 if (
                                     title.isNotBlank() &&
@@ -293,7 +377,11 @@ class NewsRepository {
                                             source =
                                                 cleanText(
                                                     source
-                                                ),
+                                                ).ifBlank {
+                                                    detectSource(
+                                                        feedUrl
+                                                    )
+                                                },
 
                                             pubDate =
                                                 cleanText(
@@ -341,11 +429,315 @@ class NewsRepository {
         return articles
     }
 
+    // =========================================================
+    // GOOGLE TRENDS RSS
+    // =========================================================
+
+    private fun fetchGoogleTrends(
+        limit: Int
+    ): List<NewsArticle> {
+
+        val articles =
+            mutableListOf<NewsArticle>()
+
+        var connection:
+                HttpURLConnection? = null
+
+        try {
+
+            connection =
+                URL(googleTrendsUrl)
+                    .openConnection()
+                        as HttpURLConnection
+
+            connection.requestMethod =
+                "GET"
+
+            connection.connectTimeout =
+                20000
+
+            connection.readTimeout =
+                20000
+
+            connection.instanceFollowRedirects =
+                true
+
+            connection.setRequestProperty(
+                "User-Agent",
+                "Mozilla/5.0 (Linux; Android 15; Mobile) " +
+                        "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                        "Chrome/153.0.0.0 Mobile Safari/537.36"
+            )
+
+            connection.setRequestProperty(
+                "Accept",
+                "application/rss+xml, application/xml, text/xml, */*"
+            )
+
+            connection.setRequestProperty(
+                "Cache-Control",
+                "no-cache"
+            )
+
+            if (
+                connection.responseCode !=
+                HttpURLConnection.HTTP_OK
+            ) {
+
+                return emptyList()
+            }
+
+            connection.inputStream.use { inputStream ->
+
+                val parser =
+                    Xml.newPullParser()
+
+                parser.setFeature(
+                    XmlPullParser.FEATURE_PROCESS_NAMESPACES,
+                    false
+                )
+
+                parser.setInput(
+                    inputStream,
+                    "UTF-8"
+                )
+
+                var eventType =
+                    parser.eventType
+
+                var insideItem =
+                    false
+
+                var title =
+                    ""
+
+                var link =
+                    ""
+
+                var description =
+                    ""
+
+                var pubDate =
+                    ""
+
+                var imageUrl =
+                    ""
+
+                var source =
+                    "Google Trends"
+
+                while (
+                    eventType !=
+                    XmlPullParser.END_DOCUMENT
+                ) {
+
+                    when (eventType) {
+
+                        XmlPullParser.START_TAG -> {
+
+                            val tag =
+                                parser.name
+                                    ?.lowercase()
+                                    ?: ""
+
+                            if (
+                                tag == "item"
+                            ) {
+
+                                insideItem =
+                                    true
+
+                                title =
+                                    ""
+
+                                link =
+                                    ""
+
+                                description =
+                                    ""
+
+                                pubDate =
+                                    ""
+
+                                imageUrl =
+                                    ""
+                            }
+
+                            if (
+                                insideItem
+                            ) {
+
+                                when (tag) {
+
+                                    "title" -> {
+
+                                        if (
+                                            title.isEmpty()
+                                        ) {
+
+                                            title =
+                                                safeNextText(
+                                                    parser
+                                                )
+                                        }
+                                    }
+
+                                    "link" -> {
+
+                                        if (
+                                            link.isEmpty()
+                                        ) {
+
+                                            link =
+                                                safeNextText(
+                                                    parser
+                                                )
+                                        }
+                                    }
+
+                                    "description" -> {
+
+                                        if (
+                                            description.isEmpty()
+                                        ) {
+
+                                            description =
+                                                safeNextText(
+                                                    parser
+                                                )
+                                        }
+                                    }
+
+                                    "pubdate" -> {
+
+                                        if (
+                                            pubDate.isEmpty()
+                                        ) {
+
+                                            pubDate =
+                                                safeNextText(
+                                                    parser
+                                                )
+                                        }
+                                    }
+
+                                    // Google Trends image
+                                    "ht:picture" -> {
+
+                                        if (
+                                            imageUrl.isEmpty()
+                                        ) {
+
+                                            imageUrl =
+                                                getElementText(
+                                                    parser
+                                                )
+                                        }
+                                    }
+
+                                    // Google Trends news image
+                                    "ht:news_item_picture" -> {
+
+                                        if (
+                                            imageUrl.isEmpty()
+                                        ) {
+
+                                            imageUrl =
+                                                getElementText(
+                                                    parser
+                                                )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        XmlPullParser.END_TAG -> {
+
+                            val tag =
+                                parser.name
+                                    ?.lowercase()
+                                    ?: ""
+
+                            if (
+                                tag == "item"
+                            ) {
+
+                                insideItem =
+                                    false
+
+                                if (
+                                    title.isNotBlank()
+                                ) {
+
+                                    articles.add(
+                                        NewsArticle(
+                                            title =
+                                                cleanText(
+                                                    title
+                                                ),
+
+                                            link =
+                                                link.trim(),
+
+                                            source =
+                                                source,
+
+                                            pubDate =
+                                                cleanText(
+                                                    pubDate
+                                                ),
+
+                                            description =
+                                                cleanText(
+                                                    description
+                                                ),
+
+                                            imageUrl =
+                                                imageUrl.trim()
+                                        )
+                                    )
+                                }
+
+                                if (
+                                    articles.size >=
+                                    limit
+                                ) {
+
+                                    break
+                                }
+                            }
+                        }
+                    }
+
+                    eventType =
+                        parser.next()
+                }
+            }
+
+        } catch (
+            e: Exception
+        ) {
+
+            e.printStackTrace()
+
+        } finally {
+
+            connection?.disconnect()
+        }
+
+        return articles
+    }
+
+    // =========================================================
+    // IMAGE URL
+    // =========================================================
+
     private fun getImageUrl(
         parser: XmlPullParser
     ): String? {
 
-        val possibleAttributes =
+        val attributes =
             arrayOf(
                 "url",
                 "href",
@@ -353,7 +745,7 @@ class NewsRepository {
             )
 
         for (
-            attribute in possibleAttributes
+            attribute in attributes
         ) {
 
             val value =
@@ -365,8 +757,12 @@ class NewsRepository {
             if (
                 !value.isNullOrBlank() &&
                 (
-                    value.startsWith("http://") ||
-                    value.startsWith("https://")
+                    value.startsWith(
+                        "http://"
+                    ) ||
+                    value.startsWith(
+                        "https://"
+                    )
                 )
             ) {
 
@@ -377,17 +773,24 @@ class NewsRepository {
         return null
     }
 
+    // =========================================================
+    // FIND IMAGE
+    // =========================================================
+
     private fun findImageUrl(
         description: String,
         candidates: List<String>
     ): String {
 
+        // First try RSS image fields.
         for (
             candidate in candidates
         ) {
 
             if (
-                isValidUrl(candidate)
+                isValidUrl(
+                    candidate
+                )
             ) {
 
                 return decodeEntities(
@@ -396,6 +799,7 @@ class NewsRepository {
             }
         }
 
+        // Try HTML image inside description.
         val imageRegex =
             Regex(
                 """<img[^>]+(?:src|data-src|data-original|data-lazy-src)=["']([^"']+)["']""",
@@ -419,13 +823,16 @@ class NewsRepository {
                 )
 
             if (
-                isValidUrl(image)
+                isValidUrl(
+                    image
+                )
             ) {
 
                 return image
             }
         }
 
+        // Try normal image URL.
         val urlRegex =
             Regex(
                 """https?://[^\s"'<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\s"'<>]*)?""",
@@ -447,7 +854,9 @@ class NewsRepository {
                 )
 
             if (
-                isValidUrl(image)
+                isValidUrl(
+                    image
+                )
             ) {
 
                 return image
@@ -457,15 +866,90 @@ class NewsRepository {
         return ""
     }
 
+    // =========================================================
+    // SAFE XML TEXT
+    // =========================================================
+
+    private fun safeNextText(
+        parser: XmlPullParser
+    ): String {
+
+        return try {
+
+            parser.nextText()
+                .trim()
+
+        } catch (
+            e: Exception
+        ) {
+
+            ""
+        }
+    }
+
+    private fun getElementText(
+        parser: XmlPullParser
+    ): String {
+
+        return try {
+
+            parser.nextText()
+                .trim()
+
+        } catch (
+            e: Exception
+        ) {
+
+            ""
+        }
+    }
+
+    // =========================================================
+    // SOURCE
+    // =========================================================
+
+    private fun detectSource(
+        url: String
+    ): String {
+
+        return when {
+
+            url.contains(
+                "bbci.co.uk"
+            ) ->
+                "BBC News"
+
+            url.contains(
+                "google.com"
+            ) ->
+                "Google Trends"
+
+            else ->
+                "News"
+        }
+    }
+
+    // =========================================================
+    // URL VALIDATION
+    // =========================================================
+
     private fun isValidUrl(
         url: String
     ): Boolean {
 
         return (
-            url.startsWith("http://") ||
-            url.startsWith("https://")
+            url.startsWith(
+                "http://"
+            ) ||
+            url.startsWith(
+                "https://"
+            )
         )
     }
+
+    // =========================================================
+    // HTML ENTITIES
+    // =========================================================
 
     private fun decodeEntities(
         text: String
@@ -499,6 +983,10 @@ class NewsRepository {
             .trim()
     }
 
+    // =========================================================
+    // CLEAN TEXT
+    // =========================================================
+
     private fun cleanText(
         text: String
     ): String {
@@ -506,11 +994,15 @@ class NewsRepository {
         return decodeEntities(
             text
                 .replace(
-                    Regex("<[^>]*>"),
+                    Regex(
+                        "<[^>]*>"
+                    ),
                     ""
                 )
                 .replace(
-                    Regex("\\s+"),
+                    Regex(
+                        "\\s+"
+                    ),
                     " "
                 )
                 .trim()
