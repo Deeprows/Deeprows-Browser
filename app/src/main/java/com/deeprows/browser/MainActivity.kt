@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
         setupWebView()
         setupControls()
         setupCategoryLinks()
+        setupCategoryLogos()
         setupSettings()
 
         showHomePage()
@@ -798,17 +799,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // =========================================================
+// =========================================================
 // CATEGORY LOGOS
 // =========================================================
 
 private fun setupCategoryLogos() {
 
     val logos = mapOf(
-
-        // Watch Football / Movies
-        R.id.siteWatchFootball to "deeprowss.com",
-        R.id.siteLatestMovies to "deeprowss.com",
 
         // Social & Video
         R.id.siteFacebook to "facebook.com",
@@ -880,6 +877,19 @@ private fun setupCategoryLogos() {
             domain
         )
     }
+
+    // Watch Football and Latest Movies
+    // are LinearLayouts, so they are handled separately.
+
+    loadWebsiteLogoToImage(
+        R.id.siteWatchFootball,
+        "deeprowss.com"
+    )
+
+    loadWebsiteLogoToImage(
+        R.id.siteLatestMovies,
+        "deeprowss.com"
+    )
 }
 
 private fun loadWebsiteLogo(
@@ -894,20 +904,15 @@ private fun loadWebsiteLogo(
         try {
 
             val logoUrl =
-                "https://www.google.com/s2/favicons" +
-                        "?domain=$domain&sz=128"
+                "https://www.google.com/s2/favicons?domain=$domain&sz=128"
 
             val connection =
                 java.net.URL(
                     logoUrl
                 ).openConnection()
 
-            connection.connectTimeout =
-                10000
-
-            connection.readTimeout =
-                10000
-
+            connection.connectTimeout = 10000
+            connection.readTimeout = 10000
             connection.connect()
 
             val input =
@@ -930,8 +935,10 @@ private fun loadWebsiteLogo(
                         )
 
                     val size =
-                        (26 * resources.displayMetrics.density)
-                            .toInt()
+                        (
+                            26 *
+                                resources.displayMetrics.density
+                            ).toInt()
 
                     drawable.setBounds(
                         0,
@@ -941,23 +948,85 @@ private fun loadWebsiteLogo(
                     )
 
                     textView.setCompoundDrawables(
-                        drawable,
                         null,
+                        drawable,
                         null,
                         null
                     )
 
                     textView.compoundDrawablePadding =
                         (
-                            8 *
-                                    resources.displayMetrics.density
+                            5 *
+                                resources.displayMetrics.density
                             ).toInt()
+
+                    textView.gravity =
+                        android.view.Gravity.CENTER
                 }
             }
 
         } catch (_: Exception) {
 
-            // Keep the text card if logo fails
+            // Keep the website name visible
+        }
+    }
+}
+
+private fun loadWebsiteLogoToImage(
+    containerId: Int,
+    domain: String
+) {
+
+    kotlinx.coroutines.CoroutineScope(
+        kotlinx.coroutines.Dispatchers.IO
+    ).launch {
+
+        try {
+
+            val logoUrl =
+                "https://www.google.com/s2/favicons?domain=$domain&sz=128"
+
+            val connection =
+                java.net.URL(
+                    logoUrl
+                ).openConnection()
+
+            connection.connectTimeout = 10000
+            connection.readTimeout = 10000
+            connection.connect()
+
+            val input =
+                connection.getInputStream()
+
+            val bitmap =
+                android.graphics.BitmapFactory
+                    .decodeStream(input)
+
+            input.close()
+
+            if (bitmap != null) {
+
+                runOnUiThread {
+
+                    val container =
+                        findViewById<android.widget.LinearLayout>(
+                            containerId
+                        )
+
+                    val imageView =
+                        container.getChildAt(0)
+
+                            as? android.widget.ImageView
+
+                    imageView?.setImageBitmap(
+                        bitmap
+                    )
+                }
+            }
+
+        } catch (_: Exception) {
+
+            // Keep the existing icon if logo fails
         }
     }
 }
