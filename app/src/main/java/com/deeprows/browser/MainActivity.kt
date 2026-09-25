@@ -2410,7 +2410,7 @@ private fun loadGoogleTrends() {
 
             val source =
     android.widget.TextView(
-        context = this@MainActivity
+        this@MainActivity
     )
 
             source.text =
