@@ -9,68 +9,6 @@
     android:fitsSystemWindows="true">
 
     <!-- =========================================================
-         SEARCH / ADDRESS BAR
-         KEEPING EXISTING IDS FOR CURRENT MAINACTIVITY
-         ========================================================= -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:background="#17243A">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="#22314A"
-            android:paddingStart="8dp"
-            android:paddingEnd="3dp">
-
-            <TextView
-                android:layout_width="28dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="⌕"
-                android:textColor="#9AA9BE"
-                android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/addressBar"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:hint="Search or enter website"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#8291A7"
-                android:textSize="13sp"
-                android:singleLine="true"
-                android:imeOptions="actionGo"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp" />
-
-        </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/goButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="6dp"
-            android:background="#E91E4D"
-            android:src="@android:drawable/ic_media_play"
-            android:tint="#FFFFFF"
-            android:contentDescription="Go" />
-
-    </LinearLayout>
-
-
-    <!-- =========================================================
          LOADING
          ========================================================= -->
 
@@ -112,6 +50,67 @@
                 android:paddingEnd="10dp"
                 android:paddingTop="12dp"
                 android:paddingBottom="18dp">
+
+                <!-- =================================================
+     HOMEPAGE SEARCH / ADDRESS BAR
+     VISIBLE ONLY ON HOMEPAGE
+     ================================================= -->
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="54dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="0dp"
+    android:paddingEnd="0dp"
+    android:layout_marginBottom="4dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#22314A"
+        android:paddingStart="8dp"
+        android:paddingEnd="3dp">
+
+        <TextView
+            android:layout_width="28dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="⌕"
+            android:textColor="#9AA9BE"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/addressBar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Search or enter website"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#8291A7"
+            android:textSize="13sp"
+            android:singleLine="true"
+            android:imeOptions="actionGo"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/goButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="6dp"
+        android:background="#E91E4D"
+        android:src="@android:drawable/ic_media_play"
+        android:tint="#FFFFFF"
+        android:contentDescription="Go" />
+
+</LinearLayout>
 
 
                 <!-- =================================================
@@ -1438,68 +1437,95 @@
     </FrameLayout>
 
 
-    <!-- =========================================================
-         BOTTOM NAVIGATION
-         EXISTING IDS PRESERVED
-         ========================================================= -->
+   <!-- =========================================================
+     BOTTOM BROWSER NAVIGATION
+     ========================================================= -->
 
-    <LinearLayout
-        android:layout_width="match_parent"
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="#17243A"
+    android:elevation="8dp">
+
+    <!-- BACK -->
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="#17243A">
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_media_previous"
+        android:tint="#8B9AB0"
+        android:contentDescription="Back"
+        android:padding="12dp" />
 
-        <ImageButton
-            android:id="@+id/backButton"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_media_previous"
-            android:tint="#8B9AB0"
-            android:contentDescription="Back" />
+    <!-- FORWARD -->
 
-        <ImageButton
-            android:id="@+id/forwardButton"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_media_next"
-            android:tint="#8B9AB0"
-            android:contentDescription="Forward" />
+    <ImageButton
+        android:id="@+id/forwardButton"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_media_next"
+        android:tint="#8B9AB0"
+        android:contentDescription="Forward"
+        android:padding="12dp" />
 
-        <ImageButton
-            android:id="@+id/refreshButton"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_popup_sync"
-            android:tint="#8B9AB0"
-            android:contentDescription="Refresh" />
+    <!-- HOME -->
 
-        <ImageButton
-            android:id="@+id/menuButton"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_menu_manage"
-            android:tint="#8B9AB0"
-            android:contentDescription="Settings" />
+    <ImageButton
+        android:id="@+id/homeButton"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_view"
+        android:tint="#E91E4D"
+        android:contentDescription="Home"
+        android:padding="12dp" />
 
-        <ImageButton
-            android:id="@+id/homeButton"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_menu_view"
-            android:tint="#E91E4D"
-            android:contentDescription="Home" />
+    <!-- OPEN PAGES / TABS -->
 
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/refreshButton"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_agenda"
+        android:tint="#8B9AB0"
+        android:contentDescription="Open Pages"
+        android:padding="12dp" />
 
+    <!-- BOOKMARK -->
+
+    <ImageButton
+        android:id="@+id/bookmarkButton"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/btn_star"
+        android:tint="#8B9AB0"
+        android:contentDescription="Bookmark"
+        android:padding="12dp" />
+
+    <!-- MENU -->
+
+    <ImageButton
+        android:id="@+id/menuButton"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_manage"
+        android:tint="#8B9AB0"
+        android:contentDescription="Menu"
+        android:padding="12dp" />
+
+</LinearLayout>
 </LinearLayout>
