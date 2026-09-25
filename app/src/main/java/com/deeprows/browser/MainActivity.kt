@@ -3282,13 +3282,70 @@ private fun applyCardTheme(
     accentColor: Int
 ) {
 
-    for (
-        index in 0 until parent.childCount
-    ) {
+    for (index in 0 until parent.childCount) {
 
         val child =
             parent.getChildAt(index)
 
+        /*
+         * Website cards
+         *
+         * IDs beginning with "site" are the
+         * homepage website cards.
+         */
+        if (child.id != View.NO_ID) {
+
+            val resourceName =
+                try {
+                    resources.getResourceEntryName(
+                        child.id
+                    )
+                } catch (e: Exception) {
+                    ""
+                }
+
+            if (
+                resourceName.startsWith(
+                    "site",
+                    ignoreCase = true
+                )
+            ) {
+
+                val drawable =
+                    android.graphics.drawable.GradientDrawable()
+
+                drawable.shape =
+                    android.graphics.drawable.GradientDrawable.RECTANGLE
+
+                drawable.setColor(
+                    surfaceColor
+                )
+
+                drawable.cornerRadius =
+                    16f * resources.displayMetrics.density
+
+                child.background =
+                    drawable
+            }
+        }
+
+        /*
+         * Keep text colors consistent
+         * with the selected theme.
+         */
+        when (child) {
+
+            is android.widget.TextView -> {
+
+                child.setTextColor(
+                    textColor
+                )
+            }
+        }
+
+        /*
+         * Continue through child layouts.
+         */
         if (child is android.view.ViewGroup) {
 
             applyCardTheme(
@@ -3299,33 +3356,7 @@ private fun applyCardTheme(
                 accentColor
             )
         }
-
-        when (child) {
-
-            is android.widget.TextView -> {
-
-                val background =
-                    child.background
-
-                if (background != null) {
-
-                    child.setBackgroundColor(
-                        surfaceColor
-                    )
-                }
-
-                child.setTextColor(
-                    textColor
-                )
-            }
-
-            is android.widget.LinearLayout -> {
-
-                child.setBackgroundColor(
-                    surfaceColor
-                )
-            }
-        }
     }
+}
 }
 }
