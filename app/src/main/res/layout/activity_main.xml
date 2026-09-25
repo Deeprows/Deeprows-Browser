@@ -1418,35 +1418,81 @@
                     android:clickable="true"
                     android:focusable="true" />
 
-                <TextView
-                    android:id="@+id/themeButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="10dp"
-                    android:background="#29272D"
-                    android:gravity="center_vertical"
-                    android:paddingStart="18dp"
-                    android:paddingEnd="18dp"
-                    android:text="🎨  Theme"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp"
-                    android:clickable="true"
-                    android:focusable="true" />
+               <TextView
+    android:id="@+id/themeButton"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:layout_marginTop="10dp"
+    android:background="#29272D"
+    android:gravity="center_vertical"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    android:text="🎨  Theme"
+    android:textColor="#FFFFFF"
+    android:textSize="15sp"
+    android:clickable="true"
+    android:focusable="true" />
 
-                <TextView
-                    android:id="@+id/settingsBackButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:layout_marginTop="17dp"
-                    android:gravity="center"
-                    android:text="← Back to Browser"
-                    android:textColor="#FF6B8A"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:background="#29272D"
-                    android:clickable="true"
-                    android:focusable="true" />
-            </LinearLayout>
+<TextView
+    android:id="@+id/downloadsButton"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:layout_marginTop="7dp"
+    android:background="#29272D"
+    android:gravity="center_vertical"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    android:text="📥  Downloads"
+    android:textColor="#FFFFFF"
+    android:textSize="15sp"
+    android:clickable="true"
+    android:focusable="true" />
+
+<TextView
+    android:id="@+id/shareButton"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:layout_marginTop="7dp"
+    android:background="#29272D"
+    android:gravity="center_vertical"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    android:text="🔗  Share"
+    android:textColor="#FFFFFF"
+    android:textSize="15sp"
+    android:clickable="true"
+    android:focusable="true" />
+
+<TextView
+    android:id="@+id/translateButton"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:layout_marginTop="7dp"
+    android:background="#29272D"
+    android:gravity="center_vertical"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
+    android:text="🌐  Translate"
+    android:textColor="#FFFFFF"
+    android:textSize="15sp"
+    android:clickable="true"
+    android:focusable="true" />
+
+<TextView
+    android:id="@+id/settingsBackButton"
+    android:layout_width="match_parent"
+    android:layout_height="46dp"
+    android:layout_marginTop="17dp"
+    android:gravity="center"
+    android:text="← Back to Browser"
+    android:textColor="#FF6B8A"
+    android:textSize="12sp"
+    android:textStyle="bold"
+    android:background="#29272D"
+    android:clickable="true"
+    android:focusable="true" />
+
+</LinearLayout>
         </ScrollView>
     </FrameLayout>
 
