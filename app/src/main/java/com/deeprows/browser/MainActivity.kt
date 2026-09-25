@@ -42,6 +42,23 @@ class MainActivity : AppCompatActivity() {
     private val newsRepository =
         NewsRepository()
 
+    // =========================================================
+// OPEN TABS
+// =========================================================
+
+data class BrowserTab(
+    val id: Int,
+    var title: String,
+    var url: String
+)
+
+private val openTabs =
+    mutableListOf<BrowserTab>()
+
+private var activeTabId = 0
+
+private var nextTabId = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
