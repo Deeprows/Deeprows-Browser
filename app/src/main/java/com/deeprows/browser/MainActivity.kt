@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
 
         setupWebView()
         setupControls()
+        setupCategoryLinks()
         setupSettings()
 
         showHomePage()
@@ -77,7 +78,6 @@ class MainActivity : AppCompatActivity() {
         loadLatestNews()
         loadSportNews()
 
-        // Hide Android system navigation bar
         hideSystemNavigationBar()
     }
 
@@ -157,8 +157,8 @@ class MainActivity : AppCompatActivity() {
                         !url.isNullOrBlank() &&
                         (
                             url.startsWith("http://") ||
-                            url.startsWith("https://")
-                        )
+                                    url.startsWith("https://")
+                            )
                     ) {
 
                         addressBar.setText(url)
@@ -179,8 +179,8 @@ class MainActivity : AppCompatActivity() {
                         url != null &&
                         (
                             url.startsWith("http://") ||
-                            url.startsWith("https://")
-                        )
+                                    url.startsWith("https://")
+                            )
                     ) {
 
                         addressBar.setText(url)
@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         webView.setOnScrollChangeListener {
-            _, _, _, _, _ ->
+                _, _, _, _, _ ->
         }
     }
 
@@ -234,6 +234,8 @@ class MainActivity : AppCompatActivity() {
                 showHomePage()
 
             } else if (
+                webView.visibility ==
+                View.VISIBLE &&
                 webView.canGoBack()
             ) {
 
@@ -289,73 +291,6 @@ class MainActivity : AppCompatActivity() {
             showSettings()
         }
 
-        findViewById<View>(
-            R.id.siteFacebook
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://www.facebook.com/"
-            )
-        }
-
-        findViewById<View>(
-            R.id.siteInstagram
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://www.instagram.com/"
-            )
-        }
-
-        findViewById<View>(
-            R.id.siteJobs
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://www.indeed.com/"
-            )
-        }
-
-        findViewById<View>(
-            R.id.siteScholarships
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://www.scholarships.com/"
-            )
-        }
-
-        findViewById<View>(
-            R.id.siteX
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://x.com/"
-            )
-        }
-
-        findViewById<View>(
-            R.id.siteDeeprowss
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://deeprowss.com/"
-            )
-        }
-
-        // =====================================================
-        // DEEPROWSS PROMO SECTION
-        // =====================================================
-
-        findViewById<View>(
-            R.id.deeprowssPromo
-        ).setOnClickListener {
-
-            openWebsite(
-                "https://deeprowss.com/"
-            )
-        }
-
         // =====================================================
         // NEWS BUTTONS
         // =====================================================
@@ -375,6 +310,482 @@ class MainActivity : AppCompatActivity() {
 
             openWebsite(
                 "https://news.google.com/search?q=football"
+            )
+        }
+    }
+
+    // =========================================================
+    // CATEGORY LINKS
+    // =========================================================
+
+    private fun setupCategoryLinks() {
+
+        // =====================================================
+        // WATCH FOOTBALL / LATEST MOVIES
+        // =====================================================
+
+        findViewById<View>(
+            R.id.siteWatchFootball
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://deeprowss.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteLatestMovies
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://deeprowss.com/"
+            )
+        }
+
+        // =====================================================
+        // SOCIAL & VIDEO
+        // =====================================================
+
+        findViewById<View>(
+            R.id.siteFacebook
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.facebook.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteTikTok
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.tiktok.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteYouTube
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.youtube.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteX
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://x.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteDailymotion
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.dailymotion.com/"
+            )
+        }
+
+        // =====================================================
+        // MESSAGING
+        // =====================================================
+
+        findViewById<View>(
+            R.id.siteWhatsApp
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://web.whatsapp.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteSnapchat
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.snapchat.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteTelegram
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://web.telegram.org/"
+            )
+        }
+
+        // =====================================================
+        // JOBS
+        // =====================================================
+
+        findViewById<View>(
+            R.id.siteLinkedInJobs
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.linkedin.com/jobs/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteIndeed
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.indeed.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteGlassdoor
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.glassdoor.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteZipRecruiter
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.ziprecruiter.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteBayt
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.bayt.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteJooble
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://jooble.org/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteMonster
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.monster.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteJobStreet
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.jobstreet.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteWellfound
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://wellfound.com/jobs"
+            )
+        }
+
+        // =====================================================
+        // SPORTS
+        // =====================================================
+
+        findViewById<View>(
+            R.id.siteESPN
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.espn.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteBBCSport
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.bbc.com/sport"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteSkySports
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.skysports.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteGoal
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.goal.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteAthletic
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.nytimes.com/athletic/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteCBSSports
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.cbssports.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteFoxSports
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.foxsports.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteSportingNews
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.sportingnews.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteEurosport
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.eurosport.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteSportsIllustrated
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.si.com/"
+            )
+        }
+
+        // =====================================================
+        // NEWS
+        // =====================================================
+
+        findViewById<View>(
+            R.id.siteBBCNews
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.bbc.com/news"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteReuters
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.reuters.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteAP
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://apnews.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteCNN
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.cnn.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteAlJazeera
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.aljazeera.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteGuardian
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.theguardian.com/international"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteNYTimes
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.nytimes.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteSkyNews
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://news.sky.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteFrance24
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.france24.com/en/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteDW
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.dw.com/en/"
+            )
+        }
+
+        // =====================================================
+        // SCHOLARSHIPS & SPONSORSHIPS
+        // =====================================================
+
+        findViewById<View>(
+            R.id.siteChevening
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.chevening.org/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteErasmus
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://erasmus-plus.ec.europa.eu/opportunities/individuals/students/erasmus-mundus-joint-masters"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteDAAD
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.daad.de/en/studying-in-germany/scholarships/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteCommonwealth
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://cscuk.fcdo.gov.uk/scholarships-filter-search/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteMastercard
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://mastercardfdn.org/all/scholars/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteSwedishInstitute
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://si.se/en/apply/scholarships/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteOpportunityDesk
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://opportunitydesk.org/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteScholarshipPositions
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.scholarshippositions.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteStudyportals
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://www.mastersportal.com/scholarships/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.siteAfricanUnion
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://au.int/"
             )
         }
     }
