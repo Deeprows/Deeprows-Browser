@@ -274,17 +274,12 @@ private fun setupControls() {
     // OPEN PAGES
     // =====================================================
 
-    findViewById<View>(
-        R.id.refreshButton
-    ).setOnClickListener {
+  findViewById<View>(
+    R.id.refreshButton
+).setOnClickListener {
 
-        // Pages functionality will be added next.
-        Toast.makeText(
-            this,
-            "Open Pages",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
+    showOpenTabs()
+}
 
     // =====================================================
     // HOME
@@ -332,7 +327,7 @@ private fun setupControls() {
         )
     }
 
-    findViewById<View>(
+        findViewById<View>(
         R.id.moreSportNewsButton
     ).setOnClickListener {
 
@@ -341,11 +336,29 @@ private fun setupControls() {
         )
     }
 }
-    // =========================================================
-    // CATEGORY LINKS
-    // =========================================================
 
-    private fun setupCategoryLinks() {
+// =========================================================
+// OPEN TABS
+// =========================================================
+
+private fun showOpenTabs() {
+
+    val dialog =
+        AlertDialog.Builder(this)
+            .setTitle("Open Tabs")
+            .setMessage("Tab manager coming next.")
+            .setPositiveButton("Close", null)
+            .create()
+
+    dialog.show()
+}
+
+
+// =========================================================
+// CATEGORY LINKS
+// =========================================================
+
+private fun setupCategoryLinks() {
 
         // =====================================================
         // WATCH FOOTBALL / LATEST MOVIES
