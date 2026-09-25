@@ -1,5 +1,15 @@
 package com.deeprows.browser
 
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
+import android.view.Gravity
+import android.view.ViewGroup
+import android.widget.GridLayout
+import android.widget.LinearLayout
+import android.widget.TextView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
