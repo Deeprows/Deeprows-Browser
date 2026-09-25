@@ -1070,20 +1070,28 @@ private fun loadWebsiteLogo(
     // HOME / SETTINGS / WEB
     // =========================================================
 
-    private fun showHomePage() {
+   private fun showHomePage() {
 
-        homePage.visibility =
-            View.VISIBLE
+    homePage.visibility =
+        View.VISIBLE
 
-        webView.visibility =
-            View.GONE
+    webView.visibility =
+        View.GONE
 
-        settingsPage.visibility =
-            View.GONE
+    settingsPage.visibility =
+        View.GONE
 
-        loadingBar.visibility =
-            View.GONE
-    }
+    loadingBar.visibility =
+        View.GONE
+
+    addressBar.visibility =
+        View.VISIBLE
+
+    findViewById<View>(
+        R.id.goButton
+    ).visibility =
+        View.VISIBLE
+}
 
     private fun showSettings() {
 
