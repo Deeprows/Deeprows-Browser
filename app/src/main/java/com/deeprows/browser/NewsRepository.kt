@@ -47,9 +47,11 @@ class NewsRepository {
         limit: Int
     ): List<NewsArticle> {
 
-        val articles = mutableListOf<NewsArticle>()
+        val articles =
+            mutableListOf<NewsArticle>()
 
-        var connection: HttpURLConnection? = null
+        var connection:
+                HttpURLConnection? = null
 
         try {
 
@@ -68,14 +70,19 @@ class NewsRepository {
 
             connection =
                 URL(urlString)
-                    .openConnection() as HttpURLConnection
+                    .openConnection()
+                        as HttpURLConnection
 
             connection.requestMethod = "GET"
 
-            connection.connectTimeout = 20000
-            connection.readTimeout = 20000
+            connection.connectTimeout =
+                20000
 
-            connection.instanceFollowRedirects = true
+            connection.readTimeout =
+                20000
+
+            connection.instanceFollowRedirects =
+                true
 
             connection.setRequestProperty(
                 "User-Agent",
@@ -106,12 +113,6 @@ class NewsRepository {
                 val parser =
                     Xml.newPullParser()
 
-                /*
-                 * Important:
-                 * Disable namespace processing so tags such as
-                 * media:content and media:thumbnail remain
-                 * available with their prefixes.
-                 */
                 parser.setFeature(
                     XmlPullParser.FEATURE_PROCESS_NAMESPACES,
                     false
@@ -145,13 +146,10 @@ class NewsRepository {
 
                         XmlPullParser.START_TAG -> {
 
-                            val rawTag =
-                                parser.name
-                                    ?.trim()
-                                    ?: ""
-
                             val tag =
-                                rawTag.lowercase()
+                                parser.name
+                                    ?.lowercase()
+                                    ?: ""
 
                             if (
                                 tag == "item"
@@ -168,7 +166,9 @@ class NewsRepository {
                                 imageCandidates.clear()
                             }
 
-                            if (insideItem) {
+                            if (
+                                insideItem
+                            ) {
 
                                 when (tag) {
 
@@ -179,9 +179,8 @@ class NewsRepository {
                                         ) {
 
                                             title =
-                                                readElementText(
-                                                    parser
-                                                )
+                                                parser.nextText()
+                                                    .trim()
                                         }
                                     }
 
@@ -192,9 +191,9 @@ class NewsRepository {
                                         ) {
 
                                             link =
-                                                readElementText(
-                                                    parser
-                                                )
+                                                parser.nextText()
+                                                    .trim()
+                                        }
                                     }
 
                                     "source" -> {
@@ -204,9 +203,8 @@ class NewsRepository {
                                         ) {
 
                                             source =
-                                                readElementText(
-                                                    parser
-                                                )
+                                                parser.nextText()
+                                                    .trim()
                                         }
                                     }
 
@@ -217,9 +215,8 @@ class NewsRepository {
                                         ) {
 
                                             pubDate =
-                                                readElementText(
-                                                    parser
-                                                )
+                                                parser.nextText()
+                                                    .trim()
                                         }
                                     }
 
@@ -230,9 +227,8 @@ class NewsRepository {
                                         ) {
 
                                             description =
-                                                readElementText(
-                                                    parser
-                                                )
+                                                parser.nextText()
+                                                    .trim()
                                         }
                                     }
 
@@ -242,17 +238,17 @@ class NewsRepository {
                                     "thumbnail",
                                     "enclosure" -> {
 
-                                        val image =
-                                            getImageAttribute(
+                                        val url =
+                                            getImageUrl(
                                                 parser
                                             )
 
                                         if (
-                                            !image.isNullOrBlank()
+                                            !url.isNullOrBlank()
                                         ) {
 
                                             imageCandidates.add(
-                                                image
+                                                url
                                             )
                                         }
                                     }
@@ -262,14 +258,13 @@ class NewsRepository {
 
                         XmlPullParser.END_TAG -> {
 
-                            val endTag =
+                            val tag =
                                 parser.name
-                                    ?.trim()
                                     ?.lowercase()
                                     ?: ""
 
                             if (
-                                endTag == "item"
+                                tag == "item"
                             ) {
 
                                 insideItem = false
@@ -317,8 +312,10 @@ class NewsRepository {
                                 }
 
                                 if (
-                                    articles.size >= limit
+                                    articles.size >=
+                                    limit
                                 ) {
+
                                     break
                                 }
                             }
@@ -344,36 +341,19 @@ class NewsRepository {
         return articles
     }
 
-    private fun readElementText(
-        parser: XmlPullParser
-    ): String {
-
-        return try {
-
-            parser.nextText()
-                .trim()
-
-        } catch (
-            e: Exception
-        ) {
-
-            ""
-        }
-    }
-
-    private fun getImageAttribute(
+    private fun getImageUrl(
         parser: XmlPullParser
     ): String? {
 
-        val attributes =
-            listOf(
+        val possibleAttributes =
+            arrayOf(
                 "url",
                 "href",
                 "src"
             )
 
         for (
-            attribute in attributes
+            attribute in possibleAttributes
         ) {
 
             val value =
@@ -383,20 +363,14 @@ class NewsRepository {
                 )
 
             if (
-                !value.isNullOrBlank()
+                !value.isNullOrBlank() &&
+                (
+                    value.startsWith("http://") ||
+                    value.startsWith("https://")
+                )
             ) {
 
-                if (
-                    value.startsWith(
-                        "http://"
-                    ) ||
-                    value.startsWith(
-                        "https://"
-                    )
-                ) {
-
-                    return value
-                }
+                return value
             }
         }
 
@@ -408,26 +382,20 @@ class NewsRepository {
         candidates: List<String>
     ): String {
 
-        /*
-         * First use image URLs supplied directly
-         * by the RSS feed.
-         */
-        candidates.forEach { url ->
+        for (
+            candidate in candidates
+        ) {
 
             if (
-                isValidImageUrl(url)
+                isValidUrl(candidate)
             ) {
 
-                return decodeHtmlEntities(
-                    url.trim()
+                return decodeEntities(
+                    candidate
                 )
             }
         }
 
-        /*
-         * Search the RSS description for normal
-         * image elements.
-         */
         val imageRegex =
             Regex(
                 """<img[^>]+(?:src|data-src|data-original|data-lazy-src)=["']([^"']+)["']""",
@@ -444,58 +412,20 @@ class NewsRepository {
         ) {
 
             val image =
-                decodeHtmlEntities(
+                decodeEntities(
                     imageMatch
                         .groupValues[1]
                         .trim()
                 )
 
             if (
-                isValidImageUrl(image)
+                isValidUrl(image)
             ) {
 
                 return image
             }
         }
 
-        /*
-         * Search separately for lazy-loading
-         * image attributes.
-         */
-        val lazyRegex =
-            Regex(
-                """(?:data-src|data-original|data-lazy-src)=["']([^"']+)["']""",
-                RegexOption.IGNORE_CASE
-            )
-
-        val lazyMatch =
-            lazyRegex.find(
-                description
-            )
-
-        if (
-            lazyMatch != null
-        ) {
-
-            val image =
-                decodeHtmlEntities(
-                    lazyMatch
-                        .groupValues[1]
-                        .trim()
-                )
-
-            if (
-                isValidImageUrl(image)
-            ) {
-
-                return image
-            }
-        }
-
-        /*
-         * Some feeds contain a plain image URL
-         * inside the description.
-         */
         val urlRegex =
             Regex(
                 """https?://[^\s"'<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\s"'<>]*)?""",
@@ -512,14 +442,12 @@ class NewsRepository {
         ) {
 
             val image =
-                decodeHtmlEntities(
-                    urlMatch
-                        .value
-                        .trim()
+                decodeEntities(
+                    urlMatch.value
                 )
 
             if (
-                isValidImageUrl(image)
+                isValidUrl(image)
             ) {
 
                 return image
@@ -529,21 +457,17 @@ class NewsRepository {
         return ""
     }
 
-    private fun isValidImageUrl(
+    private fun isValidUrl(
         url: String
     ): Boolean {
 
         return (
-            url.startsWith(
-                "https://"
-            ) ||
-            url.startsWith(
-                "http://"
-            )
+            url.startsWith("http://") ||
+            url.startsWith("https://")
         )
     }
 
-    private fun decodeHtmlEntities(
+    private fun decodeEntities(
         text: String
     ): String {
 
@@ -579,7 +503,7 @@ class NewsRepository {
         text: String
     ): String {
 
-        return decodeHtmlEntities(
+        return decodeEntities(
             text
                 .replace(
                     Regex("<[^>]*>"),
