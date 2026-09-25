@@ -1558,7 +1558,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pages"
+                android:text="Tabs"
                 android:textColor="#7F8EA5"
                 android:textSize="8sp" />
 
