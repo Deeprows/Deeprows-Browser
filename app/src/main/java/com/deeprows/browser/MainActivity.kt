@@ -469,6 +469,26 @@ private fun addMainCategoryHeader(
 
     container.addView(titleView)
 }
+private fun addSubCategoryHeader(
+    container: LinearLayout,
+    title: String
+) {
+    val titleView = TextView(this)
+
+    titleView.text = title
+    titleView.textSize = 15f
+    titleView.setTypeface(null, Typeface.BOLD)
+    titleView.setTextColor(Color.LTGRAY)
+
+    titleView.setPadding(
+        dp(12),
+        dp(8),
+        dp(8),
+        dp(6)
+    )
+
+    container.addView(titleView)
+}
 
     // =========================================================
     // SYSTEM NAVIGATION BAR
