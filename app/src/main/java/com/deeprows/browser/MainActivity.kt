@@ -411,8 +411,7 @@ private fun setupDynamicHomepage() {
                 )
             )
         ),
-
-        HomeCategory(
+                HomeCategory(
             "💬 MESSAGING",
             listOf(
                 HomeSubCategory(
@@ -425,6 +424,7 @@ private fun setupDynamicHomepage() {
                 )
             )
         )
+    )
 
     categories.forEach { category ->
 
@@ -446,7 +446,7 @@ private fun setupDynamicHomepage() {
             )
         }
     }
-  }
+}
 
 private fun addMainCategoryHeader(
     container: LinearLayout,
