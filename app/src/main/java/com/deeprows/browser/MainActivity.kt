@@ -169,25 +169,33 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onPageFinished(
-                    view: WebView?,
-                    url: String?
-                ) {
+    view: WebView?,
+    url: String?
+) {
 
-                    loadingBar.visibility =
-                        View.GONE
+    loadingBar.visibility =
+        View.GONE
 
-                    if (
-                        url != null &&
-                        (
-                            url.startsWith("http://") ||
-                                    url.startsWith("https://")
-                            )
-                    ) {
+    if (
+        url != null &&
+        (
+            url.startsWith("http://") ||
+            url.startsWith("https://")
+        )
+    ) {
 
-                        addressBar.setText(url)
-                    }
-                }
+        addressBar.setText(url)
 
+        // Hide search/address bar after website finishes loading
+        addressBar.visibility =
+            View.GONE
+
+        findViewById<View>(
+            R.id.goButton
+        ).visibility =
+            View.GONE
+    }
+}
                 override fun shouldOverrideUrlLoading(
                     view: WebView?,
                     request: WebResourceRequest?
