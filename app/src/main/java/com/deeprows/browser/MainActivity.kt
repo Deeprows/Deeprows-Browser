@@ -343,14 +343,13 @@ private fun setupControls() {
         }
     }
 
-    findViewById<View>(
-        R.id.moreTrendsButton
-    ).setOnClickListener {
+   findViewById<View>(
+    R.id.moreTrendsButton
+).setOnClickListener {
 
-        openWebsite(
-            "https://trends.google.com/trending"
-        )
-    }
+    openWebsite(
+        "https://trends.google.com/trending"
+    )
 }
     // =====================================================
 // REFRESH
