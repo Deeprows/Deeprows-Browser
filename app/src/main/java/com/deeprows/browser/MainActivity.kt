@@ -99,6 +99,13 @@ private var nextTabId = 1
         setupCategoryLogos()
         setupSettings()
 
+createNotificationChannel()
+requestNotificationPermission()
+showNotification(
+    "Deeprows Browser",
+    "Notifications are working!"
+)
+
 applyAppTheme()
 
 showHomePage()
