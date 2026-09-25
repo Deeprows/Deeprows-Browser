@@ -1241,6 +1241,74 @@
                             android:focusable="true" />
                     </LinearLayout>
 
+     <!-- =========================================================
+     GOOGLE TRENDS
+     ========================================================= -->
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="14dp"
+    android:background="#29272D"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🔥 Google Trends"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/trendsLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Egypt"
+            android:textColor="#BDB7C1"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="What's trending right now"
+        android:textColor="#AFA8B2"
+        android:textSize="11sp" />
+
+    <LinearLayout
+        android:id="@+id/trendsList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical" />
+
+    <TextView
+        android:id="@+id/moreTrendsButton"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="View Google Trends"
+        android:textColor="#FF6B8A"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:background="#1D1B20"
+        android:clickable="true"
+        android:focusable="true" />
+
+</LinearLayout>
+
                 </GridLayout>
             </FrameLayout>
         </ScrollView>
