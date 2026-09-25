@@ -1437,95 +1437,226 @@
     </FrameLayout>
 
 
-   <!-- =========================================================
-     BOTTOM BROWSER NAVIGATION
+  <!-- =========================================================
+     MODERN BROWSER BOTTOM BAR
      ========================================================= -->
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="52dp"
+    android:layout_height="64dp"
     android:orientation="horizontal"
     android:gravity="center"
-    android:background="#17243A"
-    android:elevation="8dp">
+    android:background="#101A2B"
+    android:elevation="10dp"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp">
 
     <!-- BACK -->
 
-    <ImageButton
-        android:id="@+id/backButton"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_media_previous"
-        android:tint="#8B9AB0"
-        android:contentDescription="Back"
-        android:padding="12dp" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_browser_back"
+            android:tint="#D9E2F0"
+            android:contentDescription="Back"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:textColor="#7F8EA5"
+            android:textSize="8sp" />
+
+    </LinearLayout>
+
 
     <!-- FORWARD -->
 
-    <ImageButton
-        android:id="@+id/forwardButton"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_media_next"
-        android:tint="#8B9AB0"
-        android:contentDescription="Forward"
-        android:padding="12dp" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageButton
+            android:id="@+id/forwardButton"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_browser_forward"
+            android:tint="#D9E2F0"
+            android:contentDescription="Forward"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forward"
+            android:textColor="#7F8EA5"
+            android:textSize="8sp" />
+
+    </LinearLayout>
+
 
     <!-- HOME -->
 
-    <ImageButton
-        android:id="@+id/homeButton"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_menu_view"
-        android:tint="#E91E4D"
-        android:contentDescription="Home"
-        android:padding="12dp" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
 
-    <!-- OPEN PAGES / TABS -->
+        <ImageButton
+            android:id="@+id/homeButton"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_browser_home"
+            android:tint="#E91E4D"
+            android:contentDescription="Home"
+            android:padding="8dp" />
 
-    <ImageButton
-        android:id="@+id/refreshButton"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Home"
+            android:textColor="#E91E4D"
+            android:textSize="8sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+    <!-- OPEN PAGES -->
+
+    <FrameLayout
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_menu_agenda"
-        android:tint="#8B9AB0"
-        android:contentDescription="Open Pages"
-        android:padding="12dp" />
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageButton
+                android:id="@+id/refreshButton"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_browser_tabs"
+                android:tint="#D9E2F0"
+                android:contentDescription="Open Pages"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pages"
+                android:textColor="#7F8EA5"
+                android:textSize="8sp" />
+
+        </LinearLayout>
+
+        <!-- PAGE COUNT BADGE -->
+
+        <TextView
+            android:id="@+id/pagesCount"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="19dp"
+            android:layout_marginTop="-17dp"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="#FFFFFF"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:background="#E91E4D"
+            android:visibility="visible" />
+
+    </FrameLayout>
+
 
     <!-- BOOKMARK -->
 
-    <ImageButton
-        android:id="@+id/bookmarkButton"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/btn_star"
-        android:tint="#8B9AB0"
-        android:contentDescription="Bookmark"
-        android:padding="12dp" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageButton
+            android:id="@+id/bookmarkButton"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_browser_bookmark"
+            android:tint="#D9E2F0"
+            android:contentDescription="Bookmark"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:textColor="#7F8EA5"
+            android:textSize="8sp" />
+
+    </LinearLayout>
+
 
     <!-- MENU -->
 
-    <ImageButton
-        android:id="@+id/menuButton"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_menu_manage"
-        android:tint="#8B9AB0"
-        android:contentDescription="Menu"
-        android:padding="12dp" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true">
 
-</LinearLayout>
+        <ImageButton
+            android:id="@+id/menuButton"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_browser_menu"
+            android:tint="#D9E2F0"
+            android:contentDescription="Menu"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menu"
+            android:textColor="#7F8EA5"
+            android:textSize="8sp" />
+
+    </LinearLayout>
 </LinearLayout>
