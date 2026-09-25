@@ -49,6 +49,8 @@ class NewsRepository {
 
         val articles = mutableListOf<NewsArticle>()
 
+        var connection: HttpURLConnection? = null
+
         try {
 
             val encodedQuery =
@@ -58,35 +60,44 @@ class NewsRepository {
                 )
 
             val urlString =
-                "$googleNewsUrl?q=$encodedQuery" +
+                "$googleNewsUrl" +
+                        "?q=$encodedQuery" +
                         "&hl=en-US" +
                         "&gl=US" +
                         "&ceid=US:en"
 
-            val connection =
+            connection =
                 URL(urlString)
                     .openConnection() as HttpURLConnection
 
             connection.requestMethod = "GET"
 
-            connection.connectTimeout = 15000
-            connection.readTimeout = 15000
+            connection.connectTimeout = 20000
+            connection.readTimeout = 20000
+
+            connection.instanceFollowRedirects = true
 
             connection.setRequestProperty(
                 "User-Agent",
-                "Mozilla/5.0 (Android) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36"
+                "Mozilla/5.0 (Linux; Android 15; Mobile) " +
+                        "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                        "Chrome/153.0.0.0 Mobile Safari/537.36"
             )
 
             connection.setRequestProperty(
                 "Accept",
-                "application/rss+xml, application/xml, text/xml"
+                "application/rss+xml, application/xml, text/xml, */*"
+            )
+
+            connection.setRequestProperty(
+                "Cache-Control",
+                "no-cache"
             )
 
             if (
                 connection.responseCode !=
                 HttpURLConnection.HTTP_OK
             ) {
-                connection.disconnect()
                 return emptyList()
             }
 
@@ -94,6 +105,17 @@ class NewsRepository {
 
                 val parser =
                     Xml.newPullParser()
+
+                /*
+                 * Important:
+                 * Disable namespace processing so tags such as
+                 * media:content and media:thumbnail remain
+                 * available with their prefixes.
+                 */
+                parser.setFeature(
+                    XmlPullParser.FEATURE_PROCESS_NAMESPACES,
+                    false
+                )
 
                 parser.setInput(
                     inputStream,
@@ -123,12 +145,17 @@ class NewsRepository {
 
                         XmlPullParser.START_TAG -> {
 
-                            val tag =
+                            val rawTag =
                                 parser.name
-                                    ?.lowercase()
+                                    ?.trim()
                                     ?: ""
 
-                            if (tag == "item") {
+                            val tag =
+                                rawTag.lowercase()
+
+                            if (
+                                tag == "item"
+                            ) {
 
                                 insideItem = true
 
@@ -150,9 +177,11 @@ class NewsRepository {
                                         if (
                                             title.isEmpty()
                                         ) {
+
                                             title =
-                                                parser.nextText()
-                                                    .trim()
+                                                readElementText(
+                                                    parser
+                                                )
                                         }
                                     }
 
@@ -161,10 +190,11 @@ class NewsRepository {
                                         if (
                                             link.isEmpty()
                                         ) {
+
                                             link =
-                                                parser.nextText()
-                                                    .trim()
-                                        }
+                                                readElementText(
+                                                    parser
+                                                )
                                     }
 
                                     "source" -> {
@@ -172,9 +202,11 @@ class NewsRepository {
                                         if (
                                             source.isEmpty()
                                         ) {
+
                                             source =
-                                                parser.nextText()
-                                                    .trim()
+                                                readElementText(
+                                                    parser
+                                                )
                                         }
                                     }
 
@@ -183,9 +215,11 @@ class NewsRepository {
                                         if (
                                             pubDate.isEmpty()
                                         ) {
+
                                             pubDate =
-                                                parser.nextText()
-                                                    .trim()
+                                                readElementText(
+                                                    parser
+                                                )
                                         }
                                     }
 
@@ -194,26 +228,29 @@ class NewsRepository {
                                         if (
                                             description.isEmpty()
                                         ) {
+
                                             description =
-                                                parser.nextText()
-                                                    .trim()
+                                                readElementText(
+                                                    parser
+                                                )
                                         }
                                     }
 
                                     "media:content",
                                     "media:thumbnail",
+                                    "content",
                                     "thumbnail",
                                     "enclosure" -> {
 
                                         val image =
-                                            parser.getAttributeValue(
-                                                null,
-                                                "url"
+                                            getImageAttribute(
+                                                parser
                                             )
 
                                         if (
                                             !image.isNullOrBlank()
                                         ) {
+
                                             imageCandidates.add(
                                                 image
                                             )
@@ -225,39 +262,48 @@ class NewsRepository {
 
                         XmlPullParser.END_TAG -> {
 
+                            val endTag =
+                                parser.name
+                                    ?.trim()
+                                    ?.lowercase()
+                                    ?: ""
+
                             if (
-                                parser.name.equals(
-                                    "item",
-                                    ignoreCase = true
-                                )
+                                endTag == "item"
                             ) {
 
                                 insideItem = false
-
-                                val imageUrl =
-                                    findImageUrl(
-                                        description,
-                                        imageCandidates
-                                    )
 
                                 if (
                                     title.isNotBlank() &&
                                     link.isNotBlank()
                                 ) {
 
+                                    val imageUrl =
+                                        findImageUrl(
+                                            description,
+                                            imageCandidates
+                                        )
+
                                     articles.add(
                                         NewsArticle(
                                             title =
-                                                cleanText(title),
+                                                cleanText(
+                                                    title
+                                                ),
 
                                             link =
-                                                link,
+                                                link.trim(),
 
                                             source =
-                                                cleanText(source),
+                                                cleanText(
+                                                    source
+                                                ),
 
                                             pubDate =
-                                                cleanText(pubDate),
+                                                cleanText(
+                                                    pubDate
+                                                ),
 
                                             description =
                                                 cleanText(
@@ -284,16 +330,77 @@ class NewsRepository {
                 }
             }
 
-            connection.disconnect()
-
         } catch (
             e: Exception
         ) {
 
             e.printStackTrace()
+
+        } finally {
+
+            connection?.disconnect()
         }
 
         return articles
+    }
+
+    private fun readElementText(
+        parser: XmlPullParser
+    ): String {
+
+        return try {
+
+            parser.nextText()
+                .trim()
+
+        } catch (
+            e: Exception
+        ) {
+
+            ""
+        }
+    }
+
+    private fun getImageAttribute(
+        parser: XmlPullParser
+    ): String? {
+
+        val attributes =
+            listOf(
+                "url",
+                "href",
+                "src"
+            )
+
+        for (
+            attribute in attributes
+        ) {
+
+            val value =
+                parser.getAttributeValue(
+                    null,
+                    attribute
+                )
+
+            if (
+                !value.isNullOrBlank()
+            ) {
+
+                if (
+                    value.startsWith(
+                        "http://"
+                    ) ||
+                    value.startsWith(
+                        "https://"
+                    )
+                ) {
+
+                    return value
+                }
+            }
+        }
+
+        return null
     }
 
     private fun findImageUrl(
@@ -301,40 +408,60 @@ class NewsRepository {
         candidates: List<String>
     ): String {
 
+        /*
+         * First use image URLs supplied directly
+         * by the RSS feed.
+         */
         candidates.forEach { url ->
 
             if (
-                url.startsWith("http://") ||
-                url.startsWith("https://")
+                isValidImageUrl(url)
             ) {
-                return url
+
+                return decodeHtmlEntities(
+                    url.trim()
+                )
             }
         }
 
+        /*
+         * Search the RSS description for normal
+         * image elements.
+         */
         val imageRegex =
             Regex(
-                """<img[^>]+src=["']([^"']+)["']""",
+                """<img[^>]+(?:src|data-src|data-original|data-lazy-src)=["']([^"']+)["']""",
                 RegexOption.IGNORE_CASE
             )
 
         val imageMatch =
-            imageRegex.find(description)
+            imageRegex.find(
+                description
+            )
 
         if (
             imageMatch != null
         ) {
 
             val image =
-                imageMatch.groupValues[1]
+                decodeHtmlEntities(
+                    imageMatch
+                        .groupValues[1]
+                        .trim()
+                )
 
             if (
-                image.startsWith("http://") ||
-                image.startsWith("https://")
+                isValidImageUrl(image)
             ) {
+
                 return image
             }
         }
 
+        /*
+         * Search separately for lazy-loading
+         * image attributes.
+         */
         val lazyRegex =
             Regex(
                 """(?:data-src|data-original|data-lazy-src)=["']([^"']+)["']""",
@@ -342,19 +469,59 @@ class NewsRepository {
             )
 
         val lazyMatch =
-            lazyRegex.find(description)
+            lazyRegex.find(
+                description
+            )
 
         if (
             lazyMatch != null
         ) {
 
             val image =
-                lazyMatch.groupValues[1]
+                decodeHtmlEntities(
+                    lazyMatch
+                        .groupValues[1]
+                        .trim()
+                )
 
             if (
-                image.startsWith("http://") ||
-                image.startsWith("https://")
+                isValidImageUrl(image)
             ) {
+
+                return image
+            }
+        }
+
+        /*
+         * Some feeds contain a plain image URL
+         * inside the description.
+         */
+        val urlRegex =
+            Regex(
+                """https?://[^\s"'<>]+?\.(?:jpg|jpeg|png|webp)(?:\?[^\s"'<>]*)?""",
+                RegexOption.IGNORE_CASE
+            )
+
+        val urlMatch =
+            urlRegex.find(
+                description
+            )
+
+        if (
+            urlMatch != null
+        ) {
+
+            val image =
+                decodeHtmlEntities(
+                    urlMatch
+                        .value
+                        .trim()
+                )
+
+            if (
+                isValidImageUrl(image)
+            ) {
+
                 return image
             }
         }
@@ -362,15 +529,25 @@ class NewsRepository {
         return ""
     }
 
-    private fun cleanText(
+    private fun isValidImageUrl(
+        url: String
+    ): Boolean {
+
+        return (
+            url.startsWith(
+                "https://"
+            ) ||
+            url.startsWith(
+                "http://"
+            )
+        )
+    }
+
+    private fun decodeHtmlEntities(
         text: String
     ): String {
 
         return text
-            .replace(
-                Regex("<[^>]*>"),
-                ""
-            )
             .replace(
                 "&amp;",
                 "&"
@@ -395,10 +572,24 @@ class NewsRepository {
                 "&gt;",
                 ">"
             )
-            .replace(
-                Regex("\\s+"),
-                " "
-            )
             .trim()
+    }
+
+    private fun cleanText(
+        text: String
+    ): String {
+
+        return decodeHtmlEntities(
+            text
+                .replace(
+                    Regex("<[^>]*>"),
+                    ""
+                )
+                .replace(
+                    Regex("\\s+"),
+                    " "
+                )
+                .trim()
+        )
     }
 }
