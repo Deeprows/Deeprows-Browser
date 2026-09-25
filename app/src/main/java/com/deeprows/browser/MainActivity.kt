@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
         setupWebView()
         setupControls()
         setupCategoryLinks()
+        setupCategoryLogos()
         setupSettings()
 
         showHomePage()
@@ -789,6 +790,170 @@ class MainActivity : AppCompatActivity() {
             )
         }
     }
+
+    // =========================================================
+// CATEGORY LOGOS
+// =========================================================
+
+private fun setupCategoryLogos() {
+
+    val logos = mapOf(
+
+        // Watch Football / Movies
+        R.id.siteWatchFootball to "deeprowss.com",
+        R.id.siteLatestMovies to "deeprowss.com",
+
+        // Social & Video
+        R.id.siteFacebook to "facebook.com",
+        R.id.siteTikTok to "tiktok.com",
+        R.id.siteYouTube to "youtube.com",
+        R.id.siteX to "x.com",
+        R.id.siteDailymotion to "dailymotion.com",
+
+        // Messaging
+        R.id.siteWhatsApp to "whatsapp.com",
+        R.id.siteSnapchat to "snapchat.com",
+        R.id.siteTelegram to "telegram.org",
+
+        // Jobs
+        R.id.siteLinkedInJobs to "linkedin.com",
+        R.id.siteIndeed to "indeed.com",
+        R.id.siteGlassdoor to "glassdoor.com",
+        R.id.siteZipRecruiter to "ziprecruiter.com",
+        R.id.siteBayt to "bayt.com",
+        R.id.siteJooble to "jooble.org",
+        R.id.siteMonster to "monster.com",
+        R.id.siteJobStreet to "jobstreet.com",
+        R.id.siteWellfound to "wellfound.com",
+
+        // Sports
+        R.id.siteESPN to "espn.com",
+        R.id.siteBBCSport to "bbc.com",
+        R.id.siteSkySports to "skysports.com",
+        R.id.siteGoal to "goal.com",
+        R.id.siteAthletic to "nytimes.com",
+        R.id.siteCBSSports to "cbssports.com",
+        R.id.siteFoxSports to "foxsports.com",
+        R.id.siteSportingNews to "sportingnews.com",
+        R.id.siteEurosport to "eurosport.com",
+        R.id.siteSportsIllustrated to "si.com",
+
+        // News
+        R.id.siteBBCNews to "bbc.com",
+        R.id.siteReuters to "reuters.com",
+        R.id.siteAP to "apnews.com",
+        R.id.siteCNN to "cnn.com",
+        R.id.siteAlJazeera to "aljazeera.com",
+        R.id.siteGuardian to "theguardian.com",
+        R.id.siteNYTimes to "nytimes.com",
+        R.id.siteSkyNews to "sky.com",
+        R.id.siteFrance24 to "france24.com",
+        R.id.siteDW to "dw.com",
+
+        // Scholarships & Sponsorships
+        R.id.siteChevening to "chevening.org",
+        R.id.siteErasmus to "erasmus-plus.ec.europa.eu",
+        R.id.siteDAAD to "daad.de",
+        R.id.siteCommonwealth to "cscuk.fcdo.gov.uk",
+        R.id.siteMastercard to "mastercardfdn.org",
+        R.id.siteSwedishInstitute to "si.se",
+        R.id.siteOpportunityDesk to "opportunitydesk.org",
+        R.id.siteScholarshipPositions to "scholarshippositions.com",
+        R.id.siteStudyportals to "mastersportal.com",
+        R.id.siteAfricanUnion to "au.int"
+    )
+
+    logos.forEach { (id, domain) ->
+
+        val textView =
+            findViewById<android.widget.TextView>(id)
+
+        loadWebsiteLogo(
+            textView,
+            domain
+        )
+    }
+}
+
+private fun loadWebsiteLogo(
+    textView: android.widget.TextView,
+    domain: String
+) {
+
+    kotlinx.coroutines.CoroutineScope(
+        kotlinx.coroutines.Dispatchers.IO
+    ).launch {
+
+        try {
+
+            val logoUrl =
+                "https://www.google.com/s2/favicons" +
+                        "?domain=$domain&sz=128"
+
+            val connection =
+                java.net.URL(
+                    logoUrl
+                ).openConnection()
+
+            connection.connectTimeout =
+                10000
+
+            connection.readTimeout =
+                10000
+
+            connection.connect()
+
+            val input =
+                connection.getInputStream()
+
+            val bitmap =
+                android.graphics.BitmapFactory
+                    .decodeStream(input)
+
+            input.close()
+
+            if (bitmap != null) {
+
+                runOnUiThread {
+
+                    val drawable =
+                        android.graphics.drawable.BitmapDrawable(
+                            resources,
+                            bitmap
+                        )
+
+                    val size =
+                        (26 * resources.displayMetrics.density)
+                            .toInt()
+
+                    drawable.setBounds(
+                        0,
+                        0,
+                        size,
+                        size
+                    )
+
+                    textView.setCompoundDrawables(
+                        drawable,
+                        null,
+                        null,
+                        null
+                    )
+
+                    textView.compoundDrawablePadding =
+                        (
+                            8 *
+                                    resources.displayMetrics.density
+                            ).toInt()
+                }
+            }
+
+        } catch (_: Exception) {
+
+            // Keep the text card if logo fails
+        }
+    }
+}
 
     // =========================================================
     // SETTINGS
