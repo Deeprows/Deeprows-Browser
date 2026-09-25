@@ -92,7 +92,9 @@ private var nextTabId = 1
         setupCategoryLogos()
         setupSettings()
 
-        showHomePage()
+applyAppTheme()
+
+showHomePage()
 
         loadLatestNews()
         loadSportNews()
@@ -2394,14 +2396,16 @@ private fun showThemeSelector() {
             selectedIndex
         ) { dialog, which ->
 
-            preferences.edit()
-                .putString(
-                    "app_theme",
-                    themes[which]
-                )
-                .apply()
+           preferences.edit()
+    .putString(
+        "app_theme",
+        themes[which]
+    )
+    .apply()
 
-            Toast.makeText(
+applyAppTheme()
+
+Toast.makeText(
                 this,
                 "${themes[which]} selected",
                 Toast.LENGTH_SHORT
@@ -2414,5 +2418,300 @@ private fun showThemeSelector() {
             null
         )
         .show()
+}
+// =========================================================
+// APPLY THEME
+// =========================================================
+
+private fun applyAppTheme() {
+
+    val theme =
+        preferences.getString(
+            "app_theme",
+            "Midnight"
+        )
+
+    val backgroundColor: Int
+    val surfaceColor: Int
+    val surface2Color: Int
+    val textColor: Int
+    val mutedColor: Int
+    val accentColor: Int
+
+    when (theme) {
+
+        "Deeprowss Red" -> {
+
+            backgroundColor =
+                android.graphics.Color.parseColor("#18080D")
+
+            surfaceColor =
+                android.graphics.Color.parseColor("#35101B")
+
+            surface2Color =
+                android.graphics.Color.parseColor("#4A1423")
+
+            textColor =
+                android.graphics.Color.WHITE
+
+            mutedColor =
+                android.graphics.Color.parseColor("#D7A7B5")
+
+            accentColor =
+                android.graphics.Color.parseColor("#FF1744")
+        }
+
+        "Purple Night" -> {
+
+            backgroundColor =
+                android.graphics.Color.parseColor("#120B1C")
+
+            surfaceColor =
+                android.graphics.Color.parseColor("#27163D")
+
+            surface2Color =
+                android.graphics.Color.parseColor("#382052")
+
+            textColor =
+                android.graphics.Color.WHITE
+
+            mutedColor =
+                android.graphics.Color.parseColor("#C9B9D9")
+
+            accentColor =
+                android.graphics.Color.parseColor("#B45CFF")
+        }
+
+        "Ocean" -> {
+
+            backgroundColor =
+                android.graphics.Color.parseColor("#06141C")
+
+            surfaceColor =
+                android.graphics.Color.parseColor("#0D2A3A")
+
+            surface2Color =
+                android.graphics.Color.parseColor("#123B50")
+
+            textColor =
+                android.graphics.Color.WHITE
+
+            mutedColor =
+                android.graphics.Color.parseColor("#A9C8D6")
+
+            accentColor =
+                android.graphics.Color.parseColor("#00B8D4")
+        }
+
+        "Emerald" -> {
+
+            backgroundColor =
+                android.graphics.Color.parseColor("#071710")
+
+            surfaceColor =
+                android.graphics.Color.parseColor("#103022")
+
+            surface2Color =
+                android.graphics.Color.parseColor("#174631")
+
+            textColor =
+                android.graphics.Color.WHITE
+
+            mutedColor =
+                android.graphics.Color.parseColor("#A9CDBA")
+
+            accentColor =
+                android.graphics.Color.parseColor("#00D084")
+        }
+
+        "Light" -> {
+
+            backgroundColor =
+                android.graphics.Color.parseColor("#F4F6F8")
+
+            surfaceColor =
+                android.graphics.Color.WHITE
+
+            surface2Color =
+                android.graphics.Color.parseColor("#E8EDF2")
+
+            textColor =
+                android.graphics.Color.parseColor("#111827")
+
+            mutedColor =
+                android.graphics.Color.parseColor("#667085")
+
+            accentColor =
+                android.graphics.Color.parseColor("#E91E4D")
+        }
+
+        "AMOLED" -> {
+
+            backgroundColor =
+                android.graphics.Color.BLACK
+
+            surfaceColor =
+                android.graphics.Color.parseColor("#080808")
+
+            surface2Color =
+                android.graphics.Color.parseColor("#111111")
+
+            textColor =
+                android.graphics.Color.WHITE
+
+            mutedColor =
+                android.graphics.Color.parseColor("#999999")
+
+            accentColor =
+                android.graphics.Color.parseColor("#FF1744")
+        }
+
+        else -> {
+
+            backgroundColor =
+                android.graphics.Color.parseColor("#111B2D")
+
+            surfaceColor =
+                android.graphics.Color.parseColor("#182437")
+
+            surface2Color =
+                android.graphics.Color.parseColor("#22314A")
+
+            textColor =
+                android.graphics.Color.WHITE
+
+            mutedColor =
+                android.graphics.Color.parseColor("#9AA9BE")
+
+            accentColor =
+                android.graphics.Color.parseColor("#FF1744")
+        }
+    }
+
+    // =====================================================
+    // MAIN BACKGROUNDS
+    // =====================================================
+
+    findViewById<View>(
+        android.R.id.content
+    ).setBackgroundColor(
+        backgroundColor
+    )
+
+    homePage.setBackgroundColor(
+        backgroundColor
+    )
+
+    settingsPage.setBackgroundColor(
+        backgroundColor
+    )
+
+    webView.setBackgroundColor(
+        backgroundColor
+    )
+
+    // =====================================================
+    // SEARCH BAR
+    // =====================================================
+
+    findViewById<View>(
+        R.id.addressBar
+    ).setBackgroundColor(
+        surface2Color
+    )
+
+    // =====================================================
+    // SETTINGS THEME BUTTON
+    // =====================================================
+
+    findViewById<View>(
+        R.id.themeButton
+    ).setBackgroundColor(
+        surfaceColor
+    )
+
+    // =====================================================
+    // BOTTOM NAVIGATION
+    // =====================================================
+
+    val bottomBar =
+        findViewById<View>(
+            R.id.bottomBar
+        )
+
+    bottomBar.setBackgroundColor(
+        surfaceColor
+    )
+
+    // =====================================================
+    // TEXT COLORS
+    // =====================================================
+
+    val rootView =
+        findViewById<android.view.ViewGroup>(
+            R.id.homePage
+        )
+
+    applyTextColors(
+        rootView,
+        textColor
+    )
+
+    val settingsRoot =
+        findViewById<android.view.ViewGroup>(
+            R.id.settingsPage
+        )
+
+    applyTextColors(
+        settingsRoot,
+        textColor
+    )
+
+    // =====================================================
+    // THEME ACCENT
+    // =====================================================
+
+    findViewById<View>(
+        R.id.goButton
+    ).setBackgroundColor(
+        accentColor
+    )
+
+    findViewById<View>(
+        R.id.themeButton
+    ).setBackgroundColor(
+        surfaceColor
+    )
+}
+private fun applyTextColors(
+    parent: android.view.ViewGroup,
+    color: Int
+) {
+
+    for (
+        index in 0 until parent.childCount
+    ) {
+
+        val child =
+            parent.getChildAt(index)
+
+        when (child) {
+
+            is android.widget.TextView -> {
+
+                child.setTextColor(
+                    color
+                )
+            }
+
+            is android.view.ViewGroup -> {
+
+                applyTextColors(
+                    child,
+                    color
+                )
+            }
+        }
+    }
 }
 }
