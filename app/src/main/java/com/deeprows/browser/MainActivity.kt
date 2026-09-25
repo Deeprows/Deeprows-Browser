@@ -38,6 +38,21 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+data class HomeSite(
+    val name: String,
+    val url: String
+)
+
+data class HomeSubCategory(
+    val title: String,
+    val sites: List<HomeSite>
+)
+
+data class HomeCategory(
+    val title: String,
+    val subCategories: List<HomeSubCategory>
+)
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
