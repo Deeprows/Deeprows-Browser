@@ -286,6 +286,31 @@ private fun setupControls() {
             webView.goForward()
         }
     }
+    
+    // =====================================================
+// REFRESH
+// =====================================================
+
+findViewById<View>(
+    R.id.refreshPageButton
+).setOnClickListener {
+
+    if (
+        webView.visibility ==
+        View.VISIBLE
+    ) {
+
+        webView.reload()
+
+    } else {
+
+        Toast.makeText(
+            this,
+            "Open a website first",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+}
 
     // =====================================================
     // OPEN PAGES
