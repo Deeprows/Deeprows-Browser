@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity() {
         setupWebView()
         setupControls()
         setupCategoryLinks()
-        setupCategoryLogos()
         setupSettings()
 
         showHomePage()
