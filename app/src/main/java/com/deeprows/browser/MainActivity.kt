@@ -1,5 +1,6 @@
 package com.deeprows.browser
 
+import android.webkit.CookieManager
 import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.net.Uri
@@ -167,7 +168,17 @@ displayZoomControls = false
                     false
                 )
         }
+CookieManager
+    .getInstance()
+    .setAcceptCookie(true)
 
+CookieManager
+    .getInstance()
+    .setAcceptThirdPartyCookies(
+        webView,
+        true
+    )
+        
         webView.webViewClient =
             object : WebViewClient() {
 
