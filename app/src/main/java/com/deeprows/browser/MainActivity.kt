@@ -2284,8 +2284,7 @@ private fun loadGoogleTrends() {
     ).launch {
 
         val trends =
-            newsRepository.getGoogleTrends(10)
-
+    newsRepository.getGoogleTrends(limit = 10)
         if (trends.isEmpty()) {
 
             val emptyText =
