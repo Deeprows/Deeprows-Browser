@@ -385,14 +385,64 @@ findViewById<View>(
 
 private fun showOpenTabs() {
 
-    val dialog =
-        AlertDialog.Builder(this)
-            .setTitle("Open Tabs")
-            .setMessage("Tab manager coming next.")
-            .setPositiveButton("Close", null)
-            .create()
+    if (openTabs.isEmpty()) {
 
-    dialog.show()
+        Toast.makeText(
+            this,
+            "No open tabs",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        return
+    }
+
+    val tabNames =
+        openTabs.map { tab ->
+
+            if (tab.id == activeTabId) {
+                "✓ ${tab.title}"
+            } else {
+                tab.title
+            }
+
+        }.toTypedArray()
+
+    AlertDialog.Builder(this)
+        .setTitle("Open Tabs (${openTabs.size})")
+        .setItems(tabNames) { _, which ->
+
+            val selectedTab =
+                openTabs[which]
+
+            activeTabId =
+                selectedTab.id
+
+            webView.visibility =
+                View.VISIBLE
+
+            homePage.visibility =
+                View.GONE
+
+            settingsPage.visibility =
+                View.GONE
+
+            addressBar.visibility =
+                View.GONE
+
+            findViewById<View>(
+                R.id.goButton
+            ).visibility =
+                View.GONE
+
+            webView.loadUrl(
+                selectedTab.url
+            )
+        }
+        .setNegativeButton(
+            "Close",
+            null
+        )
+        .show()
 }
 
 
