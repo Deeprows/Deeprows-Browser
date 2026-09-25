@@ -1398,6 +1398,112 @@ private fun loadWebsiteLogoToImage(
     }
 }
 
+// =========================================================
+// NOTIFICATIONS
+// =========================================================
+
+private val notificationChannelId =
+    "deeprows_browser_notifications"
+
+private fun createNotificationChannel() {
+
+    if (
+        android.os.Build.VERSION.SDK_INT >=
+        android.os.Build.VERSION_CODES.O
+    ) {
+
+        val channel =
+            NotificationChannel(
+                notificationChannelId,
+                "Deeprows Browser",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+
+                description =
+                    "Notifications from Deeprows Browser"
+            }
+
+        val notificationManager =
+            getSystemService(
+                NotificationManager::class.java
+            )
+
+        notificationManager.createNotificationChannel(
+            channel
+        )
+    }
+}
+
+private fun requestNotificationPermission() {
+
+    if (
+        android.os.Build.VERSION.SDK_INT >=
+        android.os.Build.VERSION_CODES.TIRAMISU
+    ) {
+
+        if (
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.POST_NOTIFICATIONS
+                ),
+                1001
+            )
+        }
+    }
+}
+
+private fun showNotification(
+    title: String,
+    message: String
+) {
+
+    if (
+        android.os.Build.VERSION.SDK_INT >=
+        android.os.Build.VERSION_CODES.TIRAMISU
+    ) {
+
+        if (
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+    }
+
+    val notification =
+        NotificationCompat.Builder(
+            this,
+            notificationChannelId
+        )
+            .setSmallIcon(
+                R.drawable.deeprows_logo
+            )
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(
+                NotificationCompat.PRIORITY_DEFAULT
+            )
+            .setAutoCancel(true)
+            .build()
+
+    NotificationManagerCompat
+        .from(this)
+        .notify(
+            System.currentTimeMillis().toInt(),
+            notification
+        )
+}
    // =========================================================
 // SETTINGS
 // =========================================================
