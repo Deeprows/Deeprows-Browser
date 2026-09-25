@@ -557,6 +557,11 @@ private fun addSiteGrid(
 
     container.addView(grid)
 }
+
+private fun dp(value: Int): Int {
+    return (value * resources.displayMetrics.density).toInt()
+}
+    
     // =========================================================
     // SYSTEM NAVIGATION BAR
     // =========================================================
