@@ -140,7 +140,314 @@ loadGoogleTrends()
 
         hideSystemNavigationBar()
     }
+    
+private fun setupDynamicHomepage() {
 
+    val container =
+        findViewById<LinearLayout>(R.id.siteCategoriesContainer)
+
+    container.removeAllViews()
+
+    val categories = listOf(
+
+        HomeCategory(
+            "🤖 AI TOOLS",
+            listOf(
+
+                HomeSubCategory(
+                    "🎬 AI VIDEO",
+                    listOf(
+                        HomeSite("Kling AI", "https://klingai.com/"),
+                        HomeSite("Hailuo AI", "https://hailuoai.video/"),
+                        HomeSite("Pika", "https://pika.art/"),
+                        HomeSite("Runway", "https://runwayml.com/"),
+                        HomeSite("Luma Dream Machine", "https://lumalabs.ai/dream-machine"),
+                        HomeSite("PixVerse", "https://pixverse.ai/"),
+                        HomeSite("Vidu", "https://www.vidu.com/"),
+                        HomeSite("CapCut", "https://www.capcut.com/"),
+                        HomeSite("Canva", "https://www.canva.com/"),
+                        HomeSite("Krea", "https://www.krea.ai/")
+                    )
+                ),
+
+                HomeSubCategory(
+                    "🖼️ AI IMAGE",
+                    listOf(
+                        HomeSite("Microsoft Designer", "https://designer.microsoft.com/"),
+                        HomeSite("Leonardo AI", "https://leonardo.ai/"),
+                        HomeSite("Ideogram", "https://ideogram.ai/"),
+                        HomeSite("Adobe Firefly", "https://firefly.adobe.com/"),
+                        HomeSite("Google Gemini", "https://gemini.google.com/"),
+                        HomeSite("Canva AI", "https://www.canva.com/ai-image-generator/"),
+                        HomeSite("Playground AI", "https://playground.com/"),
+                        HomeSite("Krea AI", "https://www.krea.ai/"),
+                        HomeSite("Freepik AI", "https://www.freepik.com/ai/image-generator"),
+                        HomeSite("Craiyon", "https://www.craiyon.com/")
+                    )
+                ),
+
+                HomeSubCategory(
+                    "🎵 AI AUDIO / MUSIC / VOICE",
+                    listOf(
+                        HomeSite("ElevenLabs", "https://elevenlabs.io/"),
+                        HomeSite("Suno", "https://suno.com/"),
+                        HomeSite("Udio", "https://udio.com/"),
+                        HomeSite("Murf AI", "https://murf.ai/"),
+                        HomeSite("PlayHT", "https://play.ht/"),
+                        HomeSite("Speechify", "https://speechify.com/"),
+                        HomeSite("AIVA", "https://www.aiva.ai/"),
+                        HomeSite("Soundraw", "https://soundraw.io/"),
+                        HomeSite("Adobe Podcast", "https://podcast.adobe.com/"),
+                        HomeSite("TTSMaker", "https://ttsmaker.com/")
+                    )
+                )
+            )
+        ),
+
+        HomeCategory(
+            "🎓 EDUCATION",
+            listOf(
+
+                HomeSubCategory(
+                    "📚 FREE ONLINE COURSES",
+                    listOf(
+                        HomeSite("MIT OpenCourseWare", "https://ocw.mit.edu/"),
+                        HomeSite("OpenLearn", "https://www.open.edu/openlearn/"),
+                        HomeSite("edX", "https://www.edx.org/"),
+                        HomeSite("Coursera", "https://www.coursera.org/"),
+                        HomeSite("Open Yale Courses", "https://oyc.yale.edu/"),
+                        HomeSite("NPTEL", "https://nptel.ac.in/")
+                    )
+                ),
+
+                HomeSubCategory(
+                    "🎓 SCHOLARSHIPS & SPONSORSHIPS",
+                    listOf(
+                        HomeSite("Chevening", "https://www.chevening.org/"),
+                        HomeSite("Erasmus+", "https://erasmus-plus.ec.europa.eu/"),
+                        HomeSite("DAAD", "https://www.daad.de/en/studying-in-germany/scholarships/"),
+                        HomeSite("Commonwealth", "https://cscuk.fcdo.gov.uk/scholarships-filter-search/"),
+                        HomeSite("Mastercard Foundation", "https://mastercardfdn.org/all/scholars/"),
+                        HomeSite("Swedish Institute", "https://si.se/en/apply/scholarships/"),
+                        HomeSite("Opportunity Desk", "https://opportunitydesk.org/"),
+                        HomeSite("Scholarship Positions", "https://www.scholarshippositions.com/"),
+                        HomeSite("Studyportals", "https://www.mastersportal.com/scholarships/"),
+                        HomeSite("African Union", "https://au.int/")
+                    )
+                )
+            )
+        ),
+
+        HomeCategory(
+            "💼 JOBS & CAREERS",
+            listOf(
+                HomeSubCategory(
+                    "💼 JOB SITES",
+                    listOf(
+                        HomeSite("LinkedIn Jobs", "https://www.linkedin.com/jobs/"),
+                        HomeSite("Indeed", "https://www.indeed.com/"),
+                        HomeSite("Glassdoor", "https://www.glassdoor.com/"),
+                        HomeSite("ZipRecruiter", "https://www.ziprecruiter.com/"),
+                        HomeSite("Bayt", "https://www.bayt.com/"),
+                        HomeSite("Jooble", "https://jooble.org/"),
+                        HomeSite("Monster", "https://www.monster.com/"),
+                        HomeSite("JobStreet", "https://www.jobstreet.com/"),
+                        HomeSite("Wellfound", "https://wellfound.com/jobs")
+                    )
+                )
+            )
+        ),
+
+        HomeCategory(
+            "🎬 ENTERTAINMENT",
+            listOf(
+
+                HomeSubCategory(
+                    "🎌 ANIME",
+                    listOf(
+                        HomeSite("Miruro", "https://www.miruro.tv/"),
+                        HomeSite("AnimePahe", "https://animepahe.ru/"),
+                        HomeSite("KickAssAnime", "https://kaa.to/")
+                    )
+                ),
+
+                HomeSubCategory(
+                    "🎨 CARTOONS",
+                    listOf(
+                        HomeSite("WatchCartoonOnline", "https://www.wco.tv/"),
+                        HomeSite("SuperCartoons", "https://www.supercartoons.net/"),
+                        HomeSite("Japanese Animated Film Classics", "https://animation.filmarchives.jp/")
+                    )
+                ),
+
+                HomeSubCategory(
+                    "🇰🇷 ASIAN / K-DRAMA",
+                    listOf(
+                        HomeSite("AsianCrush", "https://www.asiancrush.com/"),
+                        HomeSite("OnDemandChina", "https://www.ondemandchina.com/"),
+                        HomeSite("Einthusan", "https://einthusan.tv/")
+                    )
+                ),
+
+                HomeSubCategory(
+                    "🎞️ CLASSICS",
+                    listOf(
+                        HomeSite("Internet Archive", "https://archive.org/"),
+                        HomeSite("WikiFlix", "https://wikiflix.toolforge.org/"),
+                        HomeSite("NASA+", "https://plus.nasa.gov/")
+                    )
+                )
+            )
+        ),
+
+        HomeCategory(
+            "⚽ SPORTS",
+            listOf(
+
+                HomeSubCategory(
+                    "⚽ SPORTS",
+                    listOf(
+                        HomeSite("ESPN", "https://www.espn.com/"),
+                        HomeSite("BBC Sport", "https://www.bbc.com/sport"),
+                        HomeSite("Sky Sports", "https://www.skysports.com/"),
+                        HomeSite("Goal", "https://www.goal.com/"),
+                        HomeSite("The Athletic", "https://www.nytimes.com/athletic/"),
+                        HomeSite("CBS Sports", "https://www.cbssports.com/"),
+                        HomeSite("FOX Sports", "https://www.foxsports.com/"),
+                        HomeSite("Sporting News", "https://www.sportingnews.com/"),
+                        HomeSite("Eurosport", "https://www.eurosport.com/"),
+                        HomeSite("Sports Illustrated", "https://www.si.com/")
+                    )
+                ),
+
+                HomeSubCategory(
+                    "📼 SPORTS REPLAYS",
+                    listOf(
+                        HomeSite("Footballia", "https://footballia.online/"),
+                        HomeSite("FullRaces", "https://fullraces.com/"),
+                        HomeSite("HooFoot", "https://hoofoot.com/")
+                    )
+                )
+            )
+        ),
+
+        HomeCategory(
+            "📰 NEWS",
+            listOf(
+                HomeSubCategory(
+                    "📰 NEWS SITES",
+                    listOf(
+                        HomeSite("BBC News", "https://www.bbc.com/news"),
+                        HomeSite("Reuters", "https://www.reuters.com/"),
+                        HomeSite("AP News", "https://apnews.com/"),
+                        HomeSite("CNN", "https://www.cnn.com/"),
+                        HomeSite("Al Jazeera", "https://www.aljazeera.com/"),
+                        HomeSite("The Guardian", "https://www.theguardian.com/international"),
+                        HomeSite("New York Times", "https://www.nytimes.com/"),
+                        HomeSite("Sky News", "https://news.sky.com/"),
+                        HomeSite("France 24", "https://www.france24.com/en/"),
+                        HomeSite("DW", "https://www.dw.com/en/")
+                    )
+                )
+            )
+        ),
+
+        HomeCategory(
+            "📺 IPTV",
+            listOf(
+
+                HomeSubCategory(
+                    "🛠️ IPTV TOOLS",
+                    listOf(
+                        HomeSite("Awesome IPTV", "https://github.com/iptv-org/awesome-iptv"),
+                        HomeSite("IPTV Playlists", "https://iptv-org.github.io/"),
+                        HomeSite("M3Unator", "https://m3unator.com/"),
+                        HomeSite("M3U4U", "https://m3u4u.com/"),
+                        HomeSite("M3U8DL-RE", "https://github.com/nilaoda/N_m3u8DL-RE")
+                    )
+                ),
+
+                HomeSubCategory(
+                    "▶️ IPTV PLAYERS",
+                    listOf(
+                        HomeSite("IPTVnator", "https://github.com/4gray/iptvnator"),
+                        HomeSite("ynoTV", "https://ynotv.com/"),
+                        HomeSite("Open TV", "https://opentv.app/"),
+                        HomeSite("LivePush", "https://livepush.io/"),
+                        HomeSite("Jellyfin", "https://jellyfin.org/")
+                    )
+                )
+            )
+        ),
+
+        HomeCategory(
+            "📱 ANDROID TV",
+            listOf(
+                HomeSubCategory(
+                    "📱 ANDROID TV APPS",
+                    listOf(
+                        HomeSite("SmartTube", "https://github.com/yuliskov/SmartTube"),
+                        HomeSite("TiviMate", "https://tivimate.com/"),
+                        HomeSite("Downloader", "https://www.aftvnews.com/downloader/"),
+                        HomeSite("CloudStream", "https://cloudstream3.com/"),
+                        HomeSite("Nova Video Player", "https://github.com/nova-video-player/aos-AVP")
+                    )
+                )
+            )
+        ),
+
+        HomeCategory(
+            "📱 SOCIAL MEDIA",
+            listOf(
+                HomeSubCategory(
+                    "📱 SOCIAL PLATFORMS",
+                    listOf(
+                        HomeSite("Facebook", "https://www.facebook.com/"),
+                        HomeSite("TikTok", "https://www.tiktok.com/"),
+                        HomeSite("YouTube", "https://www.youtube.com/"),
+                        HomeSite("X", "https://x.com/"),
+                        HomeSite("Dailymotion", "https://www.dailymotion.com/")
+                    )
+                )
+            )
+        ),
+
+        HomeCategory(
+            "💬 MESSAGING",
+            listOf(
+                HomeSubCategory(
+                    "💬 MESSAGING APPS",
+                    listOf(
+                        HomeSite("WhatsApp", "https://web.whatsapp.com/"),
+                        HomeSite("Snapchat", "https://www.snapchat.com/"),
+                        HomeSite("Telegram", "https://web.telegram.org/")
+                    )
+                )
+            )
+        )
+    )
+
+    categories.forEach { category ->
+
+        addMainCategoryHeader(
+            container,
+            category.title
+        )
+
+        category.subCategories.forEach { subCategory ->
+
+            addSubCategoryHeader(
+                container,
+                subCategory.title
+            )
+
+            addSiteGrid(
+                container,
+                subCategory.sites
+            )
+        }
+    )
+}
     // =========================================================
     // SYSTEM NAVIGATION BAR
     // =========================================================
