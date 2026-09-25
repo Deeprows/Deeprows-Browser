@@ -143,9 +143,9 @@ private var nextTabId = 1
 
             domStorageEnabled = true
 
-            loadWithOverviewMode = true
+           loadWithOverviewMode = false
 
-            useWideViewPort = true
+useWideViewPort = false
 
             mediaPlaybackRequiresUserGesture = false
 
@@ -222,6 +222,25 @@ CookieManager
     ) {
 
         addressBar.setText(url)
+        // Update active tab information
+val activeTab =
+    openTabs.find {
+        it.id == activeTabId
+    }
+
+if (activeTab != null) {
+
+    activeTab.url =
+        url
+
+    activeTab.title =
+        view?.title
+            ?.trim()
+            ?.ifBlank {
+                "New Tab"
+            }
+            ?: "New Tab"
+}
 
         // Hide search/address bar after website finishes loading
         addressBar.visibility =
@@ -416,55 +435,225 @@ private fun showOpenTabs() {
         return
     }
 
-    val tabNames =
-        openTabs.map { tab ->
+    val container =
+        android.widget.LinearLayout(this)
 
-            if (tab.id == activeTabId) {
-                "✓ ${tab.title}"
-            } else {
-                tab.title
+    container.orientation =
+        android.widget.LinearLayout.VERTICAL
+
+    container.setPadding(
+        20,
+        10,
+        20,
+        10
+    )
+
+    val dialog =
+        AlertDialog.Builder(this)
+            .setTitle(
+                "Open Tabs (${openTabs.size})"
+            )
+            .setView(container)
+            .setNegativeButton(
+                "Close",
+                null
+            )
+            .create()
+
+    fun refreshTabList() {
+
+        container.removeAllViews()
+
+        dialog.setTitle(
+            "Open Tabs (${openTabs.size})"
+        )
+
+        openTabs.forEach { tab ->
+
+            val row =
+                android.widget.LinearLayout(this)
+
+            row.orientation =
+                android.widget.LinearLayout.HORIZONTAL
+
+            row.gravity =
+                android.view.Gravity.CENTER_VERTICAL
+
+            row.setPadding(
+                12,
+                12,
+                8,
+                12
+            )
+
+            row.setBackgroundColor(
+                android.graphics.Color.parseColor(
+                    if (tab.id == activeTabId)
+                        "#26364F"
+                    else
+                        "#182437"
+                )
+            )
+
+            val rowParams =
+                android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+
+            rowParams.setMargins(
+                0,
+                0,
+                0,
+                8
+            )
+
+            row.layoutParams =
+                rowParams
+
+            val title =
+                android.widget.TextView(this)
+
+            title.text =
+                if (tab.id == activeTabId) {
+                    "✓ ${tab.title}"
+                } else {
+                    tab.title
+                }
+
+            title.setTextColor(
+                android.graphics.Color.WHITE
+            )
+
+            title.textSize =
+                14f
+
+            title.maxLines =
+                1
+
+            title.ellipsize =
+                android.text.TextUtils.TruncateAt.END
+
+            title.layoutParams =
+                android.widget.LinearLayout.LayoutParams(
+                    0,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+
+            val closeButton =
+                android.widget.TextView(this)
+
+            closeButton.text =
+                "✕"
+
+            closeButton.gravity =
+                android.view.Gravity.CENTER
+
+            closeButton.setTextColor(
+                android.graphics.Color.WHITE
+            )
+
+            closeButton.textSize =
+                18f
+
+            closeButton.setPadding(
+                16,
+                8,
+                16,
+                8
+            )
+
+            row.addView(
+                title
+            )
+
+            row.addView(
+                closeButton
+            )
+
+            // Open this tab
+            title.setOnClickListener {
+
+                activeTabId =
+                    tab.id
+
+                homePage.visibility =
+                    View.GONE
+
+                settingsPage.visibility =
+                    View.GONE
+
+                webView.visibility =
+                    View.VISIBLE
+
+                addressBar.visibility =
+                    View.GONE
+
+                findViewById<View>(
+                    R.id.goButton
+                ).visibility =
+                    View.GONE
+
+                webView.loadUrl(
+                    tab.url
+                )
+
+                dialog.dismiss()
             }
 
-        }.toTypedArray()
+            // Close this tab
+            closeButton.setOnClickListener {
 
-    AlertDialog.Builder(this)
-        .setTitle("Open Tabs (${openTabs.size})")
-        .setItems(tabNames) { _, which ->
+                val wasActive =
+                    tab.id == activeTabId
 
-            val selectedTab =
-                openTabs[which]
+                openTabs.remove(
+                    tab
+                )
 
-            activeTabId =
-                selectedTab.id
+                if (openTabs.isEmpty()) {
 
-            webView.visibility =
-                View.VISIBLE
+                    activeTabId =
+                        0
 
-            homePage.visibility =
-                View.GONE
+                    updateTabsCount()
 
-            settingsPage.visibility =
-                View.GONE
+                    dialog.dismiss()
 
-            addressBar.visibility =
-                View.GONE
+                    showHomePage()
 
-            findViewById<View>(
-                R.id.goButton
-            ).visibility =
-                View.GONE
+                    return@setOnClickListener
+                }
 
-            webView.loadUrl(
-                selectedTab.url
+                if (wasActive) {
+
+                    val newActiveTab =
+                        openTabs.last()
+
+                    activeTabId =
+                        newActiveTab.id
+
+                    webView.loadUrl(
+                        newActiveTab.url
+                    )
+                }
+
+                updateTabsCount()
+
+                refreshTabList()
+            }
+
+            container.addView(
+                row
             )
         }
-        .setNegativeButton(
-            "Close",
-            null
-        )
-        .show()
-}
+    }
 
+    refreshTabList()
+
+    dialog.show()
+}
 
 // =========================================================
 // CATEGORY LINKS
