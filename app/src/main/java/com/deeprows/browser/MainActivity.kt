@@ -394,6 +394,73 @@ findViewById<View>(
 
         showSettings()
     }
+// =====================================================
+// THEME
+// =====================================================
+
+findViewById<View>(
+    R.id.themeButton
+).setOnClickListener {
+    showThemeSelector()
+}
+
+// =========================================================
+// THEME SELECTOR
+// =========================================================
+
+private fun showThemeSelector() {
+
+    val themes = arrayOf(
+        "Midnight",
+        "Deeprowss Red",
+        "Purple Night",
+        "Ocean",
+        "Emerald",
+        "Light",
+        "AMOLED"
+    )
+
+    val currentTheme =
+        preferences.getString(
+            "app_theme",
+            "Midnight"
+        )
+
+    var selectedIndex =
+        themes.indexOf(currentTheme)
+
+    if (selectedIndex < 0) {
+        selectedIndex = 0
+    }
+
+    AlertDialog.Builder(this)
+        .setTitle("Choose Theme")
+        .setSingleChoiceItems(
+            themes,
+            selectedIndex
+        ) { dialog, which ->
+
+            preferences.edit()
+                .putString(
+                    "app_theme",
+                    themes[which]
+                )
+                .apply()
+
+            Toast.makeText(
+                this,
+                "${themes[which]} selected",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            dialog.dismiss()
+        }
+        .setNegativeButton(
+            "Cancel",
+            null
+        )
+        .show()
+}
 
     // =====================================================
     // NEWS BUTTONS
