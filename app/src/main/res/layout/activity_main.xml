@@ -50,10 +50,45 @@
                 android:paddingEnd="10dp"
                 android:paddingTop="12dp"
                 android:paddingBottom="18dp">
+<!-- =================================================
+     DEEPROWSS HEADER
+     ================================================= -->
 
-                <!-- =================================================
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingTop="8dp"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@+id/brandTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DEEPROWSS"
+        android:textColor="#E91E4D"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.06"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/brandTagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Your Web. Your World."
+        android:textColor="#8FA0B8"
+        android:textSize="12sp"
+        android:letterSpacing="0.03"
+        android:gravity="center" />
+
+</LinearLayout>
+
+
+<!-- =================================================
      HOMEPAGE SEARCH / ADDRESS BAR
-     VISIBLE ONLY ON HOMEPAGE
      ================================================= -->
 
 <LinearLayout
@@ -111,44 +146,6 @@
         android:contentDescription="Go" />
 
 </LinearLayout>
-
-
-               <!-- =================================================
-     BRAND / WELCOME
-     ================================================= -->
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:paddingTop="8dp"
-    android:paddingBottom="14dp">
-
-    <TextView
-        android:id="@+id/brandTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="DEEPROWSS"
-        android:textColor="#E91E4D"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.06"
-        android:gravity="center" />
-
-    <TextView
-        android:id="@+id/brandTagline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:text="Your Web. Your World."
-        android:textColor="#8FA0B8"
-        android:textSize="12sp"
-        android:letterSpacing="0.03"
-        android:gravity="center" />
-
-</LinearLayout>
-
                 <!-- =================================================
                      WEBSITE CATEGORIES
                      ================================================= -->
@@ -1457,6 +1454,7 @@
      ========================================================= -->
 
 <LinearLayout
+    android:id="@+id/bottomBar"
     android:layout_width="match_parent"
     android:layout_height="64dp"
     android:orientation="horizontal"
