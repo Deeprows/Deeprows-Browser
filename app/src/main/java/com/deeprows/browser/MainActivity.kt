@@ -2177,10 +2177,8 @@ private fun updateTabsCount() {
             14
         )
 
-        card.setBackgroundColor(
-            android.graphics.Color.parseColor(
-                "#151A22"
-            )
+       card.setBackgroundColor(
+    getThemeSurfaceColor()
         )
 
         val cardParams =
@@ -2222,9 +2220,7 @@ private fun updateTabsCount() {
             android.widget.ImageView.ScaleType.CENTER_CROP
 
         imageView.setBackgroundColor(
-            android.graphics.Color.parseColor(
-                "#1B2029"
-            )
+    getThemeSurface2Color()
         )
 
         val textContainer =
@@ -2275,9 +2271,7 @@ private fun updateTabsCount() {
             }
 
         source.setTextColor(
-            android.graphics.Color.parseColor(
-                "#FF1744"
-            )
+    getThemeAccentColor()
         )
 
         source.textSize =
@@ -2666,6 +2660,21 @@ private fun applyAppTheme() {
         settingsRoot,
         textColor
     )
+    applyCardTheme(
+    rootView,
+    surfaceColor,
+    surface2Color,
+    textColor,
+    accentColor
+)
+
+applyCardTheme(
+    settingsRoot,
+    surfaceColor,
+    surface2Color,
+    textColor,
+    accentColor
+)
 
     // =====================================================
     // THEME ACCENT
@@ -2709,6 +2718,181 @@ private fun applyTextColors(
                 applyTextColors(
                     child,
                     color
+                )
+            }
+        }
+    }
+}
+
+private fun getThemeSurfaceColor(): Int {
+
+    return when (
+        preferences.getString(
+            "app_theme",
+            "Midnight"
+        )
+    ) {
+
+        "Deeprowss Red" ->
+            android.graphics.Color.parseColor(
+                "#35101B"
+            )
+
+        "Purple Night" ->
+            android.graphics.Color.parseColor(
+                "#27163D"
+            )
+
+        "Ocean" ->
+            android.graphics.Color.parseColor(
+                "#0D2A3A"
+            )
+
+        "Emerald" ->
+            android.graphics.Color.parseColor(
+                "#103022"
+            )
+
+        "Light" ->
+            android.graphics.Color.WHITE
+
+        "AMOLED" ->
+            android.graphics.Color.parseColor(
+                "#080808"
+            )
+
+        else ->
+            android.graphics.Color.parseColor(
+                "#182437"
+            )
+    }
+}
+
+private fun getThemeSurface2Color(): Int {
+
+    return when (
+        preferences.getString(
+            "app_theme",
+            "Midnight"
+        )
+    ) {
+
+        "Deeprowss Red" ->
+            android.graphics.Color.parseColor(
+                "#4A1423"
+            )
+
+        "Purple Night" ->
+            android.graphics.Color.parseColor(
+                "#382052"
+            )
+
+        "Ocean" ->
+            android.graphics.Color.parseColor(
+                "#123B50"
+            )
+
+        "Emerald" ->
+            android.graphics.Color.parseColor(
+                "#174631"
+            )
+
+        "Light" ->
+            android.graphics.Color.parseColor(
+                "#E8EDF2"
+            )
+
+        "AMOLED" ->
+            android.graphics.Color.parseColor(
+                "#111111"
+            )
+
+        else ->
+            android.graphics.Color.parseColor(
+                "#22314A"
+            )
+    }
+}
+
+private fun getThemeAccentColor(): Int {
+
+    return when (
+        preferences.getString(
+            "app_theme",
+            "Midnight"
+        )
+    ) {
+
+        "Purple Night" ->
+            android.graphics.Color.parseColor(
+                "#B45CFF"
+            )
+
+        "Ocean" ->
+            android.graphics.Color.parseColor(
+                "#00B8D4"
+            )
+
+        "Emerald" ->
+            android.graphics.Color.parseColor(
+                "#00D084"
+            )
+
+        else ->
+            android.graphics.Color.parseColor(
+                "#FF1744"
+            )
+    }
+}
+private fun applyCardTheme(
+    parent: android.view.ViewGroup,
+    surfaceColor: Int,
+    surface2Color: Int,
+    textColor: Int,
+    accentColor: Int
+) {
+
+    for (
+        index in 0 until parent.childCount
+    ) {
+
+        val child =
+            parent.getChildAt(index)
+
+        if (child is android.view.ViewGroup) {
+
+            applyCardTheme(
+                child,
+                surfaceColor,
+                surface2Color,
+                textColor,
+                accentColor
+            )
+        }
+
+        when (child) {
+
+            is android.widget.TextView -> {
+
+                val background =
+                    child.background
+
+                if (background != null) {
+
+                    child.setBackgroundColor(
+                        surfaceColor
+                    )
+                }
+
+                child.setTextColor(
+                    textColor
+                )
+            }
+
+            is android.widget.LinearLayout -> {
+
+                child.setBackgroundColor(
+                    surfaceColor
                 )
             }
         }
