@@ -45,36 +45,42 @@
                     android:paddingBottom="18dp"
                     android:background="#6B5878">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="10dp">
+                    <!-- DEEPROWSS HEADER -->
 
-                        <TextView
-                            android:id="@+id/brandTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="DEEPROWSS"
-                            android:textColor="#FFFFFF"
-                            android:textSize="21sp"
-                            android:textStyle="bold"
-                            android:letterSpacing="0.06"
-                            android:gravity="center" />
+<LinearLayout
+ android:layout_width="match_parent"
+ android:layout_height="wrap_content"
+ android:orientation="vertical"
+ android:gravity="start"
+ android:paddingStart="5dp"
+ android:paddingTop="3dp"
+ android:paddingBottom="7dp">
 
-                        <TextView
-                            android:id="@+id/brandTagline"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
-                            android:text="Your Web. Your World."
-                            android:textColor="#E4DCE9"
-                            android:textSize="10sp"
-                            android:letterSpacing="0.03"
-                            android:gravity="center" />
-                    </LinearLayout>
+<TextView
+    android:id="@+id/brandTitle"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="DEEPROWSS"
+    android:textColor="#FF5C7C"
+    android:textSize="18sp"
+    android:textStyle="bold"
+    android:letterSpacing="0.08"
+    android:gravity="start"
+    android:includeFontPadding="false" />
+
+<TextView
+    android:id="@+id/brandTagline"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="2dp"
+    android:text="Your Web. Your World."
+    android:textColor="#C9C1CC"
+    android:textSize="9sp"
+    android:letterSpacing="0.04"
+    android:gravity="start"
+    android:includeFontPadding="false" />
+
+</LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
