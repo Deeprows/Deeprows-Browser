@@ -246,10 +246,10 @@ class MainActivity : AppCompatActivity() {
             ),
 
             HomeCategory(
-                "💼 JOBS & CAREERS",
+                "JOBS & CAREERS",
                 listOf(
                     HomeSubCategory(
-                        "💼 JOB SITES",
+                        "💼",
                         listOf(
                             HomeSite("LinkedIn Jobs", "https://www.linkedin.com/jobs/"),
                             HomeSite("Indeed", "https://www.indeed.com/"),
@@ -308,11 +308,11 @@ class MainActivity : AppCompatActivity() {
             ),
 
             HomeCategory(
-                "⚽ SPORTS",
+                "SPORTS",
                 listOf(
 
                     HomeSubCategory(
-                        "⚽ SPORTS",
+                        "⚽",
                         listOf(
                             HomeSite("ESPN", "https://www.espn.com/"),
                             HomeSite("BBC Sport", "https://www.bbc.com/sport"),
@@ -339,10 +339,10 @@ class MainActivity : AppCompatActivity() {
             ),
 
             HomeCategory(
-                "📰 NEWS",
+                "NEWS",
                 listOf(
                     HomeSubCategory(
-                        "📰 NEWS SITES",
+                        "📰",
                         listOf(
                             HomeSite("BBC News", "https://www.bbc.com/news"),
                             HomeSite("Reuters", "https://www.reuters.com/"),
@@ -388,10 +388,10 @@ class MainActivity : AppCompatActivity() {
             ),
 
             HomeCategory(
-                "📱 ANDROID TV",
+                "ANDROID TV APPS",
                 listOf(
                     HomeSubCategory(
-                        "📱 ANDROID TV APPS",
+                        "📺",
                         listOf(
                             HomeSite("SmartTube", "https://github.com/yuliskov/SmartTube"),
                             HomeSite("TiviMate", "https://tivimate.com/"),
@@ -404,10 +404,10 @@ class MainActivity : AppCompatActivity() {
             ),
 
             HomeCategory(
-                "📱 SOCIAL MEDIA",
+                "SOCIAL MEDIA",
                 listOf(
                     HomeSubCategory(
-                        "📱 SOCIAL PLATFORMS",
+                        "📲",
                         listOf(
                             HomeSite("Facebook", "https://www.facebook.com/"),
                             HomeSite("TikTok", "https://www.tiktok.com/"),
@@ -419,10 +419,10 @@ class MainActivity : AppCompatActivity() {
                 )
             ),
             HomeCategory(
-                "💬 MESSAGING",
+                "MESSAGING",
                 listOf(
                     HomeSubCategory(
-                        "💬 MESSAGING APPS",
+                        "💬",
                         listOf(
                             HomeSite("WhatsApp", "https://web.whatsapp.com/"),
                             HomeSite("Snapchat", "https://www.snapchat.com/"),
