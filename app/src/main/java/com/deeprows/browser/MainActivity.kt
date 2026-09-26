@@ -1,5 +1,8 @@
 package com.deeprows.browser
 
+import android.graphics.BitmapFactory
+import android.widget.HorizontalScrollView
+import android.widget.ImageView
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
