@@ -493,75 +493,128 @@ private fun addSubCategoryHeader(
 }
 
 private fun addSiteGrid(
+
+private fun addSiteGrid(
     container: LinearLayout,
     sites: List<HomeSite>
 ) {
-
-    val grid = GridLayout(this)
-
-    grid.columnCount = 3
-    grid.layoutParams =
-        LinearLayout.LayoutParams(
+    val horizontalScroll = HorizontalScrollView(this).apply {
+        isHorizontalScrollBarEnabled = false
+        overScrollMode = View.OVER_SCROLL_NEVER
+        clipToPadding = false
+        layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-
-    sites.forEach { site ->
-
-        val card = TextView(this)
-
-        card.text = site.name
-        card.textSize = 12f
-        card.gravity = Gravity.CENTER
-        card.setTextColor(Color.WHITE)
-
-        card.setPadding(
-            dp(5),
-            dp(8),
-            dp(5),
-            dp(8)
-        )
-
-        val background = GradientDrawable()
-background.cornerRadius = dp(14).toFloat()
-background.setColor(getThemeSurfaceColor())
-
-card.background = background
-
-        val params =
-            GridLayout.LayoutParams().apply {
-
-                width = 0
-                height = dp(82)
-
-                columnSpec =
-                    GridLayout.spec(
-                        GridLayout.UNDEFINED,
-                        1f
-                    )
-
-                setMargins(
-                    dp(4),
-                    dp(4),
-                    dp(4),
-                    dp(4)
-                )
-            }
-
-        card.layoutParams = params
-
-        card.setOnClickListener {
-            openWebsite(site.url)
-        }
-
-        grid.addView(card)
     }
 
-    container.addView(grid)
+    val row = LinearLayout(this).apply {
+        orientation = LinearLayout.HORIZONTAL
+        gravity = Gravity.CENTER_VERTICAL
+    }
+
+    val screenWidthDp =
+        (resources.displayMetrics.widthPixels /
+            resources.displayMetrics.density).toInt()
+
+    val cardWidth = dp((screenWidthDp - 44) / 2)
+
+    sites.forEach { site ->
+        val card = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(10), dp(8), dp(10), dp(8))
+
+            val background = GradientDrawable().apply {
+                cornerRadius = dp(12).toFloat()
+                setColor(getThemeSurfaceColor())
+            }
+            this.background = background
+
+            layoutParams = LinearLayout.LayoutParams(
+                cardWidth,
+                dp(66)
+            ).apply {
+                setMargins(dp(4), dp(4), dp(4), dp(4))
+            }
+
+            isClickable = true
+            isFocusable = true
+            setOnClickListener {
+                openWebsite(site.url)
+            }
+        }
+
+        val logo = ImageView(this).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                dp(30),
+                dp(30)
+            )
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            contentDescription = "${site.name} logo"
+        }
+
+        val name = TextView(this).apply {
+            text = site.name
+            textSize = 12f
+            setTextColor(Color.WHITE)
+            gravity = Gravity.CENTER_VERTICAL
+            maxLines = 2
+            ellipsize = android.text.TextUtils.TruncateAt.END
+            setPadding(dp(8), 0, 0, 0)
+            layoutParams = LinearLayout.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                1f
+            )
+        }
+
+        card.addView(logo)
+        card.addView(name)
+        row.addView(card)
+
+        loadSiteLogo(site.url, logo)
+    }
+
+    horizontalScroll.addView(row)
+    container.addView(horizontalScroll)
 }
 
-private fun dp(value: Int): Int {
-    return (value * resources.displayMetrics.density).toInt()
+private fun loadSiteLogo(
+    siteUrl: String,
+    imageView: ImageView
+) {
+    val logoUrl = try {
+        val host = java.net.URL(siteUrl).host
+        "https://www.google.com/s2/favicons?domain=$host&sz=64"
+    } catch (e: Exception) {
+        return
+    }
+
+    imageView.tag = logoUrl
+
+    Thread {
+        try {
+            val connection =
+                java.net.URL(logoUrl).openConnection()
+            connection.connectTimeout = 8000
+            connection.readTimeout = 8000
+
+            val bitmap = connection.getInputStream().use {
+                BitmapFactory.decodeStream(it)
+            }
+
+            if (bitmap != null) {
+                runOnUiThread {
+                    if (imageView.tag == logoUrl) {
+                        imageView.setImageBitmap(bitmap)
+                    }
+                }
+            }
+        } catch (_: Exception) {
+            // Keep the card usable if its favicon cannot load.
+        }
+    }.start()
 }
     
     // =========================================================
