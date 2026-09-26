@@ -2896,8 +2896,11 @@ class MainActivity : AppCompatActivity() {
     // =========================================================
     // APPLY THEME
     // =========================================================
+    // =========================================================
+    // APPLY THEME
+    // =========================================================
 
-private fun applyAppTheme() {
+    private fun applyAppTheme() {
         val theme = preferences.getString("app_theme", "Midnight")
 
         val backgroundColor: Int
@@ -2962,7 +2965,7 @@ private fun applyAppTheme() {
                 accentColor = Color.parseColor("#F43F5E")
             }
 
-            else -> { // Midnight — modern default
+            else -> {
                 backgroundColor = Color.parseColor("#101116")
                 surfaceColor = Color.parseColor("#191B22")
                 surface2Color = Color.parseColor("#232630")
@@ -2972,7 +2975,7 @@ private fun applyAppTheme() {
             }
         }
 
-        // Set the app and page backgrounds.
+        // Main backgrounds
         findViewById<View>(android.R.id.content)
             .setBackgroundColor(backgroundColor)
 
@@ -2980,54 +2983,38 @@ private fun applyAppTheme() {
         settingsPage.setBackgroundColor(backgroundColor)
         webView.setBackgroundColor(backgroundColor)
 
-        // Remove the oversized category panel and any old hard-coded
-        // background from the homepage's inner containers.
-        homePage.getChildAt(0)?.setBackgroundColor(backgroundColor)
+        // Homepage containers
+        homePage.getChildAt(0)
+            ?.setBackgroundColor(backgroundColor)
 
         findViewById<View>(R.id.categoryContainer)
             .setBackgroundColor(backgroundColor)
 
-        // The search EditText itself stays transparent; the rounded
-        // search-bar container supplies the surface.
+        findViewById<View>(R.id.siteCategoriesContainer)
+            .setBackgroundColor(Color.TRANSPARENT)
+
+        // Address bar
         addressBar.setBackgroundColor(Color.TRANSPARENT)
         addressBar.setTextColor(textColor)
         addressBar.setHintTextColor(mutedColor)
 
-        // Re-theme homepage and settings text/cards.
-        val homeRoot = findViewById<android.view.ViewGroup>(R.id.homePage)
-        val settingsRoot =
-            findViewById<android.view.ViewGroup>(R.id.settingsPage)
-
-        applyTextColors(homeRoot, textColor)
-        applyTextColors(settingsRoot, textColor)
-
-        applyCardTheme(
-            homeRoot,
-            surfaceColor,
-            surface2Color,
-            textColor,
-            accentColor
-        )
-
-        applyCardTheme(
-            settingsRoot,
-            surfaceColor,
-            surface2Color,
-            textColor,
-            accentColor
-        )
-
-        // Rebuild the search and action buttons with rounded surfaces.
         val searchBar = addressBar.parent as? View
+
         searchBar?.background = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = dp(18).toFloat()
             setColor(surfaceColor)
-            setStroke(dp(1), Color.parseColor(
-                if (theme == "Light") "#DDE1E7" else "#30333D"
-            ))
+            setStroke(
+                dp(1),
+                if (theme == "Light") {
+                    Color.parseColor("#DDE1E7")
+                } else {
+                    Color.parseColor("#30333D")
+                }
+            )
         }
 
+        // Go button
         findViewById<View>(R.id.goButton).background =
             GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
@@ -3035,15 +3022,48 @@ private fun applyAppTheme() {
                 setColor(accentColor)
             }
 
-        findViewById<View>(R.id.themeButton).setBackgroundColor(surfaceColor)
+        // Settings background
+        settingsPage.setBackgroundColor(backgroundColor)
 
-        // Update system bars to match the active theme.
+        // Settings cards
+        val settingsCardIds = listOf(
+            R.id.dataSavingSwitch,
+            R.id.adBlockingSwitch,
+            R.id.historyButton,
+            R.id.bookmarksButton,
+            R.id.offlinePagesButton,
+            R.id.clearCacheButton,
+            R.id.themeButton,
+            R.id.downloadsButton,
+            R.id.shareButton,
+            R.id.translateButton,
+            R.id.settingsBackButton
+        )
+
+        settingsCardIds.forEach { id ->
+            val view = findViewById<View>(id)
+
+            if (id == R.id.dataSavingSwitch ||
+                id == R.id.adBlockingSwitch
+            ) {
+                (view.parent as? View)?.setBackgroundColor(surfaceColor)
+            } else {
+                view.setBackgroundColor(surfaceColor)
+            }
+        }
+
+        // Update theme button text and accent
+        findViewById<TextView>(R.id.themeButton)
+            .setTextColor(textColor)
+
+        // System bars
         window.statusBarColor = backgroundColor
         window.navigationBarColor = backgroundColor
     }
 
-
-Replace getThemeSurfaceColor() with:
+    // =========================================================
+    // THEME COLORS
+    // =========================================================
 
     private fun getThemeSurfaceColor(): Int {
         return when (preferences.getString("app_theme", "Midnight")) {
@@ -3057,9 +3077,6 @@ Replace getThemeSurfaceColor() with:
         }
     }
 
-
-Replace getThemeSurface2Color() with:
-
     private fun getThemeSurface2Color(): Int {
         return when (preferences.getString("app_theme", "Midnight")) {
             "Deeprowss Red" -> Color.parseColor("#241820")
@@ -3072,9 +3089,6 @@ Replace getThemeSurface2Color() with:
         }
     }
 
-
-Replace getThemeAccentColor() with:
-
     private fun getThemeAccentColor(): Int {
         return when (preferences.getString("app_theme", "Midnight")) {
             "Purple Night" -> Color.parseColor("#B78BFA")
@@ -3083,7 +3097,7 @@ Replace getThemeAccentColor() with:
             "Light" -> Color.parseColor("#E11D48")
             else -> Color.parseColor("#F43F5E")
         }
-    }        
-        }
+    }
+}
     }
 }
