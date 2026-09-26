@@ -1,6 +1,10 @@
 package com.deeprows.browser
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.graphics.BitmapFactory
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.graphics.Color
@@ -79,21 +83,21 @@ class MainActivity : AppCompatActivity() {
         NewsRepository()
 
     // =========================================================
-// OPEN TABS
-// =========================================================
+    // OPEN TABS
+    // =========================================================
 
-data class BrowserTab(
-    val id: Int,
-    var title: String,
-    var url: String
-)
+    data class BrowserTab(
+        val id: Int,
+        var title: String,
+        var url: String
+    )
 
-private val openTabs =
-    mutableListOf<BrowserTab>()
+    private val openTabs =
+        mutableListOf<BrowserTab>()
 
-private var activeTabId = 0
+    private var activeTabId = 0
 
-private var nextTabId = 1
+    private var nextTabId = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,500 +130,584 @@ private var nextTabId = 1
         setupDynamicHomepage()
         setupSettings()
 
-createNotificationChannel()
-requestNotificationPermission()
-showNotification(
-    "Deeprows Browser",
-    "Notifications are working!"
-)
+        createNotificationChannel()
+        requestNotificationPermission()
+        showNotification(
+            "Deeprows Browser",
+            "Notifications are working!"
+        )
 
-applyAppTheme()
+        applyAppTheme()
 
-showHomePage()
+        showHomePage()
 
         loadLatestNews()
-loadSportNews()
-loadGoogleTrends()
+        loadSportNews()
+        loadGoogleTrends()
 
         hideSystemNavigationBar()
     }
-    
-private fun setupDynamicHomepage() {
 
-    val container =
-        findViewById<LinearLayout>(R.id.siteCategoriesContainer)
+    private fun setupDynamicHomepage() {
 
-    container.removeAllViews()
+        val container =
+            findViewById<LinearLayout>(R.id.siteCategoriesContainer)
 
-    val categories = listOf(
+        container.removeAllViews()
 
-        HomeCategory(
-            "🤖 AI TOOLS",
-            listOf(
+        val categories = listOf(
 
-                HomeSubCategory(
-                    "🎬 AI VIDEO",
-                    listOf(
-                        HomeSite("Kling AI", "https://klingai.com/"),
-                        HomeSite("Hailuo AI", "https://hailuoai.video/"),
-                        HomeSite("Pika", "https://pika.art/"),
-                        HomeSite("Runway", "https://runwayml.com/"),
-                        HomeSite("Luma Dream Machine", "https://lumalabs.ai/dream-machine"),
-                        HomeSite("PixVerse", "https://pixverse.ai/"),
-                        HomeSite("Vidu", "https://www.vidu.com/"),
-                        HomeSite("CapCut", "https://www.capcut.com/"),
-                        HomeSite("Canva", "https://www.canva.com/"),
-                        HomeSite("Krea", "https://www.krea.ai/")
-                    )
-                ),
+            HomeCategory(
+                "🤖 AI TOOLS",
+                listOf(
 
-                HomeSubCategory(
-                    "🖼️ AI IMAGE",
-                    listOf(
-                        HomeSite("Microsoft Designer", "https://designer.microsoft.com/"),
-                        HomeSite("Leonardo AI", "https://leonardo.ai/"),
-                        HomeSite("Ideogram", "https://ideogram.ai/"),
-                        HomeSite("Adobe Firefly", "https://firefly.adobe.com/"),
-                        HomeSite("Google Gemini", "https://gemini.google.com/"),
-                        HomeSite("Canva AI", "https://www.canva.com/ai-image-generator/"),
-                        HomeSite("Playground AI", "https://playground.com/"),
-                        HomeSite("Krea AI", "https://www.krea.ai/"),
-                        HomeSite("Freepik AI", "https://www.freepik.com/ai/image-generator"),
-                        HomeSite("Craiyon", "https://www.craiyon.com/")
-                    )
-                ),
+                    HomeSubCategory(
+                        "🎬 AI VIDEO",
+                        listOf(
+                            HomeSite("Kling AI", "https://klingai.com/"),
+                            HomeSite("Hailuo AI", "https://hailuoai.video/"),
+                            HomeSite("Pika", "https://pika.art/"),
+                            HomeSite("Runway", "https://runwayml.com/"),
+                            HomeSite("Luma Dream Machine", "https://lumalabs.ai/dream-machine"),
+                            HomeSite("PixVerse", "https://pixverse.ai/"),
+                            HomeSite("Vidu", "https://www.vidu.com/"),
+                            HomeSite("CapCut", "https://www.capcut.com/"),
+                            HomeSite("Canva", "https://www.canva.com/"),
+                            HomeSite("Krea", "https://www.krea.ai/")
+                        )
+                    ),
 
-                HomeSubCategory(
-                    "🎵 AI AUDIO / MUSIC / VOICE",
-                    listOf(
-                        HomeSite("ElevenLabs", "https://elevenlabs.io/"),
-                        HomeSite("Suno", "https://suno.com/"),
-                        HomeSite("Udio", "https://udio.com/"),
-                        HomeSite("Murf AI", "https://murf.ai/"),
-                        HomeSite("PlayHT", "https://play.ht/"),
-                        HomeSite("Speechify", "https://speechify.com/"),
-                        HomeSite("AIVA", "https://www.aiva.ai/"),
-                        HomeSite("Soundraw", "https://soundraw.io/"),
-                        HomeSite("Adobe Podcast", "https://podcast.adobe.com/"),
-                        HomeSite("TTSMaker", "https://ttsmaker.com/")
-                    )
-                )
-            )
-        ),
+                    HomeSubCategory(
+                        "🖼️ AI IMAGE",
+                        listOf(
+                            HomeSite("Microsoft Designer", "https://designer.microsoft.com/"),
+                            HomeSite("Leonardo AI", "https://leonardo.ai/"),
+                            HomeSite("Ideogram", "https://ideogram.ai/"),
+                            HomeSite("Adobe Firefly", "https://firefly.adobe.com/"),
+                            HomeSite("Google Gemini", "https://gemini.google.com/"),
+                            HomeSite("Canva AI", "https://www.canva.com/ai-image-generator/"),
+                            HomeSite("Playground AI", "https://playground.com/"),
+                            HomeSite("Krea AI", "https://www.krea.ai/"),
+                            HomeSite("Freepik AI", "https://www.freepik.com/ai/image-generator"),
+                            HomeSite("Craiyon", "https://www.craiyon.com/")
+                        )
+                    ),
 
-        HomeCategory(
-            "🎓 EDUCATION",
-            listOf(
-
-                HomeSubCategory(
-                    "📚 FREE ONLINE COURSES",
-                    listOf(
-                        HomeSite("MIT OpenCourseWare", "https://ocw.mit.edu/"),
-                        HomeSite("OpenLearn", "https://www.open.edu/openlearn/"),
-                        HomeSite("edX", "https://www.edx.org/"),
-                        HomeSite("Coursera", "https://www.coursera.org/"),
-                        HomeSite("Open Yale Courses", "https://oyc.yale.edu/"),
-                        HomeSite("NPTEL", "https://nptel.ac.in/")
-                    )
-                ),
-
-                HomeSubCategory(
-                    "🎓 SCHOLARSHIPS & SPONSORSHIPS",
-                    listOf(
-                        HomeSite("Chevening", "https://www.chevening.org/"),
-                        HomeSite("Erasmus+", "https://erasmus-plus.ec.europa.eu/"),
-                        HomeSite("DAAD", "https://www.daad.de/en/studying-in-germany/scholarships/"),
-                        HomeSite("Commonwealth", "https://cscuk.fcdo.gov.uk/scholarships-filter-search/"),
-                        HomeSite("Mastercard Foundation", "https://mastercardfdn.org/all/scholars/"),
-                        HomeSite("Swedish Institute", "https://si.se/en/apply/scholarships/"),
-                        HomeSite("Opportunity Desk", "https://opportunitydesk.org/"),
-                        HomeSite("Scholarship Positions", "https://www.scholarshippositions.com/"),
-                        HomeSite("Studyportals", "https://www.mastersportal.com/scholarships/"),
-                        HomeSite("African Union", "https://au.int/")
+                    HomeSubCategory(
+                        "🎵 AI AUDIO / MUSIC / VOICE",
+                        listOf(
+                            HomeSite("ElevenLabs", "https://elevenlabs.io/"),
+                            HomeSite("Suno", "https://suno.com/"),
+                            HomeSite("Udio", "https://udio.com/"),
+                            HomeSite("Murf AI", "https://murf.ai/"),
+                            HomeSite("PlayHT", "https://play.ht/"),
+                            HomeSite("Speechify", "https://speechify.com/"),
+                            HomeSite("AIVA", "https://www.aiva.ai/"),
+                            HomeSite("Soundraw", "https://soundraw.io/"),
+                            HomeSite("Adobe Podcast", "https://podcast.adobe.com/"),
+                            HomeSite("TTSMaker", "https://ttsmaker.com/")
+                        )
                     )
                 )
-            )
-        ),
+            ),
 
-        HomeCategory(
-            "💼 JOBS & CAREERS",
-            listOf(
-                HomeSubCategory(
-                    "💼 JOB SITES",
-                    listOf(
-                        HomeSite("LinkedIn Jobs", "https://www.linkedin.com/jobs/"),
-                        HomeSite("Indeed", "https://www.indeed.com/"),
-                        HomeSite("Glassdoor", "https://www.glassdoor.com/"),
-                        HomeSite("ZipRecruiter", "https://www.ziprecruiter.com/"),
-                        HomeSite("Bayt", "https://www.bayt.com/"),
-                        HomeSite("Jooble", "https://jooble.org/"),
-                        HomeSite("Monster", "https://www.monster.com/"),
-                        HomeSite("JobStreet", "https://www.jobstreet.com/"),
-                        HomeSite("Wellfound", "https://wellfound.com/jobs")
+            HomeCategory(
+                "🎓 EDUCATION",
+                listOf(
+
+                    HomeSubCategory(
+                        "📚 FREE ONLINE COURSES",
+                        listOf(
+                            HomeSite("MIT OpenCourseWare", "https://ocw.mit.edu/"),
+                            HomeSite("OpenLearn", "https://www.open.edu/openlearn/"),
+                            HomeSite("edX", "https://www.edx.org/"),
+                            HomeSite("Coursera", "https://www.coursera.org/"),
+                            HomeSite("Open Yale Courses", "https://oyc.yale.edu/"),
+                            HomeSite("NPTEL", "https://nptel.ac.in/")
+                        )
+                    ),
+
+                    HomeSubCategory(
+                        "🎓 SCHOLARSHIPS & SPONSORSHIPS",
+                        listOf(
+                            HomeSite("Chevening", "https://www.chevening.org/"),
+                            HomeSite("Erasmus+", "https://erasmus-plus.ec.europa.eu/"),
+                            HomeSite("DAAD", "https://www.daad.de/en/studying-in-germany/scholarships/"),
+                            HomeSite("Commonwealth", "https://cscuk.fcdo.gov.uk/scholarships-filter-search/"),
+                            HomeSite("Mastercard Foundation", "https://mastercardfdn.org/all/scholars/"),
+                            HomeSite("Swedish Institute", "https://si.se/en/apply/scholarships/"),
+                            HomeSite("Opportunity Desk", "https://opportunitydesk.org/"),
+                            HomeSite("Scholarship Positions", "https://www.scholarshippositions.com/"),
+                            HomeSite("Studyportals", "https://www.mastersportal.com/scholarships/"),
+                            HomeSite("African Union", "https://au.int/")
+                        )
                     )
                 )
-            )
-        ),
+            ),
 
-        HomeCategory(
-            "🎬 ENTERTAINMENT",
-            listOf(
-
-                HomeSubCategory(
-                    "🎌 ANIME",
-                    listOf(
-                        HomeSite("Miruro", "https://www.miruro.tv/"),
-                        HomeSite("AnimePahe", "https://animepahe.ru/"),
-                        HomeSite("KickAssAnime", "https://kaa.to/")
-                    )
-                ),
-
-                HomeSubCategory(
-                    "🎨 CARTOONS",
-                    listOf(
-                        HomeSite("WatchCartoonOnline", "https://www.wco.tv/"),
-                        HomeSite("SuperCartoons", "https://www.supercartoons.net/"),
-                        HomeSite("Japanese Animated Film Classics", "https://animation.filmarchives.jp/")
-                    )
-                ),
-
-                HomeSubCategory(
-                    "🇰🇷 ASIAN / K-DRAMA",
-                    listOf(
-                        HomeSite("AsianCrush", "https://www.asiancrush.com/"),
-                        HomeSite("OnDemandChina", "https://www.ondemandchina.com/"),
-                        HomeSite("Einthusan", "https://einthusan.tv/")
-                    )
-                ),
-
-                HomeSubCategory(
-                    "🎞️ CLASSICS",
-                    listOf(
-                        HomeSite("Internet Archive", "https://archive.org/"),
-                        HomeSite("WikiFlix", "https://wikiflix.toolforge.org/"),
-                        HomeSite("NASA+", "https://plus.nasa.gov/")
+            HomeCategory(
+                "💼 JOBS & CAREERS",
+                listOf(
+                    HomeSubCategory(
+                        "💼 JOB SITES",
+                        listOf(
+                            HomeSite("LinkedIn Jobs", "https://www.linkedin.com/jobs/"),
+                            HomeSite("Indeed", "https://www.indeed.com/"),
+                            HomeSite("Glassdoor", "https://www.glassdoor.com/"),
+                            HomeSite("ZipRecruiter", "https://www.ziprecruiter.com/"),
+                            HomeSite("Bayt", "https://www.bayt.com/"),
+                            HomeSite("Jooble", "https://jooble.org/"),
+                            HomeSite("Monster", "https://www.monster.com/"),
+                            HomeSite("JobStreet", "https://www.jobstreet.com/"),
+                            HomeSite("Wellfound", "https://wellfound.com/jobs")
+                        )
                     )
                 )
-            )
-        ),
+            ),
 
-        HomeCategory(
-            "⚽ SPORTS",
-            listOf(
+            HomeCategory(
+                "🎬 ENTERTAINMENT",
+                listOf(
 
-                HomeSubCategory(
-                    "⚽ SPORTS",
-                    listOf(
-                        HomeSite("ESPN", "https://www.espn.com/"),
-                        HomeSite("BBC Sport", "https://www.bbc.com/sport"),
-                        HomeSite("Sky Sports", "https://www.skysports.com/"),
-                        HomeSite("Goal", "https://www.goal.com/"),
-                        HomeSite("The Athletic", "https://www.nytimes.com/athletic/"),
-                        HomeSite("CBS Sports", "https://www.cbssports.com/"),
-                        HomeSite("FOX Sports", "https://www.foxsports.com/"),
-                        HomeSite("Sporting News", "https://www.sportingnews.com/"),
-                        HomeSite("Eurosport", "https://www.eurosport.com/"),
-                        HomeSite("Sports Illustrated", "https://www.si.com/")
-                    )
-                ),
+                    HomeSubCategory(
+                        "🎌 ANIME",
+                        listOf(
+                            HomeSite("Miruro", "https://www.miruro.tv/"),
+                            HomeSite("AnimePahe", "https://animepahe.ru/"),
+                            HomeSite("KickAssAnime", "https://kaa.to/")
+                        )
+                    ),
 
-                HomeSubCategory(
-                    "📼 SPORTS REPLAYS",
-                    listOf(
-                        HomeSite("Footballia", "https://footballia.online/"),
-                        HomeSite("FullRaces", "https://fullraces.com/"),
-                        HomeSite("HooFoot", "https://hoofoot.com/")
-                    )
-                )
-            )
-        ),
+                    HomeSubCategory(
+                        "🎨 CARTOONS",
+                        listOf(
+                            HomeSite("WatchCartoonOnline", "https://www.wco.tv/"),
+                            HomeSite("SuperCartoons", "https://www.supercartoons.net/"),
+                            HomeSite("Japanese Animated Film Classics", "https://animation.filmarchives.jp/")
+                        )
+                    ),
 
-        HomeCategory(
-            "📰 NEWS",
-            listOf(
-                HomeSubCategory(
-                    "📰 NEWS SITES",
-                    listOf(
-                        HomeSite("BBC News", "https://www.bbc.com/news"),
-                        HomeSite("Reuters", "https://www.reuters.com/"),
-                        HomeSite("AP News", "https://apnews.com/"),
-                        HomeSite("CNN", "https://www.cnn.com/"),
-                        HomeSite("Al Jazeera", "https://www.aljazeera.com/"),
-                        HomeSite("The Guardian", "https://www.theguardian.com/international"),
-                        HomeSite("New York Times", "https://www.nytimes.com/"),
-                        HomeSite("Sky News", "https://news.sky.com/"),
-                        HomeSite("France 24", "https://www.france24.com/en/"),
-                        HomeSite("DW", "https://www.dw.com/en/")
+                    HomeSubCategory(
+                        "🇰🇷 ASIAN / K-DRAMA",
+                        listOf(
+                            HomeSite("AsianCrush", "https://www.asiancrush.com/"),
+                            HomeSite("OnDemandChina", "https://www.ondemandchina.com/"),
+                            HomeSite("Einthusan", "https://einthusan.tv/")
+                        )
+                    ),
+
+                    HomeSubCategory(
+                        "🎞️ CLASSICS",
+                        listOf(
+                            HomeSite("Internet Archive", "https://archive.org/"),
+                            HomeSite("WikiFlix", "https://wikiflix.toolforge.org/"),
+                            HomeSite("NASA+", "https://plus.nasa.gov/")
+                        )
                     )
                 )
-            )
-        ),
+            ),
 
-        HomeCategory(
-            "📺 IPTV",
-            listOf(
+            HomeCategory(
+                "⚽ SPORTS",
+                listOf(
 
-                HomeSubCategory(
-                    "🛠️ IPTV TOOLS",
-                    listOf(
-                        HomeSite("Awesome IPTV", "https://github.com/iptv-org/awesome-iptv"),
-                        HomeSite("IPTV Playlists", "https://iptv-org.github.io/"),
-                        HomeSite("M3Unator", "https://m3unator.com/"),
-                        HomeSite("M3U4U", "https://m3u4u.com/"),
-                        HomeSite("M3U8DL-RE", "https://github.com/nilaoda/N_m3u8DL-RE")
-                    )
-                ),
+                    HomeSubCategory(
+                        "⚽ SPORTS",
+                        listOf(
+                            HomeSite("ESPN", "https://www.espn.com/"),
+                            HomeSite("BBC Sport", "https://www.bbc.com/sport"),
+                            HomeSite("Sky Sports", "https://www.skysports.com/"),
+                            HomeSite("Goal", "https://www.goal.com/"),
+                            HomeSite("The Athletic", "https://www.nytimes.com/athletic/"),
+                            HomeSite("CBS Sports", "https://www.cbssports.com/"),
+                            HomeSite("FOX Sports", "https://www.foxsports.com/"),
+                            HomeSite("Sporting News", "https://www.sportingnews.com/"),
+                            HomeSite("Eurosport", "https://www.eurosport.com/"),
+                            HomeSite("Sports Illustrated", "https://www.si.com/")
+                        )
+                    ),
 
-                HomeSubCategory(
-                    "▶️ IPTV PLAYERS",
-                    listOf(
-                        HomeSite("IPTVnator", "https://github.com/4gray/iptvnator"),
-                        HomeSite("ynoTV", "https://ynotv.com/"),
-                        HomeSite("Open TV", "https://opentv.app/"),
-                        HomeSite("LivePush", "https://livepush.io/"),
-                        HomeSite("Jellyfin", "https://jellyfin.org/")
-                    )
-                )
-            )
-        ),
-
-        HomeCategory(
-            "📱 ANDROID TV",
-            listOf(
-                HomeSubCategory(
-                    "📱 ANDROID TV APPS",
-                    listOf(
-                        HomeSite("SmartTube", "https://github.com/yuliskov/SmartTube"),
-                        HomeSite("TiviMate", "https://tivimate.com/"),
-                        HomeSite("Downloader", "https://www.aftvnews.com/downloader/"),
-                        HomeSite("CloudStream", "https://cloudstream3.com/"),
-                        HomeSite("Nova Video Player", "https://github.com/nova-video-player/aos-AVP")
+                    HomeSubCategory(
+                        "📼 SPORTS REPLAYS",
+                        listOf(
+                            HomeSite("Footballia", "https://footballia.online/"),
+                            HomeSite("FullRaces", "https://fullraces.com/"),
+                            HomeSite("HooFoot", "https://hoofoot.com/")
+                        )
                     )
                 )
-            )
-        ),
+            ),
 
-        HomeCategory(
-            "📱 SOCIAL MEDIA",
-            listOf(
-                HomeSubCategory(
-                    "📱 SOCIAL PLATFORMS",
-                    listOf(
-                        HomeSite("Facebook", "https://www.facebook.com/"),
-                        HomeSite("TikTok", "https://www.tiktok.com/"),
-                        HomeSite("YouTube", "https://www.youtube.com/"),
-                        HomeSite("X", "https://x.com/"),
-                        HomeSite("Dailymotion", "https://www.dailymotion.com/")
+            HomeCategory(
+                "📰 NEWS",
+                listOf(
+                    HomeSubCategory(
+                        "📰 NEWS SITES",
+                        listOf(
+                            HomeSite("BBC News", "https://www.bbc.com/news"),
+                            HomeSite("Reuters", "https://www.reuters.com/"),
+                            HomeSite("AP News", "https://apnews.com/"),
+                            HomeSite("CNN", "https://www.cnn.com/"),
+                            HomeSite("Al Jazeera", "https://www.aljazeera.com/"),
+                            HomeSite("The Guardian", "https://www.theguardian.com/international"),
+                            HomeSite("New York Times", "https://www.nytimes.com/"),
+                            HomeSite("Sky News", "https://news.sky.com/"),
+                            HomeSite("France 24", "https://www.france24.com/en/"),
+                            HomeSite("DW", "https://www.dw.com/en/")
+                        )
                     )
                 )
-            )
-        ),
-                HomeCategory(
-            "💬 MESSAGING",
-            listOf(
-                HomeSubCategory(
-                    "💬 MESSAGING APPS",
-                    listOf(
-                        HomeSite("WhatsApp", "https://web.whatsapp.com/"),
-                        HomeSite("Snapchat", "https://www.snapchat.com/"),
-                        HomeSite("Telegram", "https://web.telegram.org/")
+            ),
+
+            HomeCategory(
+                "📺 IPTV",
+                listOf(
+
+                    HomeSubCategory(
+                        "🛠️ IPTV TOOLS",
+                        listOf(
+                            HomeSite("Awesome IPTV", "https://github.com/iptv-org/awesome-iptv"),
+                            HomeSite("IPTV Playlists", "https://iptv-org.github.io/"),
+                            HomeSite("M3Unator", "https://m3unator.com/"),
+                            HomeSite("M3U4U", "https://m3u4u.com/"),
+                            HomeSite("M3U8DL-RE", "https://github.com/nilaoda/N_m3u8DL-RE")
+                        )
+                    ),
+
+                    HomeSubCategory(
+                        "▶️ IPTV PLAYERS",
+                        listOf(
+                            HomeSite("IPTVnator", "https://github.com/4gray/iptvnator"),
+                            HomeSite("ynoTV", "https://ynotv.com/"),
+                            HomeSite("Open TV", "https://opentv.app/"),
+                            HomeSite("LivePush", "https://livepush.io/"),
+                            HomeSite("Jellyfin", "https://jellyfin.org/")
+                        )
+                    )
+                )
+            ),
+
+            HomeCategory(
+                "📱 ANDROID TV",
+                listOf(
+                    HomeSubCategory(
+                        "📱 ANDROID TV APPS",
+                        listOf(
+                            HomeSite("SmartTube", "https://github.com/yuliskov/SmartTube"),
+                            HomeSite("TiviMate", "https://tivimate.com/"),
+                            HomeSite("Downloader", "https://www.aftvnews.com/downloader/"),
+                            HomeSite("CloudStream", "https://cloudstream3.com/"),
+                            HomeSite("Nova Video Player", "https://github.com/nova-video-player/aos-AVP")
+                        )
+                    )
+                )
+            ),
+
+            HomeCategory(
+                "📱 SOCIAL MEDIA",
+                listOf(
+                    HomeSubCategory(
+                        "📱 SOCIAL PLATFORMS",
+                        listOf(
+                            HomeSite("Facebook", "https://www.facebook.com/"),
+                            HomeSite("TikTok", "https://www.tiktok.com/"),
+                            HomeSite("YouTube", "https://www.youtube.com/"),
+                            HomeSite("X", "https://x.com/"),
+                            HomeSite("Dailymotion", "https://www.dailymotion.com/")
+                        )
+                    )
+                )
+            ),
+            HomeCategory(
+                "💬 MESSAGING",
+                listOf(
+                    HomeSubCategory(
+                        "💬 MESSAGING APPS",
+                        listOf(
+                            HomeSite("WhatsApp", "https://web.whatsapp.com/"),
+                            HomeSite("Snapchat", "https://www.snapchat.com/"),
+                            HomeSite("Telegram", "https://web.telegram.org/")
+                        )
                     )
                 )
             )
         )
-    )
 
-    categories.forEach { category ->
+        var firstScrollRow: HorizontalScrollView? = null
 
-        addMainCategoryHeader(
-            container,
-            category.title
-        )
+        categories.forEach { category ->
 
-        category.subCategories.forEach { subCategory ->
-
-            addSubCategoryHeader(
+            addMainCategoryHeader(
                 container,
-                subCategory.title
+                category.title
             )
 
-            addSiteGrid(
-                container,
-                subCategory.sites
-            )
-        }
-    }
-}
+            category.subCategories.forEach { subCategory ->
 
-private fun addMainCategoryHeader(
-    container: LinearLayout,
-    title: String
-) {
-    val titleView = TextView(this)
+                addSubCategoryHeader(
+                    container,
+                    subCategory.title
+                )
 
-    titleView.text = title
-    titleView.textSize = 21f
-    titleView.setTypeface(null, Typeface.BOLD)
-    titleView.setTextColor(Color.WHITE)
+                val scrollRow =
+                    addSiteGrid(
+                        container,
+                        subCategory.sites
+                    )
 
-    titleView.setPadding(
-        dp(8),
-        dp(18),
-        dp(8),
-        dp(10)
-    )
-
-    container.addView(titleView)
-}
-private fun addSubCategoryHeader(
-    container: LinearLayout,
-    title: String
-) {
-    val titleView = TextView(this)
-
-    titleView.text = title
-    titleView.textSize = 15f
-    titleView.setTypeface(null, Typeface.BOLD)
-    titleView.setTextColor(Color.LTGRAY)
-
-    titleView.setPadding(
-        dp(12),
-        dp(8),
-        dp(8),
-        dp(6)
-    )
-
-    container.addView(titleView)
-}
-
-private fun addSiteGrid(
-    container: LinearLayout,
-    sites: List<HomeSite>
-) {
-    val horizontalScroll = HorizontalScrollView(this).apply {
-        isHorizontalScrollBarEnabled = false
-        overScrollMode = View.OVER_SCROLL_NEVER
-        clipToPadding = false
-        layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-    }
-
-    val row = LinearLayout(this).apply {
-        orientation = LinearLayout.HORIZONTAL
-        gravity = Gravity.CENTER_VERTICAL
-    }
-
-    val screenWidthDp =
-        (resources.displayMetrics.widthPixels /
-            resources.displayMetrics.density).toInt()
-
-    val cardWidth = dp((screenWidthDp - 44) / 2)
-
-    sites.forEach { site ->
-        val card = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(10), dp(8), dp(10), dp(8))
-
-            val background = GradientDrawable().apply {
-                cornerRadius = dp(12).toFloat()
-                setColor(getThemeSurfaceColor())
-            }
-            this.background = background
-
-            layoutParams = LinearLayout.LayoutParams(
-                cardWidth,
-                dp(66)
-            ).apply {
-                setMargins(dp(4), dp(4), dp(4), dp(4))
-            }
-
-            isClickable = true
-            isFocusable = true
-            setOnClickListener {
-                openWebsite(site.url)
-            }
-        }
-
-        val logo = ImageView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                dp(30),
-                dp(30)
-            )
-            scaleType = ImageView.ScaleType.FIT_CENTER
-            contentDescription = "${site.name} logo"
-        }
-
-        val name = TextView(this).apply {
-            text = site.name
-            textSize = 12f
-            setTextColor(Color.WHITE)
-            gravity = Gravity.CENTER_VERTICAL
-            maxLines = 2
-            ellipsize = android.text.TextUtils.TruncateAt.END
-            setPadding(dp(8), 0, 0, 0)
-            layoutParams = LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f
-            )
-        }
-
-        card.addView(logo)
-        card.addView(name)
-        row.addView(card)
-
-        loadSiteLogo(site.url, logo)
-    }
-
-    horizontalScroll.addView(row)
-    container.addView(horizontalScroll)
-}
-
-private fun loadSiteLogo(
-    siteUrl: String,
-    imageView: ImageView
-) {
-    val logoUrl = try {
-        val host = java.net.URL(siteUrl).host
-        "https://www.google.com/s2/favicons?domain=$host&sz=64"
-    } catch (e: Exception) {
-        return
-    }
-
-    imageView.tag = logoUrl
-
-    Thread {
-        try {
-            val connection =
-                java.net.URL(logoUrl).openConnection()
-            connection.connectTimeout = 8000
-            connection.readTimeout = 8000
-
-            val bitmap = connection.getInputStream().use {
-                BitmapFactory.decodeStream(it)
-            }
-
-            if (bitmap != null) {
-                runOnUiThread {
-                    if (imageView.tag == logoUrl) {
-                        imageView.setImageBitmap(bitmap)
-                    }
+                if (firstScrollRow == null) {
+                    firstScrollRow = scrollRow
                 }
             }
-        } catch (_: Exception) {
-            // Keep the card usable if its favicon cannot load.
         }
-    }.start()
-}
 
-private fun dp(value: Int): Int {
-    return (
-        value * resources.displayMetrics.density
-    ).toInt()
-}
+        firstScrollRow?.let { scrollRow ->
+            maybePlaySwipeHint(scrollRow)
+        }
+    }
+
+    private fun addMainCategoryHeader(
+        container: LinearLayout,
+        title: String
+    ) {
+        val titleView = TextView(this)
+
+        titleView.text = title
+        titleView.textSize = 21f
+        titleView.setTypeface(null, Typeface.BOLD)
+        titleView.setTextColor(Color.WHITE)
+
+        titleView.setPadding(
+            dp(8),
+            dp(18),
+            dp(8),
+            dp(10)
+        )
+
+        container.addView(titleView)
+    }
+
+    private fun addSubCategoryHeader(
+        container: LinearLayout,
+        title: String
+    ) {
+        val titleView = TextView(this)
+
+        titleView.text = title
+        titleView.textSize = 15f
+        titleView.setTypeface(null, Typeface.BOLD)
+        titleView.setTextColor(Color.LTGRAY)
+
+        titleView.setPadding(
+            dp(12),
+            dp(8),
+            dp(8),
+            dp(6)
+        )
+
+        container.addView(titleView)
+    }
+
+    private fun addSiteGrid(
+        container: LinearLayout,
+        sites: List<HomeSite>
+    ): HorizontalScrollView {
+
+        val horizontalScroll = HorizontalScrollView(this).apply {
+            isHorizontalScrollBarEnabled = false
+            overScrollMode = View.OVER_SCROLL_NEVER
+            clipToPadding = false
+            isHorizontalFadingEdgeEnabled = true
+            setFadingEdgeLength(dp(28))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+
+        val screenWidthDp =
+            (resources.displayMetrics.widthPixels /
+                resources.displayMetrics.density).toInt()
+
+        // Show roughly 3 cards per screen, with the next one peeking
+        // at the edge to hint that the row scrolls.
+        val cardWidth = dp((screenWidthDp - 56) / 3)
+
+        sites.forEach { site ->
+            val card = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                setPadding(dp(8), dp(6), dp(8), dp(6))
+
+                val background = GradientDrawable().apply {
+                    cornerRadius = dp(12).toFloat()
+                    setColor(getThemeSurfaceColor())
+                }
+                this.background = background
+
+                layoutParams = LinearLayout.LayoutParams(
+                    cardWidth,
+                    dp(56)
+                ).apply {
+                    setMargins(dp(4), dp(4), dp(4), dp(4))
+                }
+
+                isClickable = true
+                isFocusable = true
+                setOnClickListener {
+                    openWebsite(site.url)
+                }
+            }
+
+            val logo = ImageView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    dp(24),
+                    dp(24)
+                )
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                contentDescription = "${site.name} logo"
+            }
+
+            val name = TextView(this).apply {
+                text = site.name
+                textSize = 11f
+                setTextColor(Color.WHITE)
+                gravity = Gravity.CENTER_VERTICAL
+                maxLines = 2
+                ellipsize = android.text.TextUtils.TruncateAt.END
+                setPadding(dp(6), 0, 0, 0)
+                layoutParams = LinearLayout.LayoutParams(
+                    0,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    1f
+                )
+            }
+
+            card.addView(logo)
+            card.addView(name)
+            row.addView(card)
+
+            loadSiteLogo(site.url, logo)
+        }
+
+        horizontalScroll.addView(row)
+        container.addView(horizontalScroll)
+
+        return horizontalScroll
+    }
+
+    // =========================================================
+    // SWIPE HINT (first launch only)
+    // =========================================================
+
+    private fun maybePlaySwipeHint(
+        scrollView: HorizontalScrollView
+    ) {
+
+        val alreadyShown =
+            preferences.getBoolean(
+                "swipe_hint_shown",
+                false
+            )
+
+        if (alreadyShown) {
+            return
+        }
+
+        scrollView.post {
+            playSwipeHintAnimation(scrollView)
+        }
+
+        preferences.edit()
+            .putBoolean("swipe_hint_shown", true)
+            .apply()
+    }
+
+    private fun playSwipeHintAnimation(
+        scrollView: HorizontalScrollView
+    ) {
+
+        val nudgeDistance = dp(70)
+
+        val nudgeOut =
+            ValueAnimator.ofInt(0, nudgeDistance).apply {
+                duration = 450
+                startDelay = 600
+                interpolator = AccelerateDecelerateInterpolator()
+            }
+
+        val nudgeBack =
+            ValueAnimator.ofInt(nudgeDistance, 0).apply {
+                duration = 450
+                interpolator = AccelerateDecelerateInterpolator()
+            }
+
+        nudgeOut.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            scrollView.scrollTo(value, 0)
+        }
+
+        nudgeBack.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            scrollView.scrollTo(value, 0)
+        }
+
+        nudgeOut.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                nudgeBack.start()
+            }
+        })
+
+        nudgeOut.start()
+    }
+
+    private fun loadSiteLogo(
+        siteUrl: String,
+        imageView: ImageView
+    ) {
+        val logoUrl = try {
+            val host = java.net.URL(siteUrl).host
+            "https://www.google.com/s2/favicons?domain=$host&sz=64"
+        } catch (e: Exception) {
+            return
+        }
+
+        imageView.tag = logoUrl
+
+        Thread {
+            try {
+                val connection =
+                    java.net.URL(logoUrl).openConnection()
+                connection.connectTimeout = 8000
+                connection.readTimeout = 8000
+
+                val bitmap = connection.getInputStream().use {
+                    BitmapFactory.decodeStream(it)
+                }
+
+                if (bitmap != null) {
+                    runOnUiThread {
+                        if (imageView.tag == logoUrl) {
+                            imageView.setImageBitmap(bitmap)
+                        }
+                    }
+                }
+            } catch (_: Exception) {
+                // Keep the card usable if its favicon cannot load.
+            }
+        }.start()
+    }
+
+    private fun dp(value: Int): Int {
+        return (
+            value * resources.displayMetrics.density
+        ).toInt()
+    }
 
     // =========================================================
     // SYSTEM NAVIGATION BAR
@@ -664,20 +752,20 @@ private fun dp(value: Int): Int {
 
             domStorageEnabled = true
 
-           loadWithOverviewMode = false
+            loadWithOverviewMode = false
 
-useWideViewPort = false
+            useWideViewPort = false
 
             mediaPlaybackRequiresUserGesture = false
 
-           userAgentString =
-    "Mozilla/5.0 (Linux; Android 15; Mobile) " +
-    "AppleWebKit/537.36 (KHTML, like Gecko) " +
-    "Chrome/153.0.0.0 Mobile Safari/537.36"
+            userAgentString =
+                "Mozilla/5.0 (Linux; Android 15; Mobile) " +
+                        "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                        "Chrome/153.0.0.0 Mobile Safari/537.36"
 
-setSupportZoom(true)
-builtInZoomControls = true
-displayZoomControls = false
+            setSupportZoom(true)
+            builtInZoomControls = true
+            displayZoomControls = false
 
             allowFileAccess = true
 
@@ -689,17 +777,18 @@ displayZoomControls = false
                     false
                 )
         }
-CookieManager
-    .getInstance()
-    .setAcceptCookie(true)
 
-CookieManager
-    .getInstance()
-    .setAcceptThirdPartyCookies(
-        webView,
-        true
-    )
-        
+        CookieManager
+            .getInstance()
+            .setAcceptCookie(true)
+
+        CookieManager
+            .getInstance()
+            .setAcceptThirdPartyCookies(
+                webView,
+                true
+            )
+
         webView.webViewClient =
             object : WebViewClient() {
 
@@ -727,52 +816,53 @@ CookieManager
                 }
 
                 override fun onPageFinished(
-    view: WebView?,
-    url: String?
-) {
+                    view: WebView?,
+                    url: String?
+                ) {
 
-    loadingBar.visibility =
-        View.GONE
+                    loadingBar.visibility =
+                        View.GONE
 
-    if (
-        url != null &&
-        (
-            url.startsWith("http://") ||
-            url.startsWith("https://")
-        )
-    ) {
+                    if (
+                        url != null &&
+                        (
+                            url.startsWith("http://") ||
+                            url.startsWith("https://")
+                        )
+                    ) {
 
-        addressBar.setText(url)
-        // Update active tab information
-val activeTab =
-    openTabs.find {
-        it.id == activeTabId
-    }
+                        addressBar.setText(url)
+                        // Update active tab information
+                        val activeTab =
+                            openTabs.find {
+                                it.id == activeTabId
+                            }
 
-if (activeTab != null) {
+                        if (activeTab != null) {
 
-    activeTab.url =
-        url
+                            activeTab.url =
+                                url
 
-    activeTab.title =
-        view?.title
-            ?.trim()
-            ?.ifBlank {
-                "New Tab"
-            }
-            ?: "New Tab"
-}
+                            activeTab.title =
+                                view?.title
+                                    ?.trim()
+                                    ?.ifBlank {
+                                        "New Tab"
+                                    }
+                                    ?: "New Tab"
+                        }
 
-        // Hide search/address bar after website finishes loading
-        addressBar.visibility =
-            View.GONE
+                        // Hide search/address bar after website finishes loading
+                        addressBar.visibility =
+                            View.GONE
 
-        findViewById<View>(
-            R.id.goButton
-        ).visibility =
-            View.GONE
-    }
-}
+                        findViewById<View>(
+                            R.id.goButton
+                        ).visibility =
+                            View.GONE
+                    }
+                }
+
                 override fun shouldOverrideUrlLoading(
                     view: WebView?,
                     request: WebResourceRequest?
@@ -787,900 +877,903 @@ if (activeTab != null) {
         }
     }
 
- // =========================================================
-// CONTROLS
-// =========================================================
+    // =========================================================
+    // CONTROLS
+    // =========================================================
 
-private fun setupControls() {
-
-    findViewById<View>(
-        R.id.goButton
-    ).setOnClickListener {
-
-        openAddress()
-    }
-
-    addressBar.setOnEditorActionListener {
-            _, _, _ ->
-
-        openAddress()
-
-        true
-    }
-
-    findViewById<View>(
-        R.id.backButton
-    ).setOnClickListener {
-
-        if (
-            settingsPage.visibility ==
-            View.VISIBLE
-        ) {
-
-            showHomePage()
-
-        } else if (
-            webView.visibility ==
-            View.VISIBLE &&
-            webView.canGoBack()
-        ) {
-
-            webView.goBack()
-
-        } else {
-
-            showHomePage()
-        }
-    }
-
-    findViewById<View>(
-        R.id.forwardButton
-    ).setOnClickListener {
-
-        if (
-            webView.visibility ==
-            View.VISIBLE &&
-            webView.canGoForward()
-        ) {
-
-            webView.goForward()
-        }
-    }
-
-   findViewById<View>(
-    R.id.moreTrendsButton
-).setOnClickListener {
-
-    openWebsite(
-        "https://trends.google.com/trending"
-    )
-}
-    // =====================================================
-// REFRESH
-// =====================================================
-
-findViewById<View>(
-    R.id.refreshPageButton
-).setOnClickListener {
-
-    if (
-        webView.visibility ==
-        View.VISIBLE
-    ) {
-
-        webView.reload()
-
-    } else {
-
-        Toast.makeText(
-            this,
-            "Open a website first",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-}
-
-    // =====================================================
-    // OPEN PAGES
-    // =====================================================
-
-  findViewById<View>(
-    R.id.refreshButton
-).setOnClickListener {
-
-    showOpenTabs()
-}
-
-    // =====================================================
-    // HOME
-    // =====================================================
-
-    findViewById<View>(
-        R.id.homeButton
-    ).setOnClickListener {
-
-        showHomePage()
-    }
-
-    // =====================================================
-    // BOOKMARK
-    // =====================================================
-
-    findViewById<View>(
-        R.id.bookmarkButton
-    ).setOnClickListener {
-
-        saveCurrentBookmark()
-    }
-
-    // =====================================================
-    // MENU
-    // =====================================================
-
-       findViewById<View>(
-        R.id.menuButton
-    ).setOnClickListener {
-
-        showSettings()
-    }
-// =====================================================
-// THEME
-// =====================================================
-
-findViewById<View>(
-    R.id.themeButton
-).setOnClickListener {
-    showThemeSelector()
-}
-
-    // =====================================================
-    // NEWS BUTTONS
-    // =====================================================
-
-    findViewById<View>(
-        R.id.moreNewsButton
-    ).setOnClickListener {
-
-        openWebsite(
-            "https://news.google.com/"
-        )
-    }
+    private fun setupControls() {
 
         findViewById<View>(
-        R.id.moreSportNewsButton
-    ).setOnClickListener {
+            R.id.goButton
+        ).setOnClickListener {
 
-        openWebsite(
-            "https://news.google.com/search?q=football"
+            openAddress()
+        }
+
+        addressBar.setOnEditorActionListener {
+                _, _, _ ->
+
+            openAddress()
+
+            true
+        }
+
+        findViewById<View>(
+            R.id.backButton
+        ).setOnClickListener {
+
+            if (
+                settingsPage.visibility ==
+                View.VISIBLE
+            ) {
+
+                showHomePage()
+
+            } else if (
+                webView.visibility ==
+                View.VISIBLE &&
+                webView.canGoBack()
+            ) {
+
+                webView.goBack()
+
+            } else {
+
+                showHomePage()
+            }
+        }
+
+        findViewById<View>(
+            R.id.forwardButton
+        ).setOnClickListener {
+
+            if (
+                webView.visibility ==
+                View.VISIBLE &&
+                webView.canGoForward()
+            ) {
+
+                webView.goForward()
+            }
+        }
+
+        findViewById<View>(
+            R.id.moreTrendsButton
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://trends.google.com/trending"
+            )
+        }
+
+        // =====================================================
+        // REFRESH
+        // =====================================================
+
+        findViewById<View>(
+            R.id.refreshPageButton
+        ).setOnClickListener {
+
+            if (
+                webView.visibility ==
+                View.VISIBLE
+            ) {
+
+                webView.reload()
+
+            } else {
+
+                Toast.makeText(
+                    this,
+                    "Open a website first",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        // =====================================================
+        // OPEN PAGES
+        // =====================================================
+
+        findViewById<View>(
+            R.id.refreshButton
+        ).setOnClickListener {
+
+            showOpenTabs()
+        }
+
+        // =====================================================
+        // HOME
+        // =====================================================
+
+        findViewById<View>(
+            R.id.homeButton
+        ).setOnClickListener {
+
+            showHomePage()
+        }
+
+        // =====================================================
+        // BOOKMARK
+        // =====================================================
+
+        findViewById<View>(
+            R.id.bookmarkButton
+        ).setOnClickListener {
+
+            saveCurrentBookmark()
+        }
+
+        // =====================================================
+        // MENU
+        // =====================================================
+
+        findViewById<View>(
+            R.id.menuButton
+        ).setOnClickListener {
+
+            showSettings()
+        }
+
+        // =====================================================
+        // THEME
+        // =====================================================
+
+        findViewById<View>(
+            R.id.themeButton
+        ).setOnClickListener {
+            showThemeSelector()
+        }
+
+        // =====================================================
+        // NEWS BUTTONS
+        // =====================================================
+
+        findViewById<View>(
+            R.id.moreNewsButton
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://news.google.com/"
+            )
+        }
+
+        findViewById<View>(
+            R.id.moreSportNewsButton
+        ).setOnClickListener {
+
+            openWebsite(
+                "https://news.google.com/search?q=football"
+            )
+        }
+    }
+
+    // =========================================================
+    // OPEN TABS
+    // =========================================================
+
+    private fun showOpenTabs() {
+
+        if (openTabs.isEmpty()) {
+
+            Toast.makeText(
+                this,
+                "No open tabs",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            return
+        }
+
+        val container =
+            android.widget.LinearLayout(this)
+
+        container.orientation =
+            android.widget.LinearLayout.VERTICAL
+
+        container.setPadding(
+            20,
+            10,
+            20,
+            10
         )
-    }
-}
 
-// =========================================================
-// OPEN TABS
-// =========================================================
+        val dialog =
+            AlertDialog.Builder(this)
+                .setTitle(
+                    "Open Tabs (${openTabs.size})"
+                )
+                .setView(container)
+                .setNegativeButton(
+                    "Close",
+                    null
+                )
+                .create()
 
-private fun showOpenTabs() {
+        fun refreshTabList() {
 
-    if (openTabs.isEmpty()) {
+            container.removeAllViews()
 
-        Toast.makeText(
-            this,
-            "No open tabs",
-            Toast.LENGTH_SHORT
-        ).show()
-
-        return
-    }
-
-    val container =
-        android.widget.LinearLayout(this)
-
-    container.orientation =
-        android.widget.LinearLayout.VERTICAL
-
-    container.setPadding(
-        20,
-        10,
-        20,
-        10
-    )
-
-    val dialog =
-        AlertDialog.Builder(this)
-            .setTitle(
+            dialog.setTitle(
                 "Open Tabs (${openTabs.size})"
             )
-            .setView(container)
-            .setNegativeButton(
-                "Close",
-                null
-            )
-            .create()
 
-    fun refreshTabList() {
+            openTabs.forEach { tab ->
 
-        container.removeAllViews()
+                val row =
+                    android.widget.LinearLayout(this)
 
-        dialog.setTitle(
-            "Open Tabs (${openTabs.size})"
-        )
+                row.orientation =
+                    android.widget.LinearLayout.HORIZONTAL
 
-        openTabs.forEach { tab ->
+                row.gravity =
+                    android.view.Gravity.CENTER_VERTICAL
 
-            val row =
-                android.widget.LinearLayout(this)
-
-            row.orientation =
-                android.widget.LinearLayout.HORIZONTAL
-
-            row.gravity =
-                android.view.Gravity.CENTER_VERTICAL
-
-            row.setPadding(
-                12,
-                12,
-                8,
-                12
-            )
-
-            row.setBackgroundColor(
-                android.graphics.Color.parseColor(
-                    if (tab.id == activeTabId)
-                        "#26364F"
-                    else
-                        "#182437"
-                )
-            )
-
-            val rowParams =
-                android.widget.LinearLayout.LayoutParams(
-                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                row.setPadding(
+                    12,
+                    12,
+                    8,
+                    12
                 )
 
-            rowParams.setMargins(
-                0,
-                0,
-                0,
-                8
-            )
+                row.setBackgroundColor(
+                    android.graphics.Color.parseColor(
+                        if (tab.id == activeTabId)
+                            "#26364F"
+                        else
+                            "#182437"
+                    )
+                )
 
-            row.layoutParams =
-                rowParams
+                val rowParams =
+                    android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
 
-            val title =
-                android.widget.TextView(this)
-
-            title.text =
-                if (tab.id == activeTabId) {
-                    "✓ ${tab.title}"
-                } else {
-                    tab.title
-                }
-
-            title.setTextColor(
-                android.graphics.Color.WHITE
-            )
-
-            title.textSize =
-                14f
-
-            title.maxLines =
-                1
-
-            title.ellipsize =
-                android.text.TextUtils.TruncateAt.END
-
-            title.layoutParams =
-                android.widget.LinearLayout.LayoutParams(
+                rowParams.setMargins(
                     0,
-                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                    1f
+                    0,
+                    0,
+                    8
                 )
 
-            val closeButton =
-                android.widget.TextView(this)
+                row.layoutParams =
+                    rowParams
 
-            closeButton.text =
-                "✕"
+                val title =
+                    android.widget.TextView(this)
 
-            closeButton.gravity =
-                android.view.Gravity.CENTER
+                title.text =
+                    if (tab.id == activeTabId) {
+                        "✓ ${tab.title}"
+                    } else {
+                        tab.title
+                    }
 
-            closeButton.setTextColor(
-                android.graphics.Color.WHITE
-            )
-
-            closeButton.textSize =
-                18f
-
-            closeButton.setPadding(
-                16,
-                8,
-                16,
-                8
-            )
-
-            row.addView(
-                title
-            )
-
-            row.addView(
-                closeButton
-            )
-
-            // Open this tab
-            title.setOnClickListener {
-
-                activeTabId =
-                    tab.id
-
-                homePage.visibility =
-                    View.GONE
-
-                settingsPage.visibility =
-                    View.GONE
-
-                webView.visibility =
-                    View.VISIBLE
-
-                addressBar.visibility =
-                    View.GONE
-
-                findViewById<View>(
-                    R.id.goButton
-                ).visibility =
-                    View.GONE
-
-                webView.loadUrl(
-                    tab.url
+                title.setTextColor(
+                    android.graphics.Color.WHITE
                 )
 
-                dialog.dismiss()
-            }
+                title.textSize =
+                    14f
 
-            // Close this tab
-            closeButton.setOnClickListener {
+                title.maxLines =
+                    1
 
-                val wasActive =
-                    tab.id == activeTabId
+                title.ellipsize =
+                    android.text.TextUtils.TruncateAt.END
 
-                openTabs.remove(
-                    tab
+                title.layoutParams =
+                    android.widget.LinearLayout.LayoutParams(
+                        0,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f
+                    )
+
+                val closeButton =
+                    android.widget.TextView(this)
+
+                closeButton.text =
+                    "✕"
+
+                closeButton.gravity =
+                    android.view.Gravity.CENTER
+
+                closeButton.setTextColor(
+                    android.graphics.Color.WHITE
                 )
 
-                if (openTabs.isEmpty()) {
+                closeButton.textSize =
+                    18f
+
+                closeButton.setPadding(
+                    16,
+                    8,
+                    16,
+                    8
+                )
+
+                row.addView(
+                    title
+                )
+
+                row.addView(
+                    closeButton
+                )
+
+                // Open this tab
+                title.setOnClickListener {
 
                     activeTabId =
-                        0
+                        tab.id
+
+                    homePage.visibility =
+                        View.GONE
+
+                    settingsPage.visibility =
+                        View.GONE
+
+                    webView.visibility =
+                        View.VISIBLE
+
+                    addressBar.visibility =
+                        View.GONE
+
+                    findViewById<View>(
+                        R.id.goButton
+                    ).visibility =
+                        View.GONE
+
+                    webView.loadUrl(
+                        tab.url
+                    )
+
+                    dialog.dismiss()
+                }
+
+                // Close this tab
+                closeButton.setOnClickListener {
+
+                    val wasActive =
+                        tab.id == activeTabId
+
+                    openTabs.remove(
+                        tab
+                    )
+
+                    if (openTabs.isEmpty()) {
+
+                        activeTabId =
+                            0
+
+                        updateTabsCount()
+
+                        dialog.dismiss()
+
+                        showHomePage()
+
+                        return@setOnClickListener
+                    }
+
+                    if (wasActive) {
+
+                        val newActiveTab =
+                            openTabs.last()
+
+                        activeTabId =
+                            newActiveTab.id
+
+                        webView.loadUrl(
+                            newActiveTab.url
+                        )
+                    }
 
                     updateTabsCount()
 
-                    dialog.dismiss()
-
-                    showHomePage()
-
-                    return@setOnClickListener
+                    refreshTabList()
                 }
 
-                if (wasActive) {
-
-                    val newActiveTab =
-                        openTabs.last()
-
-                    activeTabId =
-                        newActiveTab.id
-
-                    webView.loadUrl(
-                        newActiveTab.url
-                    )
-                }
-
-                updateTabsCount()
-
-                refreshTabList()
+                container.addView(
+                    row
+                )
             }
+        }
 
-            container.addView(
-                row
-            )
+        refreshTabList()
+
+        dialog.show()
+    }
+
+    private fun loadWebsiteLogo(
+        textView: android.widget.TextView,
+        domain: String
+    ) {
+
+        kotlinx.coroutines.CoroutineScope(
+            kotlinx.coroutines.Dispatchers.IO
+        ).launch {
+
+            try {
+
+                val logoUrl =
+                    "https://www.google.com/s2/favicons?domain=$domain&sz=128"
+
+                val connection =
+                    java.net.URL(
+                        logoUrl
+                    ).openConnection()
+
+                connection.connectTimeout = 10000
+                connection.readTimeout = 10000
+                connection.connect()
+
+                val input =
+                    connection.getInputStream()
+
+                val bitmap =
+                    android.graphics.BitmapFactory
+                        .decodeStream(input)
+
+                input.close()
+
+                if (bitmap != null) {
+
+                    runOnUiThread {
+
+                        val density =
+                            resources.displayMetrics.density
+
+                        val size =
+                            (30 * density).toInt()
+
+                        val drawable =
+                            android.graphics.drawable.BitmapDrawable(
+                                resources,
+                                bitmap
+                            )
+
+                        drawable.setBounds(
+                            0,
+                            0,
+                            size,
+                            size
+                        )
+
+                        textView.setCompoundDrawables(
+                            null,
+                            drawable,
+                            null,
+                            null
+                        )
+
+                        textView.compoundDrawablePadding =
+                            (7 * density).toInt()
+
+                        textView.gravity =
+                            android.view.Gravity.CENTER
+
+                        textView.includeFontPadding =
+                            false
+
+                        textView.setPadding(
+                            (4 * density).toInt(),
+                            (8 * density).toInt(),
+                            (4 * density).toInt(),
+                            (8 * density).toInt()
+                        )
+                    }
+                }
+
+            } catch (_: Exception) {
+
+                // Keep the website name visible
+            }
         }
     }
 
-    refreshTabList()
+    private fun loadWebsiteLogoToImage(
+        containerId: Int,
+        domain: String
+    ) {
 
-    dialog.show()
-}
+        kotlinx.coroutines.CoroutineScope(
+            kotlinx.coroutines.Dispatchers.IO
+        ).launch {
 
-private fun loadWebsiteLogo(
-    textView: android.widget.TextView,
-    domain: String
-) {
+            try {
 
-    kotlinx.coroutines.CoroutineScope(
-        kotlinx.coroutines.Dispatchers.IO
-    ).launch {
+                val logoUrl =
+                    "https://www.google.com/s2/favicons?domain=$domain&sz=128"
 
-        try {
+                val connection =
+                    java.net.URL(
+                        logoUrl
+                    ).openConnection()
 
-            val logoUrl =
-                "https://www.google.com/s2/favicons?domain=$domain&sz=128"
+                connection.connectTimeout = 10000
+                connection.readTimeout = 10000
+                connection.connect()
 
-            val connection =
-                java.net.URL(
-                    logoUrl
-                ).openConnection()
+                val input =
+                    connection.getInputStream()
 
-            connection.connectTimeout = 10000
-            connection.readTimeout = 10000
-            connection.connect()
+                val bitmap =
+                    android.graphics.BitmapFactory
+                        .decodeStream(input)
 
-            val input =
-                connection.getInputStream()
+                input.close()
 
-            val bitmap =
-                android.graphics.BitmapFactory
-                    .decodeStream(input)
+                if (bitmap != null) {
 
-            input.close()
+                    runOnUiThread {
 
-            if (bitmap != null) {
+                        val container =
+                            findViewById<android.widget.LinearLayout>(
+                                containerId
+                            )
 
-                runOnUiThread {
+                        val imageView =
+                            container.getChildAt(0)
 
-                    val density =
-                        resources.displayMetrics.density
+                                as? android.widget.ImageView
 
-                    val size =
-                        (30 * density).toInt()
-
-                    val drawable =
-                        android.graphics.drawable.BitmapDrawable(
-                            resources,
+                        imageView?.setImageBitmap(
                             bitmap
                         )
-
-                    drawable.setBounds(
-                        0,
-                        0,
-                        size,
-                        size
-                    )
-
-                    textView.setCompoundDrawables(
-                        null,
-                        drawable,
-                        null,
-                        null
-                    )
-
-                    textView.compoundDrawablePadding =
-                        (7 * density).toInt()
-
-                    textView.gravity =
-                        android.view.Gravity.CENTER
-
-                    textView.includeFontPadding =
-                        false
-
-                    textView.setPadding(
-                        (4 * density).toInt(),
-                        (8 * density).toInt(),
-                        (4 * density).toInt(),
-                        (8 * density).toInt()
-                    )
+                    }
                 }
+
+            } catch (_: Exception) {
+
+                // Keep the existing icon if logo fails
             }
-
-        } catch (_: Exception) {
-
-            // Keep the website name visible
         }
     }
-}
 
-private fun loadWebsiteLogoToImage(
-    containerId: Int,
-    domain: String
-) {
+    // =========================================================
+    // NOTIFICATIONS
+    // =========================================================
 
-    kotlinx.coroutines.CoroutineScope(
-        kotlinx.coroutines.Dispatchers.IO
-    ).launch {
+    private val notificationChannelId =
+        "deeprows_browser_notifications"
 
-        try {
-
-            val logoUrl =
-                "https://www.google.com/s2/favicons?domain=$domain&sz=128"
-
-            val connection =
-                java.net.URL(
-                    logoUrl
-                ).openConnection()
-
-            connection.connectTimeout = 10000
-            connection.readTimeout = 10000
-            connection.connect()
-
-            val input =
-                connection.getInputStream()
-
-            val bitmap =
-                android.graphics.BitmapFactory
-                    .decodeStream(input)
-
-            input.close()
-
-            if (bitmap != null) {
-
-                runOnUiThread {
-
-                    val container =
-                        findViewById<android.widget.LinearLayout>(
-                            containerId
-                        )
-
-                    val imageView =
-                        container.getChildAt(0)
-
-                            as? android.widget.ImageView
-
-                    imageView?.setImageBitmap(
-                        bitmap
-                    )
-                }
-            }
-
-        } catch (_: Exception) {
-
-            // Keep the existing icon if logo fails
-        }
-    }
-}
-
-// =========================================================
-// NOTIFICATIONS
-// =========================================================
-
-private val notificationChannelId =
-    "deeprows_browser_notifications"
-
-private fun createNotificationChannel() {
-
-    if (
-        android.os.Build.VERSION.SDK_INT >=
-        android.os.Build.VERSION_CODES.O
-    ) {
-
-        val channel =
-            NotificationChannel(
-                notificationChannelId,
-                "Deeprows Browser",
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-
-                description =
-                    "Notifications from Deeprows Browser"
-            }
-
-        val notificationManager =
-            getSystemService(
-                NotificationManager::class.java
-            )
-
-        notificationManager.createNotificationChannel(
-            channel
-        )
-    }
-}
-
-private fun requestNotificationPermission() {
-
-    if (
-        android.os.Build.VERSION.SDK_INT >=
-        android.os.Build.VERSION_CODES.TIRAMISU
-    ) {
+    private fun createNotificationChannel() {
 
         if (
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) !=
-            PackageManager.PERMISSION_GRANTED
+            android.os.Build.VERSION.SDK_INT >=
+            android.os.Build.VERSION_CODES.O
         ) {
 
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
+            val channel =
+                NotificationChannel(
+                    notificationChannelId,
+                    "Deeprows Browser",
+                    NotificationManager.IMPORTANCE_DEFAULT
+                ).apply {
+
+                    description =
+                        "Notifications from Deeprows Browser"
+                }
+
+            val notificationManager =
+                getSystemService(
+                    NotificationManager::class.java
+                )
+
+            notificationManager.createNotificationChannel(
+                channel
+            )
+        }
+    }
+
+    private fun requestNotificationPermission() {
+
+        if (
+            android.os.Build.VERSION.SDK_INT >=
+            android.os.Build.VERSION_CODES.TIRAMISU
+        ) {
+
+            if (
+                ActivityCompat.checkSelfPermission(
+                    this,
                     Manifest.permission.POST_NOTIFICATIONS
-                ),
-                1001
-            )
+                ) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ),
+                    1001
+                )
+            }
         }
     }
-}
 
-private fun showNotification(
-    title: String,
-    message: String
-) {
-
-    if (
-        android.os.Build.VERSION.SDK_INT >=
-        android.os.Build.VERSION_CODES.TIRAMISU
+    private fun showNotification(
+        title: String,
+        message: String
     ) {
 
         if (
-            ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) !=
-            PackageManager.PERMISSION_GRANTED
+            android.os.Build.VERSION.SDK_INT >=
+            android.os.Build.VERSION_CODES.TIRAMISU
         ) {
-            return
+
+            if (
+                ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
         }
+
+        val notification =
+            NotificationCompat.Builder(
+                this,
+                notificationChannelId
+            )
+                .setSmallIcon(
+                    R.drawable.deeprows_logo
+                )
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(
+                    NotificationCompat.PRIORITY_DEFAULT
+                )
+                .setAutoCancel(true)
+                .build()
+
+        NotificationManagerCompat
+            .from(this)
+            .notify(
+                System.currentTimeMillis().toInt(),
+                notification
+            )
     }
 
-    val notification =
-        NotificationCompat.Builder(
-            this,
-            notificationChannelId
-        )
-            .setSmallIcon(
-                R.drawable.deeprows_logo
-            )
-            .setContentTitle(title)
-            .setContentText(message)
-            .setPriority(
-                NotificationCompat.PRIORITY_DEFAULT
-            )
-            .setAutoCancel(true)
-            .build()
+    // =========================================================
+    // SETTINGS
+    // =========================================================
 
-    NotificationManagerCompat
-        .from(this)
-        .notify(
-            System.currentTimeMillis().toInt(),
-            notification
-        )
-}
-   // =========================================================
-// SETTINGS
-// =========================================================
+    private fun setupSettings() {
 
-private fun setupSettings() {
-
-    dataSavingSwitch.isChecked =
-        preferences.getBoolean(
-            "data_saving",
-            false
-        )
-
-    adBlockingSwitch.isChecked =
-        preferences.getBoolean(
-            "ad_blocking",
-            false
-        )
-
-    dataSavingSwitch.setOnCheckedChangeListener {
-            _, enabled ->
-
-        preferences.edit()
-            .putBoolean(
+        dataSavingSwitch.isChecked =
+            preferences.getBoolean(
                 "data_saving",
-                enabled
+                false
             )
-            .apply()
 
-        webView.settings.blockNetworkImage =
-            enabled
-
-        Toast.makeText(
-            this,
-            if (enabled)
-                "Data Saving enabled"
-            else
-                "Data Saving disabled",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    adBlockingSwitch.setOnCheckedChangeListener {
-            _, enabled ->
-
-        preferences.edit()
-            .putBoolean(
+        adBlockingSwitch.isChecked =
+            preferences.getBoolean(
                 "ad_blocking",
-                enabled
+                false
             )
-            .apply()
 
-        Toast.makeText(
-            this,
-            if (enabled)
-                "Ad Blocking enabled"
-            else
-                "Ad Blocking disabled",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
+        dataSavingSwitch.setOnCheckedChangeListener {
+                _, enabled ->
 
-    findViewById<View>(
-        R.id.historyButton
-    ).setOnClickListener {
-
-        showHistory()
-    }
-
-    findViewById<View>(
-        R.id.bookmarksButton
-    ).setOnClickListener {
-
-        showBookmarks()
-    }
-
-    findViewById<View>(
-        R.id.offlinePagesButton
-    ).setOnClickListener {
-
-        showOfflinePages()
-    }
-
-    findViewById<View>(
-        R.id.clearCacheButton
-    ).setOnClickListener {
-
-        webView.clearCache(true)
-
-        Toast.makeText(
-            this,
-            "Browser cache cleared",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-
-    findViewById<View>(
-        R.id.downloadsButton
-    ).setOnClickListener {
-
-        try {
-
-            val intent =
-                android.content.Intent(
-                    android.content.Intent.ACTION_VIEW
+            preferences.edit()
+                .putBoolean(
+                    "data_saving",
+                    enabled
                 )
+                .apply()
 
-            intent.data =
-                android.net.Uri.parse(
-                    "content://downloads/my_downloads"
-                )
-
-            startActivity(intent)
-
-        } catch (e: Exception) {
+            webView.settings.blockNetworkImage =
+                enabled
 
             Toast.makeText(
                 this,
-                "Unable to open Downloads",
+                if (enabled)
+                    "Data Saving enabled"
+                else
+                    "Data Saving disabled",
                 Toast.LENGTH_SHORT
             ).show()
         }
-    }
 
-    findViewById<View>(
-        R.id.shareButton
-    ).setOnClickListener {
+        adBlockingSwitch.setOnCheckedChangeListener {
+                _, enabled ->
 
-        val currentUrl =
-            webView.url
-
-        if (
-            currentUrl.isNullOrBlank()
-        ) {
+            preferences.edit()
+                .putBoolean(
+                    "ad_blocking",
+                    enabled
+                )
+                .apply()
 
             Toast.makeText(
                 this,
-                "No webpage to share",
+                if (enabled)
+                    "Ad Blocking enabled"
+                else
+                    "Ad Blocking disabled",
                 Toast.LENGTH_SHORT
             ).show()
-
-            return@setOnClickListener
         }
 
-        val shareIntent =
-            android.content.Intent(
-                android.content.Intent.ACTION_SEND
-            ).apply {
+        findViewById<View>(
+            R.id.historyButton
+        ).setOnClickListener {
 
-                type = "text/plain"
+            showHistory()
+        }
 
-                putExtra(
-                    android.content.Intent.EXTRA_TEXT,
-                    currentUrl
-                )
+        findViewById<View>(
+            R.id.bookmarksButton
+        ).setOnClickListener {
 
-                putExtra(
-                    android.content.Intent.EXTRA_SUBJECT,
-                    webView.title
-                        ?: "Deeprows Browser"
-                )
+            showBookmarks()
+        }
+
+        findViewById<View>(
+            R.id.offlinePagesButton
+        ).setOnClickListener {
+
+            showOfflinePages()
+        }
+
+        findViewById<View>(
+            R.id.clearCacheButton
+        ).setOnClickListener {
+
+            webView.clearCache(true)
+
+            Toast.makeText(
+                this,
+                "Browser cache cleared",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        findViewById<View>(
+            R.id.downloadsButton
+        ).setOnClickListener {
+
+            try {
+
+                val intent =
+                    android.content.Intent(
+                        android.content.Intent.ACTION_VIEW
+                    )
+
+                intent.data =
+                    android.net.Uri.parse(
+                        "content://downloads/my_downloads"
+                    )
+
+                startActivity(intent)
+
+            } catch (e: Exception) {
+
+                Toast.makeText(
+                    this,
+                    "Unable to open Downloads",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        findViewById<View>(
+            R.id.shareButton
+        ).setOnClickListener {
+
+            val currentUrl =
+                webView.url
+
+            if (
+                currentUrl.isNullOrBlank()
+            ) {
+
+                Toast.makeText(
+                    this,
+                    "No webpage to share",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
             }
 
-        startActivity(
-            android.content.Intent.createChooser(
-                shareIntent,
-                "Share page"
-            )
-        )
-    }
+            val shareIntent =
+                android.content.Intent(
+                    android.content.Intent.ACTION_SEND
+                ).apply {
 
-    findViewById<View>(
-        R.id.translateButton
-    ).setOnClickListener {
+                    type = "text/plain"
 
-        val currentUrl =
-            webView.url
-
-        if (
-            currentUrl.isNullOrBlank()
-        ) {
-
-            Toast.makeText(
-                this,
-                "No webpage to translate",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            return@setOnClickListener
-        }
-
-        val translateUrl =
-            "https://translate.google.com/translate" +
-                    "?sl=auto&tl=en&u=" +
-                    android.net.Uri.encode(
+                    putExtra(
+                        android.content.Intent.EXTRA_TEXT,
                         currentUrl
                     )
 
-        openWebsite(
-            translateUrl
-        )
-    }
+                    putExtra(
+                        android.content.Intent.EXTRA_SUBJECT,
+                        webView.title
+                            ?: "Deeprows Browser"
+                    )
+                }
 
-    findViewById<View>(
-        R.id.settingsBackButton
-    ).setOnClickListener {
+            startActivity(
+                android.content.Intent.createChooser(
+                    shareIntent,
+                    "Share page"
+                )
+            )
+        }
 
-        showHomePage()
+        findViewById<View>(
+            R.id.translateButton
+        ).setOnClickListener {
+
+            val currentUrl =
+                webView.url
+
+            if (
+                currentUrl.isNullOrBlank()
+            ) {
+
+                Toast.makeText(
+                    this,
+                    "No webpage to translate",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                return@setOnClickListener
+            }
+
+            val translateUrl =
+                "https://translate.google.com/translate" +
+                        "?sl=auto&tl=en&u=" +
+                        android.net.Uri.encode(
+                            currentUrl
+                        )
+
+            openWebsite(
+                translateUrl
+            )
+        }
+
+        findViewById<View>(
+            R.id.settingsBackButton
+        ).setOnClickListener {
+
+            showHomePage()
+        }
     }
-}
 
     // =========================================================
     // HOME / SETTINGS / WEB
     // =========================================================
 
-   private fun showHomePage() {
+    private fun showHomePage() {
 
-    homePage.visibility =
-        View.VISIBLE
+        homePage.visibility =
+            View.VISIBLE
 
-    webView.visibility =
-        View.GONE
+        webView.visibility =
+            View.GONE
 
-    settingsPage.visibility =
-        View.GONE
+        settingsPage.visibility =
+            View.GONE
 
-    loadingBar.visibility =
-        View.GONE
+        loadingBar.visibility =
+            View.GONE
 
-    addressBar.visibility =
-        View.VISIBLE
+        addressBar.visibility =
+            View.VISIBLE
 
-    findViewById<View>(
-        R.id.goButton
-    ).visibility =
-        View.VISIBLE
-}
+        findViewById<View>(
+            R.id.goButton
+        ).visibility =
+            View.VISIBLE
+    }
 
     private fun showSettings() {
 
@@ -1697,64 +1790,64 @@ private fun setupSettings() {
             View.GONE
     }
 
-  // =========================================================
-// OPEN WEBSITE
-// =========================================================
+    // =========================================================
+    // OPEN WEBSITE
+    // =========================================================
 
-private fun openWebsite(
-    url: String
-) {
+    private fun openWebsite(
+        url: String
+    ) {
 
-    settingsPage.visibility =
-        View.GONE
+        settingsPage.visibility =
+            View.GONE
 
-    homePage.visibility =
-        View.GONE
+        homePage.visibility =
+            View.GONE
 
-    webView.visibility =
-        View.VISIBLE
+        webView.visibility =
+            View.VISIBLE
 
-    addressBar.visibility =
-        View.GONE
+        addressBar.visibility =
+            View.GONE
 
-    findViewById<View>(
-        R.id.goButton
-    ).visibility =
-        View.GONE
+        findViewById<View>(
+            R.id.goButton
+        ).visibility =
+            View.GONE
 
-    // Create a new tab
-    val newTab =
-        BrowserTab(
-            id = nextTabId++,
-            title = "New Tab",
-            url = url
+        // Create a new tab
+        val newTab =
+            BrowserTab(
+                id = nextTabId++,
+                title = "New Tab",
+                url = url
+            )
+
+        openTabs.add(
+            newTab
         )
 
-    openTabs.add(
-        newTab
-    )
+        activeTabId =
+            newTab.id
 
-    activeTabId =
-        newTab.id
+        updateTabsCount()
 
-    updateTabsCount()
+        webView.loadUrl(
+            url
+        )
+    }
 
-    webView.loadUrl(
-        url
-    )
-}  
+    // =========================================================
+    // UPDATE TABS COUNT
+    // =========================================================
 
-// =========================================================
-// UPDATE TABS COUNT
-// =========================================================
+    private fun updateTabsCount() {
 
-private fun updateTabsCount() {
-
-    findViewById<android.widget.TextView>(
-        R.id.pagesCount
-    ).text =
-        openTabs.size.toString()
-}
+        findViewById<android.widget.TextView>(
+            R.id.pagesCount
+        ).text =
+            openTabs.size.toString()
+    }
 
     // =========================================================
     // ADDRESS BAR
@@ -2304,992 +2397,1038 @@ private fun updateTabsCount() {
         }
     }
 
- private fun loadSportNews() {
+    private fun loadSportNews() {
 
-    val sportNewsList =
-        findViewById<android.widget.LinearLayout>(
-            R.id.sportNewsList
-        )
-
-    sportNewsList.removeAllViews()
-
-    kotlinx.coroutines.CoroutineScope(
-        kotlinx.coroutines.Dispatchers.Main
-    ).launch {
-
-        val articles =
-            newsRepository.getSportNews(4)
-
-        articles.forEach { article ->
-
-            addNewsCard(
-                sportNewsList,
-                article
-            )
-        }
-    }
-}
-
-private fun loadGoogleTrends() {
-
-    val trendsList =
-        findViewById<android.widget.LinearLayout>(
-            R.id.trendsList
-        )
-
-    trendsList.removeAllViews()
-
-    kotlinx.coroutines.CoroutineScope(
-        kotlinx.coroutines.Dispatchers.Main
-    ).launch {
-
-        val trends =
-    newsRepository.getGoogleTrends(null, 10)
-    
-        if (trends.isEmpty()) {
-
-            val emptyText =
-                android.widget.TextView(this@MainActivity)
-
-            emptyText.text =
-                "Unable to load Google Trends"
-
-            emptyText.setTextColor(
-                android.graphics.Color.LTGRAY
+        val sportNewsList =
+            findViewById<android.widget.LinearLayout>(
+                R.id.sportNewsList
             )
 
-            emptyText.textSize =
-                13f
-
-            emptyText.setPadding(
-                8,
-                12,
-                8,
-                12
-            )
-
-            trendsList.addView(
-                emptyText
-            )
-
-            return@launch
-        }
-
-        trends.forEachIndexed { index, trend ->
-
-            val trendRow =
-                android.widget.LinearLayout(
-                    this@MainActivity
-                )
-
-            trendRow.orientation =
-                android.widget.LinearLayout.HORIZONTAL
-
-            trendRow.gravity =
-                android.view.Gravity.CENTER_VERTICAL
-
-            trendRow.setPadding(
-                8,
-                10,
-                8,
-                10
-            )
-
-            trendRow.setBackgroundColor(
-                getThemeSurface2Color()
-            )
-
-            val number =
-                android.widget.TextView(
-                    this@MainActivity
-                )
-
-            number.text =
-                "${index + 1}"
-
-            number.setTextColor(
-                getThemeAccentColor()
-            )
-
-            number.textSize =
-                14f
-
-            number.gravity =
-                android.view.Gravity.CENTER
-
-            val numberParams =
-                android.widget.LinearLayout.LayoutParams(
-                    32,
-                    48
-                )
-
-            trendRow.addView(
-                number,
-                numberParams
-            )
-
-            val textContainer =
-                android.widget.LinearLayout(
-                    this@MainActivity
-                )
-
-            textContainer.orientation =
-                android.widget.LinearLayout.VERTICAL
-
-            textContainer.layoutParams =
-                android.widget.LinearLayout.LayoutParams(
-                    0,
-                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                    1f
-                )
-
-            val title =
-                android.widget.TextView(
-                    this@MainActivity
-                )
-
-            title.text =
-                trend.title
-
-            title.setTextColor(
-                android.graphics.Color.WHITE
-            )
-
-            title.textSize =
-                14f
-
-            title.maxLines =
-                2
-
-            title.ellipsize =
-                android.text.TextUtils.TruncateAt.END
-
-            textContainer.addView(
-                title
-            )
-
-            val source =
-    android.widget.TextView(
-        applicationContext
-    )
-
-            source.text =
-                if (trend.source.isNotBlank()) {
-                    trend.source
-                } else {
-                    "Google Trends"
-                }
-
-            source.setTextColor(
-                getThemeAccentColor()
-            )
-
-            source.textSize =
-                10f
-
-            source.setPadding(
-                0,
-                4,
-                0,
-                0
-            )
-
-            textContainer.addView(
-                source
-            )
-
-            trendRow.addView(
-                textContainer
-            )
-
-            trendRow.setOnClickListener {
-
-                if (
-                    trend.link.isNotBlank()
-                ) {
-
-                    openWebsite(
-                        trend.link
-                    )
-                }
-            }
-
-            val rowParams =
-                android.widget.LinearLayout.LayoutParams(
-                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-
-            rowParams.setMargins(
-                0,
-                0,
-                0,
-                5
-            )
-
-            trendsList.addView(
-                trendRow,
-                rowParams
-            )
-        }
-    }
-}
-
-private fun addNewsCard(
-    container: android.widget.LinearLayout,
-    article: NewsArticle
-) {
-
-    val card =
-        android.widget.LinearLayout(this)
-
-    card.orientation =
-        android.widget.LinearLayout.HORIZONTAL
-
-    card.setPadding(
-        14,
-        14,
-        14,
-        14
-    )
-
-    card.setBackgroundColor(
-        getThemeSurfaceColor()
-    )
-
-    val cardParams =
-        android.widget.LinearLayout.LayoutParams(
-            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-
-    cardParams.setMargins(
-        0,
-        0,
-        0,
-        10
-    )
-
-    card.layoutParams =
-        cardParams
-
-    val imageView =
-        android.widget.ImageView(this)
-
-    val imageParams =
-        android.widget.LinearLayout.LayoutParams(
-            105,
-            85
-        )
-
-    imageParams.setMargins(
-        0,
-        0,
-        14,
-        0
-    )
-
-    imageView.layoutParams =
-        imageParams
-
-    imageView.scaleType =
-        android.widget.ImageView.ScaleType.CENTER_CROP
-
-    imageView.setBackgroundColor(
-        getThemeSurface2Color()
-    )
-
-    val textContainer =
-        android.widget.LinearLayout(this)
-
-    textContainer.orientation =
-        android.widget.LinearLayout.VERTICAL
-
-    textContainer.layoutParams =
-        android.widget.LinearLayout.LayoutParams(
-            0,
-            android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-            1f
-        )
-
-    val title =
-        android.widget.TextView(this)
-
-    title.text =
-        article.title
-
-    title.setTextColor(
-        android.graphics.Color.WHITE
-    )
-
-    title.textSize =
-        15f
-
-    title.setTypeface(
-        null,
-        android.graphics.Typeface.BOLD
-    )
-
-    title.maxLines =
-        3
-
-    title.ellipsize =
-        android.text.TextUtils.TruncateAt.END
-
-    val source =
-        android.widget.TextView(this)
-
-    source.text =
-        if (article.source.isNotBlank()) {
-            article.source
-        } else {
-            "News"
-        }
-
-    source.setTextColor(
-        getThemeAccentColor()
-    )
-
-    source.textSize =
-        12f
-
-    source.setPadding(
-        0,
-        8,
-        0,
-        0
-    )
-
-    textContainer.addView(
-        title
-    )
-
-    textContainer.addView(
-        source
-    )
-
-    card.addView(
-        imageView
-    )
-
-    card.addView(
-        textContainer
-    )
-
-    card.setOnClickListener {
-
-        openWebsite(
-            article.link
-        )
-    }
-
-    container.addView(
-        card
-    )
-
-    if (
-        article.imageUrl.isNotBlank()
-    ) {
+        sportNewsList.removeAllViews()
 
         kotlinx.coroutines.CoroutineScope(
-            kotlinx.coroutines.Dispatchers.IO
+            kotlinx.coroutines.Dispatchers.Main
         ).launch {
 
-            try {
+            val articles =
+                newsRepository.getSportNews(4)
 
-                val connection =
-                    java.net.URL(
-                        article.imageUrl
-                    ).openConnection()
+            articles.forEach { article ->
 
-                connection.connect()
+                addNewsCard(
+                    sportNewsList,
+                    article
+                )
+            }
+        }
+    }
 
-                val input =
-                    connection.getInputStream()
+    private fun loadGoogleTrends() {
 
-                val bitmap =
-                    android.graphics.BitmapFactory
-                        .decodeStream(input)
+        val trendsList =
+            findViewById<android.widget.LinearLayout>(
+                R.id.trendsList
+            )
 
-                input.close()
+        trendsList.removeAllViews()
 
-                runOnUiThread {
+        kotlinx.coroutines.CoroutineScope(
+            kotlinx.coroutines.Dispatchers.Main
+        ).launch {
 
-                    if (bitmap != null) {
+            val trends =
+                newsRepository.getGoogleTrends(null, 10)
 
-                        imageView.setImageBitmap(
-                            bitmap
+            if (trends.isEmpty()) {
+
+                val emptyText =
+                    android.widget.TextView(this@MainActivity)
+
+                emptyText.text =
+                    "Unable to load Google Trends"
+
+                emptyText.setTextColor(
+                    android.graphics.Color.LTGRAY
+                )
+
+                emptyText.textSize =
+                    13f
+
+                emptyText.setPadding(
+                    8,
+                    12,
+                    8,
+                    12
+                )
+
+                trendsList.addView(
+                    emptyText
+                )
+
+                return@launch
+            }
+
+            trends.forEachIndexed { index, trend ->
+
+                val trendRow =
+                    android.widget.LinearLayout(
+                        this@MainActivity
+                    )
+
+                trendRow.orientation =
+                    android.widget.LinearLayout.HORIZONTAL
+
+                trendRow.gravity =
+                    android.view.Gravity.CENTER_VERTICAL
+
+                trendRow.setPadding(
+                    8,
+                    10,
+                    8,
+                    10
+                )
+
+                trendRow.setBackgroundColor(
+                    getThemeSurface2Color()
+                )
+
+                val number =
+                    android.widget.TextView(
+                        this@MainActivity
+                    )
+
+                number.text =
+                    "${index + 1}"
+
+                number.setTextColor(
+                    getThemeAccentColor()
+                )
+
+                number.tag =
+                    "accent"
+
+                number.textSize =
+                    14f
+
+                number.gravity =
+                    android.view.Gravity.CENTER
+
+                val numberParams =
+                    android.widget.LinearLayout.LayoutParams(
+                        32,
+                        48
+                    )
+
+                trendRow.addView(
+                    number,
+                    numberParams
+                )
+
+                val textContainer =
+                    android.widget.LinearLayout(
+                        this@MainActivity
+                    )
+
+                textContainer.orientation =
+                    android.widget.LinearLayout.VERTICAL
+
+                textContainer.layoutParams =
+                    android.widget.LinearLayout.LayoutParams(
+                        0,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f
+                    )
+
+                val title =
+                    android.widget.TextView(
+                        this@MainActivity
+                    )
+
+                title.text =
+                    trend.title
+
+                title.setTextColor(
+                    android.graphics.Color.WHITE
+                )
+
+                title.textSize =
+                    14f
+
+                title.maxLines =
+                    2
+
+                title.ellipsize =
+                    android.text.TextUtils.TruncateAt.END
+
+                textContainer.addView(
+                    title
+                )
+
+                val source =
+                    android.widget.TextView(
+                        applicationContext
+                    )
+
+                source.text =
+                    if (trend.source.isNotBlank()) {
+                        trend.source
+                    } else {
+                        "Google Trends"
+                    }
+
+                source.setTextColor(
+                    getThemeAccentColor()
+                )
+
+                source.tag =
+                    "accent"
+
+                source.textSize =
+                    10f
+
+                source.setPadding(
+                    0,
+                    4,
+                    0,
+                    0
+                )
+
+                textContainer.addView(
+                    source
+                )
+
+                trendRow.addView(
+                    textContainer
+                )
+
+                trendRow.setOnClickListener {
+
+                    if (
+                        trend.link.isNotBlank()
+                    ) {
+
+                        openWebsite(
+                            trend.link
                         )
                     }
                 }
 
-            } catch (_: Exception) {
-
-                // Keep placeholder
-            }
-        }
-    }
-}
-    // =========================================================
-// THEME SELECTOR
-// =========================================================
-
-private fun showThemeSelector() {
-
-    val themes = arrayOf(
-        "Midnight",
-        "Deeprowss Red",
-        "Purple Night",
-        "Ocean",
-        "Emerald",
-        "Light",
-        "AMOLED"
-    )
-
-    val currentTheme =
-        preferences.getString(
-            "app_theme",
-            "Midnight"
-        )
-
-    var selectedIndex =
-        themes.indexOf(currentTheme)
-
-    if (selectedIndex < 0) {
-        selectedIndex = 0
-    }
-
-    AlertDialog.Builder(this)
-        .setTitle("Choose Theme")
-        .setSingleChoiceItems(
-            themes,
-            selectedIndex
-        ) { dialog, which ->
-
-           preferences.edit()
-    .putString(
-        "app_theme",
-        themes[which]
-    )
-    .apply()
-
-applyAppTheme()
-
-Toast.makeText(
-                this,
-                "${themes[which]} selected",
-                Toast.LENGTH_SHORT
-            ).show()
-
-            dialog.dismiss()
-        }
-        .setNegativeButton(
-            "Cancel",
-            null
-        )
-        .show()
-}
-// =========================================================
-// APPLY THEME
-// =========================================================
-
-private fun applyAppTheme() {
-
-    val theme =
-        preferences.getString(
-            "app_theme",
-            "Midnight"
-        )
-
-    val backgroundColor: Int
-    val surfaceColor: Int
-    val surface2Color: Int
-    val textColor: Int
-    val mutedColor: Int
-    val accentColor: Int
-
-    when (theme) {
-
-        "Deeprowss Red" -> {
-
-            backgroundColor =
-                android.graphics.Color.parseColor("#18080D")
-
-            surfaceColor =
-                android.graphics.Color.parseColor("#35101B")
-
-            surface2Color =
-                android.graphics.Color.parseColor("#4A1423")
-
-            textColor =
-                android.graphics.Color.WHITE
-
-            mutedColor =
-                android.graphics.Color.parseColor("#D7A7B5")
-
-            accentColor =
-                android.graphics.Color.parseColor("#FF1744")
-        }
-
-        "Purple Night" -> {
-
-            backgroundColor =
-                android.graphics.Color.parseColor("#120B1C")
-
-            surfaceColor =
-                android.graphics.Color.parseColor("#27163D")
-
-            surface2Color =
-                android.graphics.Color.parseColor("#382052")
-
-            textColor =
-                android.graphics.Color.WHITE
-
-            mutedColor =
-                android.graphics.Color.parseColor("#C9B9D9")
-
-            accentColor =
-                android.graphics.Color.parseColor("#B45CFF")
-        }
-
-        "Ocean" -> {
-
-            backgroundColor =
-                android.graphics.Color.parseColor("#06141C")
-
-            surfaceColor =
-                android.graphics.Color.parseColor("#0D2A3A")
-
-            surface2Color =
-                android.graphics.Color.parseColor("#123B50")
-
-            textColor =
-                android.graphics.Color.WHITE
-
-            mutedColor =
-                android.graphics.Color.parseColor("#A9C8D6")
-
-            accentColor =
-                android.graphics.Color.parseColor("#00B8D4")
-        }
-
-        "Emerald" -> {
-
-            backgroundColor =
-                android.graphics.Color.parseColor("#071710")
-
-            surfaceColor =
-                android.graphics.Color.parseColor("#103022")
-
-            surface2Color =
-                android.graphics.Color.parseColor("#174631")
-
-            textColor =
-                android.graphics.Color.WHITE
-
-            mutedColor =
-                android.graphics.Color.parseColor("#A9CDBA")
-
-            accentColor =
-                android.graphics.Color.parseColor("#00D084")
-        }
-
-        "Light" -> {
-
-            backgroundColor =
-                android.graphics.Color.parseColor("#F4F6F8")
-
-            surfaceColor =
-                android.graphics.Color.WHITE
-
-            surface2Color =
-                android.graphics.Color.parseColor("#E8EDF2")
-
-            textColor =
-                android.graphics.Color.parseColor("#111827")
-
-            mutedColor =
-                android.graphics.Color.parseColor("#667085")
-
-            accentColor =
-                android.graphics.Color.parseColor("#E91E4D")
-        }
-
-        "AMOLED" -> {
-
-            backgroundColor =
-                android.graphics.Color.BLACK
-
-            surfaceColor =
-                android.graphics.Color.parseColor("#080808")
-
-            surface2Color =
-                android.graphics.Color.parseColor("#111111")
-
-            textColor =
-                android.graphics.Color.WHITE
-
-            mutedColor =
-                android.graphics.Color.parseColor("#999999")
-
-            accentColor =
-                android.graphics.Color.parseColor("#FF1744")
-        }
-
-        else -> {
-
-            backgroundColor =
-                android.graphics.Color.parseColor("#111B2D")
-
-            surfaceColor =
-                android.graphics.Color.parseColor("#182437")
-
-            surface2Color =
-                android.graphics.Color.parseColor("#22314A")
-
-            textColor =
-                android.graphics.Color.WHITE
-
-            mutedColor =
-                android.graphics.Color.parseColor("#9AA9BE")
-
-            accentColor =
-                android.graphics.Color.parseColor("#FF1744")
-        }
-    }
-
-    // =====================================================
-    // MAIN BACKGROUNDS
-    // =====================================================
-
-    findViewById<View>(
-        android.R.id.content
-    ).setBackgroundColor(
-        backgroundColor
-    )
-
-    homePage.setBackgroundColor(
-        backgroundColor
-    )
-
-    settingsPage.setBackgroundColor(
-        backgroundColor
-    )
-
-    webView.setBackgroundColor(
-        backgroundColor
-    )
-
-    // =====================================================
-    // SEARCH BAR
-    // =====================================================
-
-    findViewById<View>(
-        R.id.addressBar
-    ).setBackgroundColor(
-        surface2Color
-    )
-
-    // =====================================================
-    // SETTINGS THEME BUTTON
-    // =====================================================
-
-    findViewById<View>(
-        R.id.themeButton
-    ).setBackgroundColor(
-        surfaceColor
-    )
-
-
-    // =====================================================
-    // TEXT COLORS
-    // =====================================================
-
-    val rootView =
-        findViewById<android.view.ViewGroup>(
-            R.id.homePage
-        )
-
-    applyTextColors(
-        rootView,
-        textColor
-    )
-
-    val settingsRoot =
-        findViewById<android.view.ViewGroup>(
-            R.id.settingsPage
-        )
-
-    applyTextColors(
-        settingsRoot,
-        textColor
-    )
-    applyCardTheme(
-    rootView,
-    surfaceColor,
-    surface2Color,
-    textColor,
-    accentColor
-)
-
-applyCardTheme(
-    settingsRoot,
-    surfaceColor,
-    surface2Color,
-    textColor,
-    accentColor
-)
-
-    // =====================================================
-    // THEME ACCENT
-    // =====================================================
-
-    findViewById<View>(
-        R.id.goButton
-    ).setBackgroundColor(
-        accentColor
-    )
-
-    findViewById<View>(
-        R.id.themeButton
-    ).setBackgroundColor(
-        surfaceColor
-    )
-}
-private fun applyTextColors(
-    parent: android.view.ViewGroup,
-    color: Int
-) {
-
-    for (
-        index in 0 until parent.childCount
-    ) {
-
-        val child =
-            parent.getChildAt(index)
-
-        when (child) {
-
-            is android.widget.TextView -> {
-
-                child.setTextColor(
-                    color
-                )
-            }
-
-            is android.view.ViewGroup -> {
-
-                applyTextColors(
-                    child,
-                    color
-                )
-            }
-        }
-    }
-}
-
-private fun getThemeSurfaceColor(): Int {
-
-    return when (
-        preferences.getString(
-            "app_theme",
-            "Midnight"
-        )
-    ) {
-
-        "Deeprowss Red" ->
-            android.graphics.Color.parseColor(
-                "#35101B"
-            )
-
-        "Purple Night" ->
-            android.graphics.Color.parseColor(
-                "#27163D"
-            )
-
-        "Ocean" ->
-            android.graphics.Color.parseColor(
-                "#0D2A3A"
-            )
-
-        "Emerald" ->
-            android.graphics.Color.parseColor(
-                "#103022"
-            )
-
-        "Light" ->
-            android.graphics.Color.WHITE
-
-        "AMOLED" ->
-            android.graphics.Color.parseColor(
-                "#080808"
-            )
-
-        else ->
-            android.graphics.Color.parseColor(
-                "#182437"
-            )
-    }
-}
-
-private fun getThemeSurface2Color(): Int {
-
-    return when (
-        preferences.getString(
-            "app_theme",
-            "Midnight"
-        )
-    ) {
-
-        "Deeprowss Red" ->
-            android.graphics.Color.parseColor(
-                "#4A1423"
-            )
-
-        "Purple Night" ->
-            android.graphics.Color.parseColor(
-                "#382052"
-            )
-
-        "Ocean" ->
-            android.graphics.Color.parseColor(
-                "#123B50"
-            )
-
-        "Emerald" ->
-            android.graphics.Color.parseColor(
-                "#174631"
-            )
-
-        "Light" ->
-            android.graphics.Color.parseColor(
-                "#E8EDF2"
-            )
-
-        "AMOLED" ->
-            android.graphics.Color.parseColor(
-                "#111111"
-            )
-
-        else ->
-            android.graphics.Color.parseColor(
-                "#22314A"
-            )
-    }
-}
-
-private fun getThemeAccentColor(): Int {
-
-    return when (
-        preferences.getString(
-            "app_theme",
-            "Midnight"
-        )
-    ) {
-
-        "Purple Night" ->
-            android.graphics.Color.parseColor(
-                "#B45CFF"
-            )
-
-        "Ocean" ->
-            android.graphics.Color.parseColor(
-                "#00B8D4"
-            )
-
-        "Emerald" ->
-            android.graphics.Color.parseColor(
-                "#00D084"
-            )
-
-        else ->
-            android.graphics.Color.parseColor(
-                "#FF1744"
-            )
-    }
-}
-private fun applyCardTheme(
-    parent: android.view.ViewGroup,
-    surfaceColor: Int,
-    surface2Color: Int,
-    textColor: Int,
-    accentColor: Int
-) {
-
-    for (index in 0 until parent.childCount) {
-
-        val child =
-            parent.getChildAt(index)
-
-        /*
-         * Website cards
-         *
-         * IDs beginning with "site" are the
-         * homepage website cards.
-         */
-        if (child.id != View.NO_ID) {
-
-            val resourceName =
-                try {
-                    resources.getResourceEntryName(
-                        child.id
+                val rowParams =
+                    android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
                     )
-                } catch (e: Exception) {
-                    ""
+
+                rowParams.setMargins(
+                    0,
+                    0,
+                    0,
+                    5
+                )
+
+                trendsList.addView(
+                    trendRow,
+                    rowParams
+                )
+            }
+        }
+    }
+
+    private fun addNewsCard(
+        container: android.widget.LinearLayout,
+        article: NewsArticle
+    ) {
+
+        val card =
+            android.widget.LinearLayout(this)
+
+        card.orientation =
+            android.widget.LinearLayout.HORIZONTAL
+
+        card.setPadding(
+            14,
+            14,
+            14,
+            14
+        )
+
+        card.setBackgroundColor(
+            getThemeSurfaceColor()
+        )
+
+        val cardParams =
+            android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+
+        cardParams.setMargins(
+            0,
+            0,
+            0,
+            10
+        )
+
+        card.layoutParams =
+            cardParams
+
+        val imageView =
+            android.widget.ImageView(this)
+
+        val imageParams =
+            android.widget.LinearLayout.LayoutParams(
+                105,
+                85
+            )
+
+        imageParams.setMargins(
+            0,
+            0,
+            14,
+            0
+        )
+
+        imageView.layoutParams =
+            imageParams
+
+        imageView.scaleType =
+            android.widget.ImageView.ScaleType.CENTER_CROP
+
+        imageView.setBackgroundColor(
+            getThemeSurface2Color()
+        )
+
+        val textContainer =
+            android.widget.LinearLayout(this)
+
+        textContainer.orientation =
+            android.widget.LinearLayout.VERTICAL
+
+        textContainer.layoutParams =
+            android.widget.LinearLayout.LayoutParams(
+                0,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+            )
+
+        val title =
+            android.widget.TextView(this)
+
+        title.text =
+            article.title
+
+        title.setTextColor(
+            android.graphics.Color.WHITE
+        )
+
+        title.textSize =
+            15f
+
+        title.setTypeface(
+            null,
+            android.graphics.Typeface.BOLD
+        )
+
+        title.maxLines =
+            3
+
+        title.ellipsize =
+            android.text.TextUtils.TruncateAt.END
+
+        val source =
+            android.widget.TextView(this)
+
+        source.text =
+            if (article.source.isNotBlank()) {
+                article.source
+            } else {
+                "News"
+            }
+
+        source.setTextColor(
+            getThemeAccentColor()
+        )
+
+        source.tag =
+            "accent"
+
+        source.textSize =
+            12f
+
+        source.setPadding(
+            0,
+            8,
+            0,
+            0
+        )
+
+        textContainer.addView(
+            title
+        )
+
+        textContainer.addView(
+            source
+        )
+
+        card.addView(
+            imageView
+        )
+
+        card.addView(
+            textContainer
+        )
+
+        card.setOnClickListener {
+
+            openWebsite(
+                article.link
+            )
+        }
+
+        container.addView(
+            card
+        )
+
+        if (
+            article.imageUrl.isNotBlank()
+        ) {
+
+            kotlinx.coroutines.CoroutineScope(
+                kotlinx.coroutines.Dispatchers.IO
+            ).launch {
+
+                try {
+
+                    val connection =
+                        java.net.URL(
+                            article.imageUrl
+                        ).openConnection()
+
+                    connection.connect()
+
+                    val input =
+                        connection.getInputStream()
+
+                    val bitmap =
+                        android.graphics.BitmapFactory
+                            .decodeStream(input)
+
+                    input.close()
+
+                    runOnUiThread {
+
+                        if (bitmap != null) {
+
+                            imageView.setImageBitmap(
+                                bitmap
+                            )
+                        }
+                    }
+
+                } catch (_: Exception) {
+
+                    // Keep placeholder
+                }
+            }
+        }
+    }
+
+    // =========================================================
+    // THEME SELECTOR
+    // =========================================================
+
+    private fun showThemeSelector() {
+
+        val themes = arrayOf(
+            "Midnight",
+            "Deeprowss Red",
+            "Purple Night",
+            "Ocean",
+            "Emerald",
+            "Light",
+            "AMOLED"
+        )
+
+        val currentTheme =
+            preferences.getString(
+                "app_theme",
+                "Midnight"
+            )
+
+        var selectedIndex =
+            themes.indexOf(currentTheme)
+
+        if (selectedIndex < 0) {
+            selectedIndex = 0
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Choose Theme")
+            .setSingleChoiceItems(
+                themes,
+                selectedIndex
+            ) { dialog, which ->
+
+                preferences.edit()
+                    .putString(
+                        "app_theme",
+                        themes[which]
+                    )
+                    .apply()
+
+                applyAppTheme()
+
+                Toast.makeText(
+                    this,
+                    "${themes[which]} selected",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                dialog.dismiss()
+            }
+            .setNegativeButton(
+                "Cancel",
+                null
+            )
+            .show()
+    }
+
+    // =========================================================
+    // APPLY THEME
+    // =========================================================
+
+    private fun applyAppTheme() {
+
+        val theme =
+            preferences.getString(
+                "app_theme",
+                "Midnight"
+            )
+
+        val backgroundColor: Int
+        val surfaceColor: Int
+        val surface2Color: Int
+        val textColor: Int
+        val mutedColor: Int
+        val accentColor: Int
+
+        when (theme) {
+
+            "Deeprowss Red" -> {
+
+                backgroundColor =
+                    android.graphics.Color.parseColor("#18080D")
+
+                surfaceColor =
+                    android.graphics.Color.parseColor("#35101B")
+
+                surface2Color =
+                    android.graphics.Color.parseColor("#4A1423")
+
+                textColor =
+                    android.graphics.Color.WHITE
+
+                mutedColor =
+                    android.graphics.Color.parseColor("#D7A7B5")
+
+                accentColor =
+                    android.graphics.Color.parseColor("#FF1744")
+            }
+
+            "Purple Night" -> {
+
+                backgroundColor =
+                    android.graphics.Color.parseColor("#120B1C")
+
+                surfaceColor =
+                    android.graphics.Color.parseColor("#27163D")
+
+                surface2Color =
+                    android.graphics.Color.parseColor("#382052")
+
+                textColor =
+                    android.graphics.Color.WHITE
+
+                mutedColor =
+                    android.graphics.Color.parseColor("#C9B9D9")
+
+                accentColor =
+                    android.graphics.Color.parseColor("#B45CFF")
+            }
+
+            "Ocean" -> {
+
+                backgroundColor =
+                    android.graphics.Color.parseColor("#06141C")
+
+                surfaceColor =
+                    android.graphics.Color.parseColor("#0D2A3A")
+
+                surface2Color =
+                    android.graphics.Color.parseColor("#123B50")
+
+                textColor =
+                    android.graphics.Color.WHITE
+
+                mutedColor =
+                    android.graphics.Color.parseColor("#A9C8D6")
+
+                accentColor =
+                    android.graphics.Color.parseColor("#00B8D4")
+            }
+
+            "Emerald" -> {
+
+                backgroundColor =
+                    android.graphics.Color.parseColor("#071710")
+
+                surfaceColor =
+                    android.graphics.Color.parseColor("#103022")
+
+                surface2Color =
+                    android.graphics.Color.parseColor("#174631")
+
+                textColor =
+                    android.graphics.Color.WHITE
+
+                mutedColor =
+                    android.graphics.Color.parseColor("#A9CDBA")
+
+                accentColor =
+                    android.graphics.Color.parseColor("#00D084")
+            }
+
+            "Light" -> {
+
+                backgroundColor =
+                    android.graphics.Color.parseColor("#F4F6F8")
+
+                surfaceColor =
+                    android.graphics.Color.WHITE
+
+                surface2Color =
+                    android.graphics.Color.parseColor("#E8EDF2")
+
+                textColor =
+                    android.graphics.Color.parseColor("#111827")
+
+                mutedColor =
+                    android.graphics.Color.parseColor("#667085")
+
+                accentColor =
+                    android.graphics.Color.parseColor("#E91E4D")
+            }
+
+            "AMOLED" -> {
+
+                backgroundColor =
+                    android.graphics.Color.BLACK
+
+                surfaceColor =
+                    android.graphics.Color.parseColor("#080808")
+
+                surface2Color =
+                    android.graphics.Color.parseColor("#111111")
+
+                textColor =
+                    android.graphics.Color.WHITE
+
+                mutedColor =
+                    android.graphics.Color.parseColor("#999999")
+
+                accentColor =
+                    android.graphics.Color.parseColor("#FF1744")
+            }
+
+            else -> {
+
+                backgroundColor =
+                    android.graphics.Color.parseColor("#111B2D")
+
+                surfaceColor =
+                    android.graphics.Color.parseColor("#182437")
+
+                surface2Color =
+                    android.graphics.Color.parseColor("#22314A")
+
+                textColor =
+                    android.graphics.Color.WHITE
+
+                mutedColor =
+                    android.graphics.Color.parseColor("#9AA9BE")
+
+                accentColor =
+                    android.graphics.Color.parseColor("#FF1744")
+            }
+        }
+
+        // =====================================================
+        // MAIN BACKGROUNDS
+        // =====================================================
+
+        findViewById<View>(
+            android.R.id.content
+        ).setBackgroundColor(
+            backgroundColor
+        )
+
+        homePage.setBackgroundColor(
+            backgroundColor
+        )
+
+        settingsPage.setBackgroundColor(
+            backgroundColor
+        )
+
+        webView.setBackgroundColor(
+            backgroundColor
+        )
+
+        // =====================================================
+        // SEARCH BAR
+        // =====================================================
+
+        findViewById<View>(
+            R.id.addressBar
+        ).setBackgroundColor(
+            surface2Color
+        )
+
+        // =====================================================
+        // SETTINGS THEME BUTTON
+        // =====================================================
+
+        findViewById<View>(
+            R.id.themeButton
+        ).setBackgroundColor(
+            surfaceColor
+        )
+
+        // =====================================================
+        // TEXT COLORS
+        // =====================================================
+
+        val rootView =
+            findViewById<android.view.ViewGroup>(
+                R.id.homePage
+            )
+
+        applyTextColors(
+            rootView,
+            textColor
+        )
+
+        val settingsRoot =
+            findViewById<android.view.ViewGroup>(
+                R.id.settingsPage
+            )
+
+        applyTextColors(
+            settingsRoot,
+            textColor
+        )
+
+        applyCardTheme(
+            rootView,
+            surfaceColor,
+            surface2Color,
+            textColor,
+            accentColor
+        )
+
+        applyCardTheme(
+            settingsRoot,
+            surfaceColor,
+            surface2Color,
+            textColor,
+            accentColor
+        )
+
+        // =====================================================
+        // THEME ACCENT
+        // =====================================================
+
+        findViewById<View>(
+            R.id.goButton
+        ).setBackgroundColor(
+            accentColor
+        )
+
+        findViewById<View>(
+            R.id.themeButton
+        ).setBackgroundColor(
+            surfaceColor
+        )
+    }
+
+    private fun applyTextColors(
+        parent: android.view.ViewGroup,
+        color: Int
+    ) {
+
+        for (
+            index in 0 until parent.childCount
+        ) {
+
+            val child =
+                parent.getChildAt(index)
+
+            // Views tagged "accent" keep their theme-accent color
+            // instead of being flattened to the plain text color.
+            if (child.tag == "accent") {
+
+                if (child is android.view.ViewGroup) {
+
+                    applyTextColors(
+                        child,
+                        color
+                    )
                 }
 
-            if (
-                resourceName.startsWith(
-                    "site",
-                    ignoreCase = true
-                )
-            ) {
-
-                val drawable =
-                    android.graphics.drawable.GradientDrawable()
-
-                drawable.shape =
-                    android.graphics.drawable.GradientDrawable.RECTANGLE
-
-                drawable.setColor(
-                    surfaceColor
-                )
-
-                drawable.cornerRadius =
-                    16f * resources.displayMetrics.density
-
-                child.background =
-                    drawable
+                continue
             }
-        }
 
-        /*
-         * Keep text colors consistent
-         * with the selected theme.
-         */
-        when (child) {
+            when (child) {
 
-            is android.widget.TextView -> {
+                is android.widget.TextView -> {
 
-                child.setTextColor(
-                    textColor
-                )
+                    child.setTextColor(
+                        color
+                    )
+                }
+
+                is android.view.ViewGroup -> {
+
+                    applyTextColors(
+                        child,
+                        color
+                    )
+                }
             }
-        }
-
-        /*
-         * Continue through child layouts.
-         */
-        if (child is android.view.ViewGroup) {
-
-            applyCardTheme(
-                child,
-                surfaceColor,
-                surface2Color,
-                textColor,
-                accentColor
-            )
         }
     }
-}
+
+    private fun getThemeSurfaceColor(): Int {
+
+        return when (
+            preferences.getString(
+                "app_theme",
+                "Midnight"
+            )
+        ) {
+
+            "Deeprowss Red" ->
+                android.graphics.Color.parseColor(
+                    "#35101B"
+                )
+
+            "Purple Night" ->
+                android.graphics.Color.parseColor(
+                    "#27163D"
+                )
+
+            "Ocean" ->
+                android.graphics.Color.parseColor(
+                    "#0D2A3A"
+                )
+
+            "Emerald" ->
+                android.graphics.Color.parseColor(
+                    "#103022"
+                )
+
+            "Light" ->
+                android.graphics.Color.WHITE
+
+            "AMOLED" ->
+                android.graphics.Color.parseColor(
+                    "#080808"
+                )
+
+            else ->
+                android.graphics.Color.parseColor(
+                    "#182437"
+                )
+        }
+    }
+
+    private fun getThemeSurface2Color(): Int {
+
+        return when (
+            preferences.getString(
+                "app_theme",
+                "Midnight"
+            )
+        ) {
+
+            "Deeprowss Red" ->
+                android.graphics.Color.parseColor(
+                    "#4A1423"
+                )
+
+            "Purple Night" ->
+                android.graphics.Color.parseColor(
+                    "#382052"
+                )
+
+            "Ocean" ->
+                android.graphics.Color.parseColor(
+                    "#123B50"
+                )
+
+            "Emerald" ->
+                android.graphics.Color.parseColor(
+                    "#174631"
+                )
+
+            "Light" ->
+                android.graphics.Color.parseColor(
+                    "#E8EDF2"
+                )
+
+            "AMOLED" ->
+                android.graphics.Color.parseColor(
+                    "#111111"
+                )
+
+            else ->
+                android.graphics.Color.parseColor(
+                    "#22314A"
+                )
+        }
+    }
+
+    private fun getThemeAccentColor(): Int {
+
+        return when (
+            preferences.getString(
+                "app_theme",
+                "Midnight"
+            )
+        ) {
+
+            "Purple Night" ->
+                android.graphics.Color.parseColor(
+                    "#B45CFF"
+                )
+
+            "Ocean" ->
+                android.graphics.Color.parseColor(
+                    "#00B8D4"
+                )
+
+            "Emerald" ->
+                android.graphics.Color.parseColor(
+                    "#00D084"
+                )
+
+            else ->
+                android.graphics.Color.parseColor(
+                    "#FF1744"
+                )
+        }
+    }
+
+    private fun applyCardTheme(
+        parent: android.view.ViewGroup,
+        surfaceColor: Int,
+        surface2Color: Int,
+        textColor: Int,
+        accentColor: Int
+    ) {
+
+        for (index in 0 until parent.childCount) {
+
+            val child =
+                parent.getChildAt(index)
+
+            // Views tagged "accent" are skipped so their
+            // theme-accent color is not overwritten.
+            if (child.tag == "accent") {
+
+                if (child is android.view.ViewGroup) {
+
+                    applyCardTheme(
+                        child,
+                        surfaceColor,
+                        surface2Color,
+                        textColor,
+                        accentColor
+                    )
+                }
+
+                continue
+            }
+
+            /*
+             * Website cards
+             *
+             * IDs beginning with "site" are the
+             * homepage website cards.
+             */
+            if (child.id != View.NO_ID) {
+
+                val resourceName =
+                    try {
+                        resources.getResourceEntryName(
+                            child.id
+                        )
+                    } catch (e: Exception) {
+                        ""
+                    }
+
+                if (
+                    resourceName.startsWith(
+                        "site",
+                        ignoreCase = true
+                    )
+                ) {
+
+                    val drawable =
+                        android.graphics.drawable.GradientDrawable()
+
+                    drawable.shape =
+                        android.graphics.drawable.GradientDrawable.RECTANGLE
+
+                    drawable.setColor(
+                        surfaceColor
+                    )
+
+                    drawable.cornerRadius =
+                        16f * resources.displayMetrics.density
+
+                    child.background =
+                        drawable
+                }
+            }
+
+            /*
+             * Keep text colors consistent
+             * with the selected theme.
+             */
+            when (child) {
+
+                is android.widget.TextView -> {
+
+                    child.setTextColor(
+                        textColor
+                    )
+                }
+            }
+
+            /*
+             * Continue through child layouts.
+             */
+            if (child is android.view.ViewGroup) {
+
+                applyCardTheme(
+                    child,
+                    surfaceColor,
+                    surface2Color,
+                    textColor,
+                    accentColor
+                )
+            }
+        }
+    }
 }
