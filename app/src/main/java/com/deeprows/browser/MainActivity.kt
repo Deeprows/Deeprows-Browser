@@ -493,8 +493,6 @@ private fun addSubCategoryHeader(
 }
 
 private fun addSiteGrid(
-
-private fun addSiteGrid(
     container: LinearLayout,
     sites: List<HomeSite>
 ) {
