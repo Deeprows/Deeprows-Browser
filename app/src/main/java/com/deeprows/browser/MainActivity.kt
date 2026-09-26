@@ -2896,9 +2896,6 @@ class MainActivity : AppCompatActivity() {
     // =========================================================
     // APPLY THEME
     // =========================================================
-    // =========================================================
-    // APPLY THEME
-    // =========================================================
 
     private fun applyAppTheme() {
         val theme = preferences.getString("app_theme", "Midnight")
