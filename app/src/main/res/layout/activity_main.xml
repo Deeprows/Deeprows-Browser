@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#6B5878"
+    android:background="#101116"
     android:fitsSystemWindows="true">
 
     <ProgressBar
@@ -26,13 +26,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
-            android:background="#6B5878"
+            android:background="#101116"
             android:scrollbars="none">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#6B5878">
+                android:background="#101116">
 
                 <GridLayout
                     android:id="@+id/categoryContainer"
@@ -44,7 +44,7 @@
                     android:paddingEnd="12dp"
                     android:paddingTop="12dp"
                     android:paddingBottom="18dp"
-                    android:background="#6B5878">
+                    android:background="#101116">
 
                     <!-- DEEPROWSS HEADER -->
 
@@ -130,16 +130,14 @@
 
                     </LinearLayout>
 
-                <LinearLayout
-    android:id="@+id/siteCategoriesContainer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="8dp" />
-                    
-                    <!-- =========================================================
-                         LATEST NEWS
-                         ========================================================= -->
+                    <LinearLayout
+                        android:id="@+id/siteCategoriesContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="8dp" />
+
+                    <!-- LATEST NEWS -->
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -191,9 +189,7 @@
 
                     </LinearLayout>
 
-                    <!-- =========================================================
-                         SPORT NEWS
-                         ========================================================= -->
+                    <!-- SPORT NEWS -->
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -245,9 +241,7 @@
 
                     </LinearLayout>
 
-                    <!-- =========================================================
-                         GOOGLE TRENDS
-                         ========================================================= -->
+                    <!-- GOOGLE TRENDS -->
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -326,7 +320,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:background="#111B2D" />
+            android:background="#101116" />
 
         <!-- SETTINGS -->
 
@@ -335,7 +329,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            android:background="#6B5878"
+            android:background="#101116"
             android:scrollbars="none">
 
             <LinearLayout
@@ -368,7 +362,7 @@
                     android:gravity="center_vertical"
                     android:paddingStart="13dp"
                     android:paddingEnd="8dp"
-                    android:background="#29272D">
+                    android:background="#191B22">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -410,7 +404,7 @@
                     android:gravity="center_vertical"
                     android:paddingStart="13dp"
                     android:paddingEnd="8dp"
-                    android:background="#29272D">
+                    android:background="#191B22">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -454,7 +448,7 @@
                     android:text="🕘   History"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
-                    android:background="#29272D"
+                    android:background="#191B22"
                     android:clickable="true"
                     android:focusable="true" />
 
@@ -468,7 +462,7 @@
                     android:text="★   Bookmarks"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
-                    android:background="#29272D"
+                    android:background="#191B22"
                     android:clickable="true"
                     android:focusable="true" />
 
@@ -482,7 +476,7 @@
                     android:text="↓   Offline Pages"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
-                    android:background="#29272D"
+                    android:background="#191B22"
                     android:clickable="true"
                     android:focusable="true" />
 
@@ -496,7 +490,7 @@
                     android:text="♻   Clear Cache"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"
-                    android:background="#29272D"
+                    android:background="#191B22"
                     android:clickable="true"
                     android:focusable="true" />
 
@@ -505,7 +499,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="10dp"
-                    android:background="#29272D"
+                    android:background="#191B22"
                     android:gravity="center_vertical"
                     android:paddingStart="18dp"
                     android:paddingEnd="18dp"
@@ -520,7 +514,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="7dp"
-                    android:background="#29272D"
+                    android:background="#191B22"
                     android:gravity="center_vertical"
                     android:paddingStart="18dp"
                     android:paddingEnd="18dp"
@@ -535,7 +529,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="7dp"
-                    android:background="#29272D"
+                    android:background="#191B22"
                     android:gravity="center_vertical"
                     android:paddingStart="18dp"
                     android:paddingEnd="18dp"
@@ -550,7 +544,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
                     android:layout_marginTop="7dp"
-                    android:background="#29272D"
+                    android:background="#191B22"
                     android:gravity="center_vertical"
                     android:paddingStart="18dp"
                     android:paddingEnd="18dp"
@@ -570,7 +564,7 @@
                     android:textColor="#FF6B8A"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:background="#29272D"
+                    android:background="#191B22"
                     android:clickable="true"
                     android:focusable="true" />
 
@@ -588,7 +582,7 @@
         android:layout_height="70dp"
         android:orientation="horizontal"
         android:gravity="center"
-        android:background="#25242A"
+        android:background="#191B22"
         android:elevation="10dp"
         android:paddingStart="2dp"
         android:paddingEnd="2dp">
