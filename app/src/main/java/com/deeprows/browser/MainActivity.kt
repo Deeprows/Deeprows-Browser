@@ -2897,13 +2897,8 @@ class MainActivity : AppCompatActivity() {
     // APPLY THEME
     // =========================================================
 
-    private fun applyAppTheme() {
-
-        val theme =
-            preferences.getString(
-                "app_theme",
-                "Midnight"
-            )
+private fun applyAppTheme() {
+        val theme = preferences.getString("app_theme", "Midnight")
 
         val backgroundColor: Int
         val surfaceColor: Int
@@ -2913,223 +2908,101 @@ class MainActivity : AppCompatActivity() {
         val accentColor: Int
 
         when (theme) {
-
             "Deeprowss Red" -> {
-
-                backgroundColor =
-                    android.graphics.Color.parseColor("#18080D")
-
-                surfaceColor =
-                    android.graphics.Color.parseColor("#35101B")
-
-                surface2Color =
-                    android.graphics.Color.parseColor("#4A1423")
-
-                textColor =
-                    android.graphics.Color.WHITE
-
-                mutedColor =
-                    android.graphics.Color.parseColor("#D7A7B5")
-
-                accentColor =
-                    android.graphics.Color.parseColor("#FF1744")
+                backgroundColor = Color.parseColor("#100B0E")
+                surfaceColor = Color.parseColor("#191116")
+                surface2Color = Color.parseColor("#241820")
+                textColor = Color.parseColor("#F8F7F8")
+                mutedColor = Color.parseColor("#B8AAB0")
+                accentColor = Color.parseColor("#F43F5E")
             }
 
             "Purple Night" -> {
-
-                backgroundColor =
-                    android.graphics.Color.parseColor("#120B1C")
-
-                surfaceColor =
-                    android.graphics.Color.parseColor("#27163D")
-
-                surface2Color =
-                    android.graphics.Color.parseColor("#382052")
-
-                textColor =
-                    android.graphics.Color.WHITE
-
-                mutedColor =
-                    android.graphics.Color.parseColor("#C9B9D9")
-
-                accentColor =
-                    android.graphics.Color.parseColor("#B45CFF")
+                backgroundColor = Color.parseColor("#100D16")
+                surfaceColor = Color.parseColor("#1A1522")
+                surface2Color = Color.parseColor("#25202F")
+                textColor = Color.parseColor("#F8F7FC")
+                mutedColor = Color.parseColor("#BDB4CA")
+                accentColor = Color.parseColor("#B78BFA")
             }
 
             "Ocean" -> {
-
-                backgroundColor =
-                    android.graphics.Color.parseColor("#06141C")
-
-                surfaceColor =
-                    android.graphics.Color.parseColor("#0D2A3A")
-
-                surface2Color =
-                    android.graphics.Color.parseColor("#123B50")
-
-                textColor =
-                    android.graphics.Color.WHITE
-
-                mutedColor =
-                    android.graphics.Color.parseColor("#A9C8D6")
-
-                accentColor =
-                    android.graphics.Color.parseColor("#00B8D4")
+                backgroundColor = Color.parseColor("#091217")
+                surfaceColor = Color.parseColor("#111E25")
+                surface2Color = Color.parseColor("#1A2A33")
+                textColor = Color.parseColor("#F3F8FA")
+                mutedColor = Color.parseColor("#A8BBC4")
+                accentColor = Color.parseColor("#38BDF8")
             }
 
             "Emerald" -> {
-
-                backgroundColor =
-                    android.graphics.Color.parseColor("#071710")
-
-                surfaceColor =
-                    android.graphics.Color.parseColor("#103022")
-
-                surface2Color =
-                    android.graphics.Color.parseColor("#174631")
-
-                textColor =
-                    android.graphics.Color.WHITE
-
-                mutedColor =
-                    android.graphics.Color.parseColor("#A9CDBA")
-
-                accentColor =
-                    android.graphics.Color.parseColor("#00D084")
+                backgroundColor = Color.parseColor("#0A120F")
+                surfaceColor = Color.parseColor("#121F19")
+                surface2Color = Color.parseColor("#1C2C24")
+                textColor = Color.parseColor("#F3F8F5")
+                mutedColor = Color.parseColor("#A9BFB2")
+                accentColor = Color.parseColor("#34D399")
             }
 
             "Light" -> {
-
-                backgroundColor =
-                    android.graphics.Color.parseColor("#F4F6F8")
-
-                surfaceColor =
-                    android.graphics.Color.WHITE
-
-                surface2Color =
-                    android.graphics.Color.parseColor("#E8EDF2")
-
-                textColor =
-                    android.graphics.Color.parseColor("#111827")
-
-                mutedColor =
-                    android.graphics.Color.parseColor("#667085")
-
-                accentColor =
-                    android.graphics.Color.parseColor("#E91E4D")
+                backgroundColor = Color.parseColor("#F5F6F8")
+                surfaceColor = Color.WHITE
+                surface2Color = Color.parseColor("#E9ECF1")
+                textColor = Color.parseColor("#171923")
+                mutedColor = Color.parseColor("#687080")
+                accentColor = Color.parseColor("#E11D48")
             }
 
             "AMOLED" -> {
-
-                backgroundColor =
-                    android.graphics.Color.BLACK
-
-                surfaceColor =
-                    android.graphics.Color.parseColor("#080808")
-
-                surface2Color =
-                    android.graphics.Color.parseColor("#111111")
-
-                textColor =
-                    android.graphics.Color.WHITE
-
-                mutedColor =
-                    android.graphics.Color.parseColor("#999999")
-
-                accentColor =
-                    android.graphics.Color.parseColor("#FF1744")
+                backgroundColor = Color.BLACK
+                surfaceColor = Color.parseColor("#0A0A0A")
+                surface2Color = Color.parseColor("#151515")
+                textColor = Color.WHITE
+                mutedColor = Color.parseColor("#A1A1AA")
+                accentColor = Color.parseColor("#F43F5E")
             }
 
-            else -> {
-
-                backgroundColor =
-                    android.graphics.Color.parseColor("#111B2D")
-
-                surfaceColor =
-                    android.graphics.Color.parseColor("#182437")
-
-                surface2Color =
-                    android.graphics.Color.parseColor("#22314A")
-
-                textColor =
-                    android.graphics.Color.WHITE
-
-                mutedColor =
-                    android.graphics.Color.parseColor("#9AA9BE")
-
-                accentColor =
-                    android.graphics.Color.parseColor("#FF1744")
+            else -> { // Midnight — modern default
+                backgroundColor = Color.parseColor("#101116")
+                surfaceColor = Color.parseColor("#191B22")
+                surface2Color = Color.parseColor("#232630")
+                textColor = Color.parseColor("#F5F6F8")
+                mutedColor = Color.parseColor("#A1A1AA")
+                accentColor = Color.parseColor("#F43F5E")
             }
         }
 
-        // =====================================================
-        // MAIN BACKGROUNDS
-        // =====================================================
+        // Set the app and page backgrounds.
+        findViewById<View>(android.R.id.content)
+            .setBackgroundColor(backgroundColor)
 
-        findViewById<View>(
-            android.R.id.content
-        ).setBackgroundColor(
-            backgroundColor
-        )
+        homePage.setBackgroundColor(backgroundColor)
+        settingsPage.setBackgroundColor(backgroundColor)
+        webView.setBackgroundColor(backgroundColor)
 
-        homePage.setBackgroundColor(
-            backgroundColor
-        )
+        // Remove the oversized category panel and any old hard-coded
+        // background from the homepage's inner containers.
+        homePage.getChildAt(0)?.setBackgroundColor(backgroundColor)
 
-        settingsPage.setBackgroundColor(
-            backgroundColor
-        )
+        findViewById<View>(R.id.categoryContainer)
+            .setBackgroundColor(backgroundColor)
 
-        webView.setBackgroundColor(
-            backgroundColor
-        )
+        // The search EditText itself stays transparent; the rounded
+        // search-bar container supplies the surface.
+        addressBar.setBackgroundColor(Color.TRANSPARENT)
+        addressBar.setTextColor(textColor)
+        addressBar.setHintTextColor(mutedColor)
 
-        // =====================================================
-        // SEARCH BAR
-        // =====================================================
-
-        findViewById<View>(
-            R.id.addressBar
-        ).setBackgroundColor(
-            surface2Color
-        )
-
-        // =====================================================
-        // SETTINGS THEME BUTTON
-        // =====================================================
-
-        findViewById<View>(
-            R.id.themeButton
-        ).setBackgroundColor(
-            surfaceColor
-        )
-
-        // =====================================================
-        // TEXT COLORS
-        // =====================================================
-
-        val rootView =
-            findViewById<android.view.ViewGroup>(
-                R.id.homePage
-            )
-
-        applyTextColors(
-            rootView,
-            textColor
-        )
-
+        // Re-theme homepage and settings text/cards.
+        val homeRoot = findViewById<android.view.ViewGroup>(R.id.homePage)
         val settingsRoot =
-            findViewById<android.view.ViewGroup>(
-                R.id.settingsPage
-            )
+            findViewById<android.view.ViewGroup>(R.id.settingsPage)
 
-        applyTextColors(
-            settingsRoot,
-            textColor
-        )
+        applyTextColors(homeRoot, textColor)
+        applyTextColors(settingsRoot, textColor)
 
         applyCardTheme(
-            rootView,
+            homeRoot,
             surfaceColor,
             surface2Color,
             textColor,
@@ -3144,291 +3017,73 @@ class MainActivity : AppCompatActivity() {
             accentColor
         )
 
-        // =====================================================
-        // THEME ACCENT
-        // =====================================================
-
-        findViewById<View>(
-            R.id.goButton
-        ).setBackgroundColor(
-            accentColor
-        )
-
-        findViewById<View>(
-            R.id.themeButton
-        ).setBackgroundColor(
-            surfaceColor
-        )
-    }
-
-    private fun applyTextColors(
-        parent: android.view.ViewGroup,
-        color: Int
-    ) {
-
-        for (
-            index in 0 until parent.childCount
-        ) {
-
-            val child =
-                parent.getChildAt(index)
-
-            // Views tagged "accent" keep their theme-accent color
-            // instead of being flattened to the plain text color.
-            if (child.tag == "accent") {
-
-                if (child is android.view.ViewGroup) {
-
-                    applyTextColors(
-                        child,
-                        color
-                    )
-                }
-
-                continue
-            }
-
-            when (child) {
-
-                is android.widget.TextView -> {
-
-                    child.setTextColor(
-                        color
-                    )
-                }
-
-                is android.view.ViewGroup -> {
-
-                    applyTextColors(
-                        child,
-                        color
-                    )
-                }
-            }
+        // Rebuild the search and action buttons with rounded surfaces.
+        val searchBar = addressBar.parent as? View
+        searchBar?.background = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = dp(18).toFloat()
+            setColor(surfaceColor)
+            setStroke(dp(1), Color.parseColor(
+                if (theme == "Light") "#DDE1E7" else "#30333D"
+            ))
         }
+
+        findViewById<View>(R.id.goButton).background =
+            GradientDrawable().apply {
+                shape = GradientDrawable.RECTANGLE
+                cornerRadius = dp(13).toFloat()
+                setColor(accentColor)
+            }
+
+        findViewById<View>(R.id.themeButton).setBackgroundColor(surfaceColor)
+
+        // Update system bars to match the active theme.
+        window.statusBarColor = backgroundColor
+        window.navigationBarColor = backgroundColor
     }
+
+
+Replace getThemeSurfaceColor() with:
 
     private fun getThemeSurfaceColor(): Int {
-
-        return when (
-            preferences.getString(
-                "app_theme",
-                "Midnight"
-            )
-        ) {
-
-            "Deeprowss Red" ->
-                android.graphics.Color.parseColor(
-                    "#35101B"
-                )
-
-            "Purple Night" ->
-                android.graphics.Color.parseColor(
-                    "#27163D"
-                )
-
-            "Ocean" ->
-                android.graphics.Color.parseColor(
-                    "#0D2A3A"
-                )
-
-            "Emerald" ->
-                android.graphics.Color.parseColor(
-                    "#103022"
-                )
-
-            "Light" ->
-                android.graphics.Color.WHITE
-
-            "AMOLED" ->
-                android.graphics.Color.parseColor(
-                    "#080808"
-                )
-
-            else ->
-                android.graphics.Color.parseColor(
-                    "#182437"
-                )
+        return when (preferences.getString("app_theme", "Midnight")) {
+            "Deeprowss Red" -> Color.parseColor("#191116")
+            "Purple Night" -> Color.parseColor("#1A1522")
+            "Ocean" -> Color.parseColor("#111E25")
+            "Emerald" -> Color.parseColor("#121F19")
+            "Light" -> Color.WHITE
+            "AMOLED" -> Color.parseColor("#0A0A0A")
+            else -> Color.parseColor("#191B22")
         }
     }
+
+
+Replace getThemeSurface2Color() with:
 
     private fun getThemeSurface2Color(): Int {
-
-        return when (
-            preferences.getString(
-                "app_theme",
-                "Midnight"
-            )
-        ) {
-
-            "Deeprowss Red" ->
-                android.graphics.Color.parseColor(
-                    "#4A1423"
-                )
-
-            "Purple Night" ->
-                android.graphics.Color.parseColor(
-                    "#382052"
-                )
-
-            "Ocean" ->
-                android.graphics.Color.parseColor(
-                    "#123B50"
-                )
-
-            "Emerald" ->
-                android.graphics.Color.parseColor(
-                    "#174631"
-                )
-
-            "Light" ->
-                android.graphics.Color.parseColor(
-                    "#E8EDF2"
-                )
-
-            "AMOLED" ->
-                android.graphics.Color.parseColor(
-                    "#111111"
-                )
-
-            else ->
-                android.graphics.Color.parseColor(
-                    "#22314A"
-                )
+        return when (preferences.getString("app_theme", "Midnight")) {
+            "Deeprowss Red" -> Color.parseColor("#241820")
+            "Purple Night" -> Color.parseColor("#25202F")
+            "Ocean" -> Color.parseColor("#1A2A33")
+            "Emerald" -> Color.parseColor("#1C2C24")
+            "Light" -> Color.parseColor("#E9ECF1")
+            "AMOLED" -> Color.parseColor("#151515")
+            else -> Color.parseColor("#232630")
         }
     }
+
+
+Replace getThemeAccentColor() with:
 
     private fun getThemeAccentColor(): Int {
-
-        return when (
-            preferences.getString(
-                "app_theme",
-                "Midnight"
-            )
-        ) {
-
-            "Purple Night" ->
-                android.graphics.Color.parseColor(
-                    "#B45CFF"
-                )
-
-            "Ocean" ->
-                android.graphics.Color.parseColor(
-                    "#00B8D4"
-                )
-
-            "Emerald" ->
-                android.graphics.Color.parseColor(
-                    "#00D084"
-                )
-
-            else ->
-                android.graphics.Color.parseColor(
-                    "#FF1744"
-                )
+        return when (preferences.getString("app_theme", "Midnight")) {
+            "Purple Night" -> Color.parseColor("#B78BFA")
+            "Ocean" -> Color.parseColor("#38BDF8")
+            "Emerald" -> Color.parseColor("#34D399")
+            "Light" -> Color.parseColor("#E11D48")
+            else -> Color.parseColor("#F43F5E")
         }
-    }
-
-    private fun applyCardTheme(
-        parent: android.view.ViewGroup,
-        surfaceColor: Int,
-        surface2Color: Int,
-        textColor: Int,
-        accentColor: Int
-    ) {
-
-        for (index in 0 until parent.childCount) {
-
-            val child =
-                parent.getChildAt(index)
-
-            // Views tagged "accent" are skipped so their
-            // theme-accent color is not overwritten.
-            if (child.tag == "accent") {
-
-                if (child is android.view.ViewGroup) {
-
-                    applyCardTheme(
-                        child,
-                        surfaceColor,
-                        surface2Color,
-                        textColor,
-                        accentColor
-                    )
-                }
-
-                continue
-            }
-
-            /*
-             * Website cards
-             *
-             * IDs beginning with "site" are the
-             * homepage website cards.
-             */
-            if (child.id != View.NO_ID) {
-
-                val resourceName =
-                    try {
-                        resources.getResourceEntryName(
-                            child.id
-                        )
-                    } catch (e: Exception) {
-                        ""
-                    }
-
-                if (
-                    resourceName.startsWith(
-                        "site",
-                        ignoreCase = true
-                    )
-                ) {
-
-                    val drawable =
-                        android.graphics.drawable.GradientDrawable()
-
-                    drawable.shape =
-                        android.graphics.drawable.GradientDrawable.RECTANGLE
-
-                    drawable.setColor(
-                        surfaceColor
-                    )
-
-                    drawable.cornerRadius =
-                        16f * resources.displayMetrics.density
-
-                    child.background =
-                        drawable
-                }
-            }
-
-            /*
-             * Keep text colors consistent
-             * with the selected theme.
-             */
-            when (child) {
-
-                is android.widget.TextView -> {
-
-                    child.setTextColor(
-                        textColor
-                    )
-                }
-            }
-
-            /*
-             * Continue through child layouts.
-             */
-            if (child is android.view.ViewGroup) {
-
-                applyCardTheme(
-                    child,
-                    surfaceColor,
-                    surface2Color,
-                    textColor,
-                    accentColor
-                )
-            }
+    }        
         }
     }
 }
